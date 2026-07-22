@@ -1,0 +1,32 @@
+=> Role Pengguna
+-> Admin — kelola karyawan, rekap presensi, kelola honorarium
+-> Karyawan — absen mandiri (masuk & pulang) dengan validasi GPS
+-> Pimpinan — pantau laporan & approve izin
+
+=> Modul Presensi
+-> Login dengan username & password
+-> Absen masuk/pulang dengan validasi lokasi GPS (radius kantor)
+-> Riwayat presensi per karyawan
+-> Status: Hadir, Izin, Sakit, Alpha
+
+=> Modul Honorarium
+-> Perhitungan honorarium berdasarkan kehadiran
+-> Potongan otomatis untuk Izin, Sakit, dan Alpha
+-> Generate slip honorarium per karyawan
+-> Ekspor laporan ke PDF dan Excel
+
+=> Step
+-> Migrations (struktur database) (done)
+-> Models (Eloquent + relasi) (done)
+-> Seeders & Factories (data awal: role, admin, pengaturan) (done)
+-> Middleware & Auth (role-based access) (done)
+-> Controllers (logika tiap modul) (done)
+-> Routes (web.php) (done)
+-> Views / Blade (UI per halaman) ()
+-> Ekspor PDF & Excel
+-> Template Dashboard
+
+=> Account
+-> Admin       → alif@gmail.com / password
+-> Pimpinan    → budi@gmail.com / password
+-> Karyawan    → siti@gmail.com / password
