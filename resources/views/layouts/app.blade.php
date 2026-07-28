@@ -94,7 +94,7 @@
     {{-- Sidebar --}}
     <div class="sidebar">
         <div class="brand">
-            <i class="bi bi-building me-2"></i>Presensi App
+            <i class="bi bi-building me-2"></i>e-SIPH
         </div>
         <nav class="nav flex-column mt-2">
             @if(auth()->user()->isAdmin())
@@ -122,6 +122,10 @@
             </a>
             <a href="{{ route('admin.pengaturan.lokasi') }}" class="nav-link {{ request()->routeIs('admin.pengaturan.lokasi*') ? 'active' : '' }}">
                 <i class="bi bi-geo-alt"></i> Pengaturan Lokasi
+            </a>
+
+            <a href="{{ route('admin.pengaturan.jam') }}" class="nav-link {{ request()->routeIs('admin.pengaturan.jam*') ? 'active' : '' }}">
+                <i class="bi bi-clock"></i> Pengaturan Jam
             </a>
 
             @elseif(auth()->user()->isPimpinan())

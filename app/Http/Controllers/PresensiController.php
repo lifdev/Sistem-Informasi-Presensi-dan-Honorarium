@@ -8,6 +8,7 @@ use App\Models\Karyawan;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use App\Models\PengaturanJam;
 
 class PresensiController extends Controller
 {
@@ -23,8 +24,9 @@ class PresensiController extends Controller
             ->first();
 
         $lokasi    = PengaturanLokasi::where('aktif', true)->first();
+        $jamKerja = \App\Models\PengaturanJam::aktif(); 
 
-        return view('karyawan.presensi.index', compact('presensi', 'lokasi', 'today'));
+        return view('karyawan.presensi.index', compact('presensi', 'lokasi', 'today', 'jamKerja'));
     }
 
     // Proses absen masuk
@@ -62,6 +64,18 @@ class PresensiController extends Controller
             }
         }
 
+        // Validasi jam masuk
+        $jamSetting = PengaturanJam::aktif();
+        if ($jamSetting) {
+            $now       = Carbon::now()->format('H:i:s');
+            $mulai     = $jamSetting->jam_masuk_mulai;
+            $selesai   = $jamSetting->jam_masuk_selesai;
+            if ($now < $mulai || $now > $selesai) {
+                return back()->with('error',
+                    "Absen masuk hanya bisa dilakukan antara {$mulai} - {$selesai}.");
+            }
+        }
+
         Presensi::create([
             'karyawan_id' => $karyawan->id,
             'tanggal'     => $today,
@@ -96,6 +110,18 @@ class PresensiController extends Controller
 
         if ($presensi->jam_pulang) {
             return back()->with('error', 'Anda sudah melakukan absen pulang hari ini.');
+        }
+
+        // Validasi jam pulang
+        $jamSetting = PengaturanJam::aktif();
+        if ($jamSetting) {
+            $now     = Carbon::now()->format('H:i:s');
+            $mulai   = $jamSetting->jam_pulang_mulai;
+            $selesai = $jamSetting->jam_pulang_selesai;
+            if ($now < $mulai || $now > $selesai) {
+                return back()->with('error',
+                    "Absen pulang hanya bisa dilakukan antara {$mulai} - {$selesai}.");
+            }
         }
 
         $presensi->update([

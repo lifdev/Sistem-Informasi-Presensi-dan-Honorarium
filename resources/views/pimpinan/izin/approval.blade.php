@@ -30,7 +30,7 @@
                     <tr>
                         <td>
                             <div class="fw-semibold">{{ $i->karyawan->nama }}</div>
-                            <div class="text-muted small">{{ $i->karyawan->jabatan }}</div>
+                            <div class="text-muted small">{{ $i->karyawan->jabatan?->nama }}</div>
                         </td>
                         <td>
                             @php

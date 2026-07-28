@@ -9,7 +9,7 @@ class PengaturanGaji extends Model
     protected $table = 'pengaturan_gaji';
 
     protected $fillable = [
-        'jabatan',
+        'jabatan_id',
         'gaji_pokok',
         'tunjangan_hadir',
         'potongan_alpha',
@@ -24,4 +24,9 @@ class PengaturanGaji extends Model
         'potongan_izin'   => 'float',
         'potongan_sakit'  => 'float',
     ];
+
+    public function jabatan()
+    {
+        return $this->belongsTo(Jabatan::class);
+    }
 }

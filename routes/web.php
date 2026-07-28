@@ -113,6 +113,9 @@ Route::middleware(["auth", "role:admin"])
                     PengaturanController::class,
                     "updateLokasi",
                 ])->name("lokasi.update");
+
+                Route::get('/jam', [PengaturanController::class, 'jam'])->name('jam');
+                Route::put('/jam', [PengaturanController::class, 'updateJam'])->name('jam.update');
             });
 
         // Laporan & Ekspor

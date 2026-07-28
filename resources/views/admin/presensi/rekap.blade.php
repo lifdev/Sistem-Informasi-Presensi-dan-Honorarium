@@ -52,7 +52,7 @@
                         <td>{{ $p->tanggal->translatedFormat('d M Y') }}</td>
                         <td>
                             <div class="fw-semibold">{{ $p->karyawan->nama }}</div>
-                            <div class="text-muted small">{{ $p->karyawan->jabatan }}</div>
+                            <div class="text-muted small">{{ $p->karyawan->jabatan?->nama }}</div>
                         </td>
                         <td>{{ $p->jam_masuk ?? '-' }}</td>
                         <td>{{ $p->jam_pulang ?? '-' }}</td>

@@ -5,14 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\PengaturanGaji;
 use App\Models\PengaturanLokasi;
 use Illuminate\Http\Request;
+use App\Models\PengaturanJam;
 
 class PengaturanController extends Controller
 {
     // Pengaturan gaji
     public function gaji()
     {
-        $data = PengaturanGaji::all();
-        return view('admin.pengaturan.gaji', compact('data'));
+    $data = PengaturanGaji::with('jabatan.bidang')
+        ->orderBy('jabatan_id')
+        ->get();
+
+    return view('admin.pengaturan.gaji', compact('data'));
     }
 
     public function updateGaji(Request $request, PengaturanGaji $pengaturanGaji)
@@ -60,5 +64,42 @@ class PengaturanController extends Controller
         ]));
 
         return back()->with('success', 'Pengaturan lokasi berhasil diperbarui.');
+    }
+
+    // Pengaturan Jam Presensi
+
+    public function jam()
+    {
+        $jam = PengaturanJam::aktif() ?? new PengaturanJam();
+        return view('admin.pengaturan.jam', compact('jam'));
+    }
+
+    public function updateJam(Request $request)
+    {
+        $request->validate([
+            'jam_masuk_mulai'    => 'required',
+            'jam_masuk_selesai'  => 'required|after:jam_masuk_mulai',
+            'jam_pulang_mulai'   => 'required|after:jam_masuk_selesai',
+            'jam_pulang_selesai' => 'required|after:jam_pulang_mulai',
+        ], [
+            'jam_masuk_selesai.after'  => 'Batas akhir masuk harus setelah jam mulai masuk.',
+            'jam_pulang_mulai.after'   => 'Jam pulang harus setelah batas akhir masuk.',
+            'jam_pulang_selesai.after' => 'Batas akhir pulang harus setelah jam mulai pulang.',
+        ]);
+
+        $jam = PengaturanJam::aktif();
+        if ($jam) {
+            $jam->update($request->only([
+                'jam_masuk_mulai', 'jam_masuk_selesai',
+                'jam_pulang_mulai', 'jam_pulang_selesai',
+            ]));
+        } else {
+            PengaturanJam::create($request->only([
+                'jam_masuk_mulai', 'jam_masuk_selesai',
+                'jam_pulang_mulai', 'jam_pulang_selesai',
+            ]) + ['aktif' => true]);
+        }
+
+        return back()->with('success', 'Pengaturan jam kerja berhasil diperbarui.');
     }
 }

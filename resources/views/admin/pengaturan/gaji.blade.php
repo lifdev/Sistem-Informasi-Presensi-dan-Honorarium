@@ -5,14 +5,20 @@
 
 @section('content')
 <div class="card">
-    <div class="card-header bg-white fw-semibold">
-        <i class="bi bi-sliders text-primary me-2"></i>Pengaturan Gaji Per Jabatan
-    </div>
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+    <span class="fw-semibold">
+        <i class="bi bi-sliders text-primary me-2"></i>
+        Pengaturan Gaji Per Jabatan
+    </span>
+
+     
+</div>
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
+                        <th>Bidang</th>
                         <th>Jabatan</th>
                         <th class="text-end">Gaji Pokok</th>
                         <th class="text-end">Tunjangan Hadir/hari</th>
@@ -25,7 +31,8 @@
                 <tbody>
                     @forelse($data as $item)
                     <tr>
-                        <td class="fw-semibold">{{ $item->jabatan }}</td>
+                        <td>{{ $item->jabatan->bidang->nama }}</td>
+                        <td class="fw-semibold">{{ $item->jabatan->nama }}</td>
                         <td class="text-end">Rp {{ number_format($item->gaji_pokok, 0, ',', '.') }}</td>
                         <td class="text-end text-success">Rp {{ number_format($item->tunjangan_hadir, 0, ',', '.') }}</td>
                         <td class="text-end text-danger">Rp {{ number_format($item->potongan_alpha, 0, ',', '.') }}</td>
@@ -46,7 +53,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title fw-bold">
-                                        Edit Gaji — {{ $item->jabatan }}
+                                        Edit Gaji — {{ $item->jabatan->nama }}
                                     </h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                 </div>

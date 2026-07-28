@@ -37,11 +37,16 @@
                             </tr>
                             <tr>
                                 <td class="text-muted">Jabatan</td>
-                                <td>{{ $honorarium->karyawan->jabatan }}</td>
+                                <td>{{ $honorarium->karyawan->jabatan?->bidang?->nama }}</td>
                             </tr>
                             <tr>
-                                <td class="text-muted">Departemen</td>
-                                <td>{{ $honorarium->karyawan->departemen ?? '-' }}</td>
+                                <td class="text-muted">Bidang</td>
+                                <td>{{ $honorarium->karyawan->jabatan?->bidang?->nama ?? '-' }}</td>
+                            </tr>
+
+                            <tr>
+                                <td class="text-muted">Jabatan</td>
+                                <td>{{ $honorarium->karyawan->jabatan?->nama ?? '-' }}</td>
                             </tr>
                         </table>
                     </div>

@@ -6,18 +6,26 @@ use App\Models\Karyawan;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Jabatan;
+use App\Models\Bidang;
 
 class KaryawanController extends Controller
 {
     public function index()
     {
-        $karyawan = Karyawan::with('user')->latest()->paginate(10);
+        $karyawan = Karyawan::with(['user', 'jabatan.bidang'])
+        ->latest()
+        ->paginate(10);
+
         return view('admin.karyawan.index', compact('karyawan'));
     }
 
     public function create()
     {
-        return view('admin.karyawan.create');
+        $bidangs = Bidang::orderBy('nama')->get();
+        $jabatans = Jabatan::orderBy('nama')->get();
+
+        return view('admin.karyawan.create', compact('bidangs', 'jabatans'));
     }
 
     public function store(Request $request)
@@ -25,8 +33,7 @@ class KaryawanController extends Controller
         $request->validate([
             'nip'           => 'required|unique:karyawan,nip',
             'nama'          => 'required|string|max:100',
-            'jabatan'       => 'required|string',
-            'departemen'    => 'nullable|string',
+            'jabatan_id'    => 'required|exists:jabatan,id',
             'jenis_kelamin' => 'required|in:L,P',
             'no_hp'         => 'nullable|string|max:20',
             'alamat'        => 'nullable|string',
@@ -36,16 +43,16 @@ class KaryawanController extends Controller
             'role'          => 'required|in:admin,karyawan,pimpinan',
         ]);
 
-        $karyawan = Karyawan::create($request->only([
-            'nip',
-            'nama',
-            'jabatan',
-            'departemen',
-            'jenis_kelamin',
-            'no_hp',
-            'alamat',
-            'tanggal_masuk',
-        ]));
+        $karyawan = Karyawan::create([
+            'nip'            => $request->nip,
+            'nama'           => $request->nama,
+            'jabatan_id'     => $request->jabatan_id,
+            'jenis_kelamin'  => $request->jenis_kelamin,
+            'no_hp'          => $request->no_hp,
+            'alamat'         => $request->alamat,
+            'tanggal_masuk'  => $request->tanggal_masuk,
+            'status'         => 'aktif',
+]);
 
         User::create([
             'name'        => $request->nama,
@@ -60,17 +67,23 @@ class KaryawanController extends Controller
     }
 
     public function edit(Karyawan $karyawan)
-    {
-        return view('admin.karyawan.edit', compact('karyawan'));
-    }
+{
+    $bidangs = Bidang::orderBy('nama')->get();
+    $jabatans = Jabatan::orderBy('nama')->get();
+
+    return view('admin.karyawan.edit', compact(
+        'karyawan',
+        'bidangs',
+        'jabatans'
+    ));
+}
 
     public function update(Request $request, Karyawan $karyawan)
     {
         $request->validate([
             'nip'           => 'required|unique:karyawan,nip,' . $karyawan->id,
             'nama'          => 'required|string|max:100',
-            'jabatan'       => 'required|string',
-            'departemen'    => 'nullable|string',
+            'jabatan_id' => 'required|exists:jabatan,id',
             'jenis_kelamin' => 'required|in:L,P',
             'no_hp'         => 'nullable|string|max:20',
             'alamat'        => 'nullable|string',
@@ -78,17 +91,16 @@ class KaryawanController extends Controller
             'status'        => 'required|in:aktif,nonaktif',
         ]);
 
-        $karyawan->update($request->only([
-            'nip',
-            'nama',
-            'jabatan',
-            'departemen',
-            'jenis_kelamin',
-            'no_hp',
-            'alamat',
-            'tanggal_masuk',
-            'status',
-        ]));
+        $karyawan->update([
+            'nip'            => $request->nip,
+            'nama'           => $request->nama,
+            'jabatan_id'     => $request->jabatan_id,
+            'jenis_kelamin'  => $request->jenis_kelamin,
+            'no_hp'          => $request->no_hp,
+            'alamat'         => $request->alamat,
+            'tanggal_masuk'  => $request->tanggal_masuk,
+            'status'         => $request->status,
+        ]);
 
         return redirect()->route('admin.karyawan.index')
             ->with('success', 'Data karyawan berhasil diperbarui.');

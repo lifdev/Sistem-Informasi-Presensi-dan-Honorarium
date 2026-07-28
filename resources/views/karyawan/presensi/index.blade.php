@@ -143,21 +143,9 @@
     }, 1000);
 
     // Koordinat kantor dari server
-    const kantorLat = {
-        {
-            $lokasi ? $lokasi - > latitude : -6.200000
-        }
-    };
-    const kantorLng = {
-        {
-            $lokasi ? $lokasi - > longitude : 106.816666
-        }
-    };
-    const radius = {
-        {
-            $lokasi ? $lokasi - > radius_meter : 100
-        }
-    };
+    const kantorLat = {{ $lokasi ? $lokasi->latitude : -6.200000 }};
+    const kantorLng = {{ $lokasi ? $lokasi->longitude : 106.816666 }};
+    const radius = {{ $lokasi ? $lokasi->radius_meter : 100 }};
 
     // Init peta
     const map = L.map('map').setView([kantorLat, kantorLng], 17);

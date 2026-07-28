@@ -4,7 +4,9 @@
 @section('page-title', 'Manajemen Honorarium')
 
 @section('content')
+
 {{-- Form Generate --}}
+
 <div class="card mb-3">
     <div class="card-header bg-white fw-semibold">
         <i class="bi bi-gear text-primary me-2"></i>Generate Honorarium
@@ -41,6 +43,7 @@
 </div>
 
 {{-- Tabel Honorarium --}}
+
 <div class="card">
     <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
         <span class="fw-semibold">
@@ -93,7 +96,11 @@
                     <tr>
                         <td>
                             <div class="fw-semibold">{{ $h->karyawan->nama }}</div>
-                            <div class="text-muted small">{{ $h->karyawan->jabatan }}</div>
+                            <div class="text-muted small">
+                                {{ $h->karyawan->jabatan?->bidang?->nama }}
+                                •
+                                {{ $h->karyawan->jabatan?->nama }}
+                            </div>
                         </td>
                         <td class="text-center"><span class="badge bg-success">{{ $h->total_hadir }}</span></td>
                         <td class="text-center"><span class="badge bg-info">{{ $h->total_izin }}</span></td>

@@ -5,79 +5,104 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Karyawan;
 use App\Models\User;
+use App\Models\Jabatan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class KaryawanSeeder extends Seeder
 {
     public function run(): void
     {
-        // Delete
-        \Illuminate\Support\Facades\DB::statement("SET FOREIGN_KEY_CHECKS=0;");
-        \App\Models\User::truncate();
-        \App\Models\Karyawan::truncate();
-        \Illuminate\Support\Facades\DB::statement("SET FOREIGN_KEY_CHECKS=1;");
+        // Reset tabel
+        DB::statement("SET FOREIGN_KEY_CHECKS=0;");
+        User::truncate();
+        Karyawan::truncate();
+        DB::statement("SET FOREIGN_KEY_CHECKS=1;");
 
-        // --- Admin ---
+        // Ambil jabatan yang sudah ada
+        $adminJabatan = Jabatan::where("nama", "IT Support")->first();
+        $pimpinanJabatan = Jabatan::where("nama", "Ketua Yayasan")->first();
+        $karyawanJabatan = Jabatan::where("nama", "Staf Administrasi")->first();
+
+        if (!$adminJabatan || !$pimpinanJabatan || !$karyawanJabatan) {
+            throw new \Exception(
+                "Pastikan JabatanSeeder sudah dijalankan dan nama jabatan sesuai.",
+            );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | ADMIN
+        |--------------------------------------------------------------------------
+        */
+
         $admin = Karyawan::create([
             "nip" => "ADM001",
             "nama" => "Alif",
-            "jabatan" => "Admin",
-            "departemen" => "HRD",
+            "jabatan_id" => $adminJabatan->id,
             "jenis_kelamin" => "L",
-            "no_hp" => "08123456789",
-            "alamat" => "Kantor Pusat",
+            "no_hp" => "081234567892",
+            "alamat" => "Kantor Yayasan",
             "tanggal_masuk" => "2020-01-01",
             "status" => "aktif",
         ]);
 
         User::create([
-            "name" => "Alif",
+            "name" => $admin->nama,
             "email" => "alif@gmail.com",
             "password" => Hash::make("password"),
             "role" => "admin",
             "karyawan_id" => $admin->id,
         ]);
 
-        // --- Pimpinan ---
+        /*
+        |--------------------------------------------------------------------------
+        | PIMPINAN
+        |--------------------------------------------------------------------------
+        */
+
         $pimpinan = Karyawan::create([
             "nip" => "PIM001",
             "nama" => "Budi Santoso",
-            "jabatan" => "Ketua Yayasan",
-            "departemen" => "Operasional",
+            "jabatan_id" => $pimpinanJabatan->id,
             "jenis_kelamin" => "L",
-            "no_hp" => "08234567890",
-            "alamat" => "Jl. Merdeka No. 1",
+            "no_hp" => "082345678901",
+            "alamat" => "Jl. Merdeka No.1",
             "tanggal_masuk" => "2021-03-01",
             "status" => "aktif",
         ]);
 
         User::create([
-            "name" => "Budi Santoso",
+            "name" => $pimpinan->nama,
             "email" => "budi@gmail.com",
             "password" => Hash::make("password"),
             "role" => "pimpinan",
             "karyawan_id" => $pimpinan->id,
         ]);
 
-        // --- Karyawan 1 ---
-        $k1 = Karyawan::create([
+        /*
+        |--------------------------------------------------------------------------
+        | KARYAWAN
+        |--------------------------------------------------------------------------
+        */
+
+        $karyawan = Karyawan::create([
             "nip" => "KRY001",
             "nama" => "Siti Rahayu",
-            "jabatan" => "Staff",
-            "departemen" => "Keuangan",
+            "jabatan_id" => $karyawanJabatan->id,
             "jenis_kelamin" => "P",
-            "no_hp" => "08345678901",
-            "alamat" => "Jl. Mawar No. 5",
+            "no_hp" => "083456789051",
+            "alamat" => "Jl. Mawar No.5",
             "tanggal_masuk" => "2022-06-01",
             "status" => "aktif",
         ]);
 
         User::create([
-            "name" => "Siti Rahayu",
+            "name" => $karyawan->nama,
             "email" => "siti@gmail.com",
             "password" => Hash::make("password"),
             "role" => "karyawan",
-            "karyawan_id" => $k1->id,
+            "karyawan_id" => $karyawan->id,
         ]);
     }
 }

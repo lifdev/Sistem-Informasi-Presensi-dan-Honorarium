@@ -13,8 +13,7 @@ class Karyawan extends Model
     protected $fillable = [
         'nip',
         'nama',
-        'jabatan',
-        'departemen',
+        'jabatan_id',
         'jenis_kelamin',
         'no_hp',
         'alamat',
@@ -50,9 +49,8 @@ class Karyawan extends Model
         return $this->hasMany(Honorarium::class);
     }
 
-    // Relasi ke PengaturanGaji (via jabatan)
-    public function pengaturanGaji()
+    public function jabatan()
     {
-        return $this->hasOne(PengaturanGaji::class, 'jabatan', 'jabatan');
+        return $this->belongsTo(Jabatan::class);
     }
 }

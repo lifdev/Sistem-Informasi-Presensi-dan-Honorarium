@@ -9,7 +9,11 @@ return new class extends Migration {
     {
         Schema::create('pengaturan_gaji', function (Blueprint $table) {
             $table->id();
-            $table->string('jabatan')->unique();
+
+            $table->foreignId('jabatan_id')
+                ->constrained('jabatan')
+                ->cascadeOnDelete();
+
             $table->decimal('gaji_pokok', 15, 2)->default(0);
             $table->decimal('tunjangan_hadir', 15, 2)->default(0)->comment('Per hari hadir');
             $table->decimal('potongan_alpha', 15, 2)->default(0)->comment('Per hari alpha');
