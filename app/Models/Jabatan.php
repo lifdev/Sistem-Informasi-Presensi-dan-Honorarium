@@ -21,6 +21,11 @@ class Jabatan extends Model
 
     public function pengaturanGaji()
     {
-    return $this->hasOne(PengaturanGaji::class);
+        return $this->hasOne(PengaturanGaji::class);
+    }
+
+    public function karyawan()
+    {
+        return $this->hasMany(Karyawan::class);
     }
 }

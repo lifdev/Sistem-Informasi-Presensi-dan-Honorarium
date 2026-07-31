@@ -104,6 +104,13 @@
             <a href="{{ route('admin.karyawan.index') }}" class="nav-link {{ request()->routeIs('admin.karyawan.*') ? 'active' : '' }}">
                 <i class="bi bi-people"></i> Karyawan
             </a>
+            <a href="{{ route('admin.bidang.index') }}" class="nav-link {{ request()->routeIs('admin.bidang.*') ? 'active' : '' }}">
+                <i class="bi bi-diagram-3"></i> Bidang
+            </a>
+            <a href="{{ route('admin.jabatan.index') }}"
+                class="nav-link {{ request()->routeIs('admin.jabatan.*') ? 'active' : '' }}">
+                <i class="bi bi-briefcase"></i> Jabatan
+            </a>
             <a href="{{ route('admin.presensi.rekap') }}" class="nav-link {{ request()->routeIs('admin.presensi.*') ? 'active' : '' }}">
                 <i class="bi bi-calendar-check"></i> Presensi
             </a>

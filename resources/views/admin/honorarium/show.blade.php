@@ -36,10 +36,6 @@
                                 <td>{{ $honorarium->karyawan->nip }}</td>
                             </tr>
                             <tr>
-                                <td class="text-muted">Jabatan</td>
-                                <td>{{ $honorarium->karyawan->jabatan?->bidang?->nama }}</td>
-                            </tr>
-                            <tr>
                                 <td class="text-muted">Bidang</td>
                                 <td>{{ $honorarium->karyawan->jabatan?->bidang?->nama ?? '-' }}</td>
                             </tr>

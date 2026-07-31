@@ -9,6 +9,8 @@ use App\Http\Controllers\IzinController;
 use App\Http\Controllers\HonorariumController;
 use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\BidangController;
+use App\Http\Controllers\Admin\JabatanController;
 
 // ============================================================
 // AUTH ROUTES (Guest only)
@@ -54,6 +56,12 @@ Route::middleware(["auth", "role:admin"])
                 ])->name("rekap");
             });
 
+        // Bidang
+        Route::resource('bidang', BidangController::class);
+
+        // Jabatan
+        Route::resource('jabatan', JabatanController::class);
+        
         // Izin
         Route::prefix("izin")
             ->name("izin.")
