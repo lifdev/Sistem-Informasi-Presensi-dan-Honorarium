@@ -22,7 +22,7 @@ class IzinController extends Controller
         $request->validate([
             'tanggal_mulai'   => 'required|date|after_or_equal:today',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
-            'jenis'           => 'required|in:izin,sakit,cuti',
+            'jenis'           => 'required|in:izin,sakit',
             'alasan'          => 'required|string|max:500',
             'lampiran'        => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
@@ -90,9 +90,9 @@ class IzinController extends Controller
     public function reject(Izin $izin)
     {
         $izin->update([
-            'status'        => 'ditolak',
-            'disetujui_oleh' => Auth::id(),
-            'disetujui_at'  => Carbon::now(),
+            'status'            => 'ditolak',
+            'disetujui_oleh'    => Auth::id(),
+            'disetujui_at'      => Carbon::now(),
         ]);
 
         return back()->with('success', 'Izin berhasil ditolak.');

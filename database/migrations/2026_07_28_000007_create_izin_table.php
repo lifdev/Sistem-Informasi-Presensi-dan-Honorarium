@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->foreignId('karyawan_id')->constrained('karyawan')->cascadeOnDelete();
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
-            $table->enum('jenis', ['izin', 'sakit', 'cuti']);
+            $table->enum('jenis', ['izin', 'sakit']);
             $table->text('alasan');
             $table->string('lampiran')->nullable()->comment('Path file surat dokter dll');
             $table->enum('status', ['pending', 'disetujui', 'ditolak'])->default('pending');
