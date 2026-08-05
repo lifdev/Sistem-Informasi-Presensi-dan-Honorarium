@@ -17,4 +17,11 @@ class Bidang extends Model
     {
         return $this->hasMany(Jabatan::class);
     }
+
+    public function getJumlahKaryawanAttribute()
+    {
+        return $this->jabatan->sum(function ($jabatan) {
+            return $jabatan->karyawan->count();
+        });
+    }
 }

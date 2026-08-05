@@ -1,121 +1,177 @@
 @extends('layouts.app')
 
 @section('title', 'Dashboard Admin')
-@section('page-title', 'Dashboard Admin')
-
 @section('content')
-<div class="row g-3 mb-4">
-    <div class="col-sm-6 col-xl-3">
-        <div class="stat-card" style="background: linear-gradient(135deg,#1e3a5f,#2e5fa3)">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="small opacity-75">Total Karyawan Aktif</div>
-                    <div class="fs-2 fw-bold">{{ $totalKaryawan }}</div>
-                </div>
-                <i class="bi bi-people fs-1 opacity-50"></i>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-xl-3">
-        <div class="stat-card" style="background: linear-gradient(135deg,#198754,#20c997)">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="small opacity-75">Hadir Hari Ini</div>
-                    <div class="fs-2 fw-bold">{{ $hadirHariIni }}</div>
-                </div>
-                <i class="bi bi-calendar-check fs-1 opacity-50"></i>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-xl-3">
-        <div class="stat-card" style="background: linear-gradient(135deg,#fd7e14,#ffc107)">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="small opacity-75">Izin Pending</div>
-                    <div class="fs-2 fw-bold">{{ $izinPending }}</div>
-                </div>
-                <i class="bi bi-envelope-exclamation fs-1 opacity-50"></i>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-xl-3">
-        <div class="stat-card" style="background: linear-gradient(135deg,#6f42c1,#d63384)">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <div class="small opacity-75">Honorarium Draft</div>
-                    <div class="fs-2 fw-bold">{{ $honorariumDraft }}</div>
-                </div>
-                <i class="bi bi-cash-stack fs-1 opacity-50"></i>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="row g-3">
-    <div class="col-md-6">
-        <div class="card h-100">
-            <div class="card-header bg-white fw-semibold">
-                <i class="bi bi-lightning-charge text-warning me-2"></i>Aksi Cepat
+    {{-- Card --}}
+    <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+
+        {{-- Total Karyawan --}}
+        <x-card class="p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">
+                        Total Karyawan
+                    </p>
+                    <h2 class="mt-2 text-3xl font-bold">
+                        {{ $totalKaryawan }}
+                    </h2>
+                </div>
+                <div class="rounded-xl bg-blue-100 p-3 text-blue-600 dark:bg-blue-900/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M5 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+                        <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+                    </svg>
+                </div>
             </div>
-            <div class="card-body d-grid gap-2">
-                <a href="{{ route('admin.karyawan.create') }}" class="btn btn-outline-primary">
-                    <i class="bi bi-person-plus me-2"></i>Tambah Karyawan
+        </x-card>
+
+        {{-- Hadir Hari Ini --}}
+        <x-card class="p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">
+                        Hadir Hari Ini
+                    </p>
+                    <h2 class="mt-2 text-3xl font-bold">
+                        {{ $hadirHariIni }}
+                    </h2>
+                </div>
+
+                <div class="rounded-xl bg-green-100 p-3 text-green-600 dark:bg-green-900/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4" />
+                        <circle cx="12" cy="12" r="9" />
+                    </svg>
+                </div>
+            </div>
+        </x-card>
+
+        {{-- Izin Pending --}}
+        <x-card class="p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">
+                        Izin Pending
+                    </p>
+                    <h2 class="mt-2 text-3xl font-bold">
+                        {{ $izinPending }}
+                    </h2>
+                </div>
+
+                <div class="rounded-xl bg-yellow-100 p-3 text-yellow-600 dark:bg-yellow-900/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 3h8l3 3v15H5V6l3-3z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v5" />
+                        <circle cx="12" cy="16" r="1" />
+                    </svg>
+                </div>
+            </div>
+        </x-card>
+
+        {{-- Honorarium --}}
+        <x-card class="p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">
+                        Honorarium Draft
+                    </p>
+                    <h2 class="mt-2 text-3xl font-bold">
+                        {{ $honorariumDraft }}
+                    </h2>
+                </div>
+
+                <div class="rounded-xl bg-purple-100 p-3 text-purple-600 dark:bg-purple-900/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path
+                            d="M17 8v-3a1 1 0 0 0 -1 -1h-10a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1 -1 1h-12a2 2 0 0 1 -2 -2v-12" />
+                        <path d="M20 12v4h-4a2 2 0 0 1 0 -4h4" />
+                    </svg>
+                </div>
+            </div>
+        </x-card>
+    </div>
+
+    {{-- Bottom Section --}}
+
+    <div class="mt-6 grid gap-6 xl:grid-cols-2">
+
+        {{-- Quick Action --}}
+        <x-card class="p-6">
+            <h2 class="mb-5 text-lg font-semibold">
+                Aksi Cepat
+            </h2>
+            <div class="grid gap-3">
+                <a href="{{ route('admin.karyawan.create') }}"
+                    class="rounded-xl bg-blue-600 px-5 py-3 text-center font-medium text-white transition hover:bg-blue-700">
+                    Tambah Karyawan
                 </a>
-                <a href="{{ route('admin.presensi.rekap') }}" class="btn btn-outline-success">
-                    <i class="bi bi-calendar-check me-2"></i>Rekap Presensi
+                <a href="{{ route('admin.presensi.rekap') }}"
+                    class="rounded-xl bg-green-600 px-5 py-3 text-center font-medium text-white transition hover:bg-green-700">
+                    Rekap Presensi
                 </a>
-                <a href="{{ route('admin.izin.approval') }}" class="btn btn-outline-warning">
-                    <i class="bi bi-envelope-check me-2"></i>Approval Izin
-                    @if($izinPending > 0)
-                    <span class="badge bg-danger ms-1">{{ $izinPending }}</span>
+                <a href="{{ route('admin.izin.approval') }}"
+                    class="flex items-center justify-center gap-2 rounded-xl bg-yellow-500 px-5 py-3 font-medium text-white transition hover:bg-yellow-600">
+                    Approval Izin
+                    @if ($izinPending > 0)
+                        <span class="rounded-full bg-red-600 px-2 py-1 text-xs">
+                            {{ $izinPending }}
+                        </span>
                     @endif
                 </a>
-                <a href="{{ route('admin.honorarium.index') }}" class="btn btn-outline-purple">
-                    <i class="bi bi-cash-stack me-2"></i>Generate Honorarium
+                <a href="{{ route('admin.honorarium.index') }}"
+                    class="rounded-xl bg-purple-600 px-5 py-3 text-center font-medium text-white transition hover:bg-purple-700">
+                    Generate Honorarium
                 </a>
             </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card h-100">
-            <div class="card-header bg-white fw-semibold">
-                <i class="bi bi-info-circle text-info me-2"></i>Informasi Sistem
+        </x-card>
+
+        {{-- Informasi Sistem --}}
+
+        <x-card class="p-6">
+            <h2 class="mb-5 text-lg font-semibold">
+                Informasi Sistem
+            </h2>
+            <div class="space-y-4">
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Tanggal</span>
+                    <span>{{ now()->translatedFormat('l, d F Y') }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Jam</span>
+                    <span id="jam">{{ now()->format('H:i:s') }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Login Sebagai</span>
+                    <span>{{ auth()->user()->name }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Role</span>
+                    <span class="rounded-full bg-blue-600 px-3 py-1 text-sm text-white">
+                        Admin
+                    </span>
+                </div>
             </div>
-            <div class="card-body">
-                <table class="table table-sm table-borderless mb-0">
-                    <tr>
-                        <td class="text-muted">Tanggal</td>
-                        <td class="fw-semibold">{{ now()->translatedFormat('l, d F Y') }}</td>
-                    </tr>
-                    <tr>
-                        <td class="text-muted">Jam</td>
-                        <td class="fw-semibold" id="jam">{{ now()->format('H:i:s') }}</td>
-                    </tr>
-                    <tr>
-                        <td class="text-muted">Login sebagai</td>
-                        <td class="fw-semibold">{{ auth()->user()->name }}</td>
-                    </tr>
-                    <tr>
-                        <td class="text-muted">Role</td>
-                        <td><span class="badge bg-primary">Admin</span></td>
-                    </tr>
-                </table>
-            </div>
-        </div>
+        </x-card>
     </div>
-</div>
+
 @endsection
 
 @push('scripts')
-<script>
-    setInterval(() => {
-        const now = new Date();
-        document.getElementById('jam').textContent =
-            now.toLocaleTimeString('id-ID', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-    }, 1000);
-</script>
+    <script>
+        setInterval(() => {
+            const jam = new Date().toLocaleTimeString('id-ID');
+
+            const jamDashboard = document.getElementById('jam');
+            if (jamDashboard) jamDashboard.textContent = jam;
+        }, 1000);
+    </script>
 @endpush

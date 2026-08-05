@@ -4,107 +4,166 @@
 @section('page-title', 'Ajukan Izin')
 
 @section('content')
-<div class="row justify-content-center">
-    <div class="col-lg-7">
-        <div class="card">
-            <div class="card-header bg-white fw-semibold">
-                <i class="bi bi-file-earmark-plus text-primary me-2"></i>Form Pengajuan Izin
-            </div>
-            <div class="card-body">
-                <form action="{{ route('karyawan.izin.store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
+    <div class="flex justify-center">
+        <div class="w-full max-w-3xl">
+            <div
+                class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-200 dark:bg-slate-900 dark:ring-slate-700">
+                <!-- Header -->
+                <div class="border-b border-gray-200 px-6 py-4 dark:border-slate-700">
+                    <h2 class="flex items-center text-lg font-semibold text-gray-800 dark:text-white">
+                        <i class="bi bi-file-earmark-plus mr-2 text-blue-600 dark:text-blue-400"></i>
+                        Form Pengajuan Izin
+                    </h2>
+                </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Jenis Izin <span class="text-danger">*</span></label>
-                        <select name="jenis" class="form-select @error('jenis') is-invalid @enderror" required>
-                            <option value="">-- Pilih Jenis --</option>
-                            <option value="izin" {{ old('jenis') == 'izin'  ? 'selected' : '' }}>Izin</option>
-                            <option value="sakit" {{ old('jenis') == 'sakit' ? 'selected' : '' }}>Sakit</option>
-                            <option value="cuti" {{ old('jenis') == 'cuti'  ? 'selected' : '' }}>Cuti</option>
-                        </select>
-                        @error('jenis')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                    </div>
+                <!-- Body -->
+                <div class="p-6">
+                    <form action="{{ route('karyawan.izin.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Tanggal Mulai <span class="text-danger">*</span></label>
-                            <input type="date" name="tanggal_mulai"
-                                class="form-control @error('tanggal_mulai') is-invalid @enderror"
-                                value="{{ old('tanggal_mulai') }}"
-                                min="{{ date('Y-m-d') }}" required>
-                            @error('tanggal_mulai')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <!-- Jenis -->
+                        <div class="mb-5">
+                            <label class="mb-2 block text-sm font-semibold text-gray-700 dark:text-slate-300">
+                                Jenis Izin <span class="text-red-500">*</span>
+                            </label>
+
+                            <select name="jenis"
+                                class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white @error('jenis') border-red-500 @enderror"
+                                required>
+                                <option value="">-- Pilih Jenis --</option>
+                                <option value="izin" {{ old('jenis') == 'izin' ? 'selected' : '' }}>Izin</option>
+                                <option value="sakit" {{ old('jenis') == 'sakit' ? 'selected' : '' }}>Sakit</option>
+                                <option value="cuti" {{ old('jenis') == 'cuti' ? 'selected' : '' }}>Cuti</option>
+                            </select>
+
+                            @error('jenis')
+                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                            @enderror
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Tanggal Selesai <span class="text-danger">*</span></label>
-                            <input type="date" name="tanggal_selesai"
-                                class="form-control @error('tanggal_selesai') is-invalid @enderror"
-                                value="{{ old('tanggal_selesai') }}"
-                                min="{{ date('Y-m-d') }}" required>
-                            @error('tanggal_selesai')<div class="invalid-feedback">{{ $message }}</div>@enderror
+
+                        <!-- Tanggal -->
+                        <div class="mb-5 grid gap-5 md:grid-cols-2">
+                            <div>
+                                <label class="mb-2 block text-sm font-semibold text-gray-700 dark:text-slate-300">
+                                    Tanggal Mulai <span class="text-red-500">*</span>
+                                </label>
+
+                                <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai') }}"
+                                    min="{{ date('Y-m-d') }}" required
+                                    class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white @error('tanggal_mulai') border-red-500 @enderror">
+
+                                @error('tanggal_mulai')
+                                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label class="mb-2 block text-sm font-semibold text-gray-700 dark:text-slate-300">
+                                    Tanggal Selesai <span class="text-red-500">*</span>
+                                </label>
+
+                                <input type="date" name="tanggal_selesai" value="{{ old('tanggal_selesai') }}"
+                                    min="{{ date('Y-m-d') }}" required
+                                    class="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white @error('tanggal_selesai') border-red-500 @enderror">
+
+                                @error('tanggal_selesai')
+                                    <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                                @enderror
+                            </div>
                         </div>
-                    </div>
 
-                    {{-- Hitung durasi otomatis --}}
-                    <div class="alert alert-info py-2 small mb-3" id="durasi-info" style="display:none!important">
-                        <i class="bi bi-info-circle me-1"></i>
-                        Durasi: <strong id="durasi-hari">0</strong> hari
-                    </div>
+                        <!-- Durasi -->
+                        <div id="durasi-info"
+                            class="mb-5 hidden rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                            <i class="bi bi-info-circle mr-1"></i>
+                            Durasi:
+                            <strong id="durasi-hari">0</strong>
+                            hari
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Alasan <span class="text-danger">*</span></label>
-                        <textarea name="alasan" rows="4"
-                            class="form-control @error('alasan') is-invalid @enderror"
-                            placeholder="Tuliskan alasan izin..." required>{{ old('alasan') }}</textarea>
-                        @error('alasan')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                    </div>
+                        <!-- Alasan -->
+                        <div class="mb-5">
+                            <label class="mb-2 block text-sm font-semibold text-gray-700 dark:text-slate-300">
+                                Alasan <span class="text-red-500">*</span>
+                            </label>
 
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold">Lampiran <span class="text-muted small">(opsional)</span></label>
-                        <input type="file" name="lampiran"
-                            class="form-control @error('lampiran') is-invalid @enderror"
-                            accept=".pdf,.jpg,.jpeg,.png">
-                        <div class="form-text">Format: PDF, JPG, PNG. Maks 2MB. (Surat dokter, dsb.)</div>
-                        @error('lampiran')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                    </div>
+                            <textarea name="alasan" rows="4" placeholder="Tuliskan alasan izin..." required
+                                class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-800 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-400 @error('alasan') border-red-500 @enderror">{{ old('alasan') }}</textarea>
 
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary px-4">
-                            <i class="bi bi-send me-2"></i>Kirim Pengajuan
-                        </button>
-                        <a href="{{ route('karyawan.izin.index') }}" class="btn btn-outline-secondary px-4">
-                            Batal
-                        </a>
-                    </div>
-                </form>
+                            @error('alasan')
+                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Lampiran -->
+                        <div class="mb-6">
+                            <label class="mb-2 block text-sm font-semibold text-gray-700 dark:text-slate-300">
+                                Lampiran
+                                <span class="text-xs font-normal text-gray-500 dark:text-slate-400">(opsional)</span>
+                            </label>
+
+                            <input type="file" name="lampiran" accept=".pdf,.jpg,.jpeg,.png"
+                                class="block w-full rounded-lg border border-gray-300 bg-white text-sm text-gray-700 file:mr-4 file:rounded-md file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-white hover:file:bg-blue-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 @error('lampiran') border-red-500 @enderror">
+
+                            <p class="mt-2 text-sm text-gray-500 dark:text-slate-400">
+                                Format: PDF, JPG, PNG. Maksimal 2MB. (Surat dokter, dsb.)
+                            </p>
+
+                            @error('lampiran')
+                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Button -->
+                        <div class="flex flex-wrap gap-3">
+                            <button type="submit"
+                                class="inline-flex items-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500">
+                                <i class="bi bi-send mr-2"></i>
+                                Kirim Pengajuan
+                            </button>
+
+                            <a href="{{ route('karyawan.izin.index') }}"
+                                class="inline-flex items-center rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+                                Batal
+                            </a>
+                        </div>
+
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 @endsection
 
 @push('scripts')
-<script>
-    const tglMulai = document.querySelector('[name="tanggal_mulai"]');
-    const tglSelesai = document.querySelector('[name="tanggal_selesai"]');
-    const durasiInfo = document.getElementById('durasi-info');
-    const durasiHari = document.getElementById('durasi-hari');
+    <script>
+        const tglMulai = document.querySelector('[name="tanggal_mulai"]');
+        const tglSelesai = document.querySelector('[name="tanggal_selesai"]');
+        const durasiInfo = document.getElementById('durasi-info');
+        const durasiHari = document.getElementById('durasi-hari');
 
-    function hitungDurasi() {
-        if (tglMulai.value && tglSelesai.value) {
-            const start = new Date(tglMulai.value);
-            const end = new Date(tglSelesai.value);
-            const diff = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
-            if (diff > 0) {
-                durasiHari.textContent = diff;
-                durasiInfo.style.removeProperty('display');
+        function hitungDurasi() {
+            if (tglMulai.value && tglSelesai.value) {
+                const start = new Date(tglMulai.value);
+                const end = new Date(tglSelesai.value);
+                const diff = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
+
+                if (diff > 0) {
+                    durasiHari.textContent = diff;
+                    durasiInfo.classList.remove('hidden');
+                } else {
+                    durasiInfo.classList.add('hidden');
+                }
+            } else {
+                durasiInfo.classList.add('hidden');
             }
         }
-    }
 
-    tglMulai.addEventListener('change', () => {
-        tglSelesai.min = tglMulai.value;
-        hitungDurasi();
-    });
-    tglSelesai.addEventListener('change', hitungDurasi);
-</script>
+        tglMulai.addEventListener('change', () => {
+            tglSelesai.min = tglMulai.value;
+            hitungDurasi();
+        });
+
+        tglSelesai.addEventListener('change', hitungDurasi);
+    </script>
 @endpush

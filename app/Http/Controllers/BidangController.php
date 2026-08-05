@@ -13,7 +13,7 @@ class BidangController extends Controller
 
     public function index()
     {
-        $bidangs = Bidang::orderBy('nama')->get();
+        $bidangs = Bidang::with('jabatan.karyawan')->get();
 
         return view('admin.bidang.index', compact('bidangs'));
     }

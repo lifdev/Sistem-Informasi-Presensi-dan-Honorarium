@@ -11,11 +11,24 @@ use App\Models\Bidang;
 
 class KaryawanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->search;
+
         $karyawan = Karyawan::with(['user', 'jabatan.bidang'])
-        ->latest()
-        ->paginate(10);
+            ->when($search, function ($query) use ($search) {
+                $query->where('nip', 'like', "%{$search}%")
+                    ->orWhere('nama', 'like', "%{$search}%")
+                    ->orWhereHas('jabatan', function ($q) use ($search) {
+                        $q->where('nama', 'like', "%{$search}%")
+                            ->orWhereHas('bidang', function ($b) use ($search) {
+                                $b->where('nama', 'like', "%{$search}%");
+                            });
+                    });
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
 
         return view('admin.karyawan.index', compact('karyawan'));
     }
@@ -52,7 +65,7 @@ class KaryawanController extends Controller
             'alamat'         => $request->alamat,
             'tanggal_masuk'  => $request->tanggal_masuk,
             'status'         => 'aktif',
-]);
+        ]);
 
         User::create([
             'name'        => $request->nama,
@@ -67,16 +80,16 @@ class KaryawanController extends Controller
     }
 
     public function edit(Karyawan $karyawan)
-{
-    $bidangs = Bidang::orderBy('nama')->get();
-    $jabatans = Jabatan::orderBy('nama')->get();
+    {
+        $bidangs = Bidang::orderBy('nama')->get();
+        $jabatans = Jabatan::orderBy('nama')->get();
 
-    return view('admin.karyawan.edit', compact(
-        'karyawan',
-        'bidangs',
-        'jabatans'
-    ));
-}
+        return view('admin.karyawan.edit', compact(
+            'karyawan',
+            'bidangs',
+            'jabatans'
+        ));
+    }
 
     public function update(Request $request, Karyawan $karyawan)
     {

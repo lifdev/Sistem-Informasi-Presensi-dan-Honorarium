@@ -1,158 +1,336 @@
 @extends('layouts.app')
 
 @section('title', 'Honorarium')
-@section('page-title', 'Manajemen Honorarium')
 
 @section('content')
 
-{{-- Form Generate --}}
+    <div class="space-y-6">
 
-<div class="card mb-3">
-    <div class="card-header bg-white fw-semibold">
-        <i class="bi bi-gear text-primary me-2"></i>Generate Honorarium
-    </div>
-    <div class="card-body">
-        <form action="{{ route('admin.honorarium.generate') }}" method="POST" class="row g-2 align-items-end">
-            @csrf
-            <div class="col-sm-4">
-                <label class="form-label fw-semibold">Bulan</label>
-                <select name="bulan" class="form-select">
-                    @foreach(range(1,12) as $b)
-                    <option value="{{ $b }}" {{ $bulan == $b ? 'selected' : '' }}>
-                        {{ DateTime::createFromFormat('!m', $b)->format('F') }}
-                    </option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-sm-4">
-                <label class="form-label fw-semibold">Tahun</label>
-                <select name="tahun" class="form-select">
-                    @foreach(range(date('Y')-2, date('Y')) as $t)
-                    <option value="{{ $t }}" {{ $tahun == $t ? 'selected' : '' }}>{{ $t }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-sm-4 d-flex gap-2">
-                <button type="submit" class="btn btn-primary w-100"
-                    onclick="return confirm('Generate honorarium untuk semua karyawan aktif?')">
-                    <i class="bi bi-lightning-charge me-1"></i>Generate
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
+        <div>
 
-{{-- Tabel Honorarium --}}
+            <h1 class="text-3xl font-bold text-slate-800 dark:text-white">
+                Manajemen Honorarium
+            </h1>
 
-<div class="card">
-    <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
-        <span class="fw-semibold">
-            <i class="bi bi-cash-stack text-success me-2"></i>
-            Honorarium —
-            {{ DateTime::createFromFormat('!m', $bulan)->format('F') }} {{ $tahun }}
-        </span>
-        <div class="d-flex gap-2">
-            @if($honorarium->isNotEmpty())
-            <form action="{{ route('admin.honorarium.finalize') }}" method="POST">
+            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                Generate dan kelola honorarium seluruh karyawan.
+            </p>
+
+        </div>
+
+        <div class="rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+
+            <div class="border-b border-slate-200 p-6 dark:border-slate-800">
+
+                <h2 class="text-lg font-semibold text-slate-800 dark:text-white">
+                    Generate Honorarium
+                </h2>
+
+            </div>
+
+            <form action="{{ route('admin.honorarium.generate') }}" method="POST" class="grid gap-5 p-6 md:grid-cols-3">
+
                 @csrf
-                <input type="hidden" name="bulan" value="{{ $bulan }}">
-                <input type="hidden" name="tahun" value="{{ $tahun }}">
-                <button type="submit" class="btn btn-success btn-sm"
-                    onclick="return confirm('Finalisasi honorarium bulan ini? Data tidak bisa diubah setelah finalisasi.')">
-                    <i class="bi bi-check-circle me-1"></i>Finalisasi
-                </button>
+
+                <div>
+
+                    <label class="mb-2 block text-sm font-medium">
+                        Bulan
+                    </label>
+
+                    <select name="bulan"
+                        class="w-full rounded-xl border border-slate-300 px-4 py-3 dark:border-slate-700 dark:bg-slate-800">
+
+                        @foreach (range(1, 12) as $b)
+                            <option value="{{ $b }}" {{ $bulan == $b ? 'selected' : '' }}>
+
+                                {{ DateTime::createFromFormat('!m', $b)->format('F') }}
+
+                            </option>
+                        @endforeach
+
+                    </select>
+
+                </div>
+
+                <div>
+
+                    <label class="mb-2 block text-sm font-medium">
+                        Tahun
+                    </label>
+
+                    <select name="tahun"
+                        class="w-full rounded-xl border border-slate-300 px-4 py-3 dark:border-slate-700 dark:bg-slate-800">
+
+                        @foreach (range(date('Y') - 2, date('Y')) as $t)
+                            <option value="{{ $t }}" {{ $tahun == $t ? 'selected' : '' }}>
+
+                                {{ $t }}
+
+                            </option>
+                        @endforeach
+
+                    </select>
+
+                </div>
+
+                <div class="flex items-end">
+
+                    <button onclick="return confirm('Generate honorarium untuk semua karyawan aktif?')"
+                        class="w-full rounded-xl bg-blue-600 px-5 py-3 font-medium text-white transition hover:bg-blue-700">
+
+                        Generate Honorarium
+
+                    </button>
+
+                </div>
+
             </form>
-            <a href="{{ route('admin.laporan.honorarium.excel', ['bulan'=>$bulan,'tahun'=>$tahun]) }}"
-                class="btn btn-outline-success btn-sm">
-                <i class="bi bi-file-earmark-excel me-1"></i>Excel
-            </a>
-            <a href="{{ route('admin.laporan.honorarium.pdf', ['bulan'=>$bulan,'tahun'=>$tahun]) }}"
-                class="btn btn-outline-danger btn-sm">
-                <i class="bi bi-file-earmark-pdf me-1"></i>PDF
-            </a>
+
+        </div>
+
+        <div
+            class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+
+            <div
+                class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 p-6 dark:border-slate-800">
+
+                <div>
+
+                    <h2 class="text-lg font-semibold text-slate-800 dark:text-white">
+
+                        Honorarium —
+                        {{ DateTime::createFromFormat('!m', $bulan)->format('F') }}
+                        {{ $tahun }}
+
+                    </h2>
+
+                </div>
+
+                <div class="flex flex-wrap gap-2">
+
+                    @if ($honorarium->isNotEmpty())
+                        <form action="{{ route('admin.honorarium.finalize') }}" method="POST">
+
+                            @csrf
+
+                            <input type="hidden" name="bulan" value="{{ $bulan }}">
+                            <input type="hidden" name="tahun" value="{{ $tahun }}">
+
+                            <button onclick="return confirm('Finalisasi honorarium bulan ini?')"
+                                class="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700">
+
+                                Finalisasi
+
+                            </button>
+
+                        </form>
+
+                        <a href="{{ route('admin.laporan.honorarium.excel', ['bulan' => $bulan, 'tahun' => $tahun]) }}"
+                            class="rounded-xl bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700">
+
+                            Excel
+
+                        </a>
+
+                        <a href="{{ route('admin.laporan.honorarium.pdf', ['bulan' => $bulan, 'tahun' => $tahun]) }}"
+                            class="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">
+
+                            PDF
+
+                        </a>
+                    @endif
+
+                </div>
+
+            </div>
+
+            <div class="overflow-x-auto">
+
+                <table class="min-w-full">
+
+                    <thead class="bg-slate-100 dark:bg-slate-800">
+
+                        <tr>
+
+                            <th class="px-6 py-4 text-left text-sm font-semibold">Karyawan</th>
+                            <th class="px-6 py-4 text-center text-sm font-semibold">Hadir</th>
+                            <th class="px-6 py-4 text-center text-sm font-semibold">Izin</th>
+                            <th class="px-6 py-4 text-center text-sm font-semibold">Sakit</th>
+                            <th class="px-6 py-4 text-center text-sm font-semibold">Alpha</th>
+                            <th class="px-6 py-4 text-right text-sm font-semibold">Gaji Pokok</th>
+                            <th class="px-6 py-4 text-right text-sm font-semibold">Tunjangan</th>
+                            <th class="px-6 py-4 text-right text-sm font-semibold">Potongan</th>
+                            <th class="px-6 py-4 text-right text-sm font-semibold">Gaji Bersih</th>
+                            <th class="px-6 py-4 text-center text-sm font-semibold">Status</th>
+                            <th class="px-6 py-4 text-center text-sm font-semibold">Aksi</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+
+                        @forelse($honorarium as $h)
+                            <tr class="hover:bg-slate-50 transition dark:hover:bg-slate-800/50">
+
+                                <td class="px-6 py-4">
+
+                                    <div class="font-medium text-slate-800 dark:text-white">
+                                        {{ $h->karyawan->nama }}
+                                    </div>
+
+                                    <div class="text-sm text-slate-500 dark:text-slate-400">
+                                        {{ $h->karyawan->jabatan?->bidang?->nama }}
+                                        •
+                                        {{ $h->karyawan->jabatan?->nama }}
+                                    </div>
+
+                                </td>
+
+                                <td class="px-6 py-4 text-center">
+                                    <span
+                                        class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                                        {{ $h->total_hadir }}
+                                    </span>
+                                </td>
+
+                                <td class="px-6 py-4 text-center">
+                                    <span
+                                        class="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-700 dark:bg-sky-900/30 dark:text-sky-300">
+                                        {{ $h->total_izin }}
+                                    </span>
+                                </td>
+
+                                <td class="px-6 py-4 text-center">
+                                    <span
+                                        class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+                                        {{ $h->total_sakit }}
+                                    </span>
+                                </td>
+
+                                <td class="px-6 py-4 text-center">
+                                    <span
+                                        class="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-300">
+                                        {{ $h->total_alpha }}
+                                    </span>
+                                </td>
+
+                                <td class="px-6 py-4 text-right">
+                                    Rp {{ number_format($h->gaji_pokok, 0, ',', '.') }}
+                                </td>
+
+                                <td class="px-6 py-4 text-right font-medium text-emerald-600">
+                                    + Rp {{ number_format($h->tunjangan, 0, ',', '.') }}
+                                </td>
+
+                                <td class="px-6 py-4 text-right font-medium text-red-600">
+                                    - Rp {{ number_format($h->total_potongan, 0, ',', '.') }}
+                                </td>
+
+                                <td class="px-6 py-4 text-right font-bold text-slate-800 dark:text-white">
+                                    Rp {{ number_format($h->gaji_bersih, 0, ',', '.') }}
+                                </td>
+
+                                <td class="px-6 py-4 text-center">
+
+                                    @if ($h->status == 'final')
+                                        <span
+                                            class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
+                                            Final
+                                        </span>
+                                    @else
+                                        <span
+                                            class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+                                            Draft
+                                        </span>
+                                    @endif
+
+                                </td>
+
+                                <td class="px-6 py-4">
+
+                                    <div class="flex justify-center gap-2">
+
+                                        <a href="{{ route('admin.honorarium.show', $h) }}"
+                                            class="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-blue-700">
+
+                                            Detail
+
+                                        </a>
+
+                                        <a href="{{ route('admin.laporan.slip', $h) }}" target="_blank"
+                                            class="rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-red-700">
+
+                                            Slip
+
+                                        </a>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td colspan="11" class="px-6 py-12 text-center">
+
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4 h-14 w-14 text-slate-300"
+                                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 8c-3.314 0-6 2.239-6 5s2.686 5 6 5 6-2.239 6-5-2.686-5-6-5zm0-5v3m0 12v3m9-9h-3M6 12H3" />
+
+                                    </svg>
+
+                                    <p class="text-slate-500 dark:text-slate-400">
+                                        Belum ada data honorarium. Klik <strong>Generate Honorarium</strong>.
+                                    </p>
+
+                                </td>
+
+                            </tr>
+                        @endforelse
+
+                    </tbody>
+
+                    @if ($honorarium->isNotEmpty())
+                        <tfoot class="border-t bg-slate-50 dark:border-slate-700 dark:bg-slate-800">
+
+                            <tr>
+
+                                <td colspan="8" class="px-6 py-4 text-right font-semibold">
+                                    Total Pengeluaran
+                                </td>
+
+                                <td class="px-6 py-4 text-right font-bold text-emerald-600">
+                                    Rp {{ number_format($honorarium->sum('gaji_bersih'), 0, ',', '.') }}
+                                </td>
+
+                                <td colspan="2"></td>
+
+                            </tr>
+
+                        </tfoot>
+                    @endif
+
+                </table>
+
+            </div>
+
+            @if ($honorarium->hasPages())
+                <div class="border-t border-slate-200 p-6 dark:border-slate-800">
+
+                    {{ $honorarium->appends(request()->query())->links() }}
+
+                </div>
             @endif
+
         </div>
+
     </div>
-    <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table table-hover mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>Karyawan</th>
-                        <th class="text-center">Hadir</th>
-                        <th class="text-center">Izin</th>
-                        <th class="text-center">Sakit</th>
-                        <th class="text-center">Alpha</th>
-                        <th class="text-end">Gaji Pokok</th>
-                        <th class="text-end">Tunjangan</th>
-                        <th class="text-end">Potongan</th>
-                        <th class="text-end">Gaji Bersih</th>
-                        <th class="text-center">Status</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($honorarium as $h)
-                    <tr>
-                        <td>
-                            <div class="fw-semibold">{{ $h->karyawan->nama }}</div>
-                            <div class="text-muted small">
-                                {{ $h->karyawan->jabatan?->bidang?->nama }}
-                                •
-                                {{ $h->karyawan->jabatan?->nama }}
-                            </div>
-                        </td>
-                        <td class="text-center"><span class="badge bg-success">{{ $h->total_hadir }}</span></td>
-                        <td class="text-center"><span class="badge bg-info">{{ $h->total_izin }}</span></td>
-                        <td class="text-center"><span class="badge bg-warning">{{ $h->total_sakit }}</span></td>
-                        <td class="text-center"><span class="badge bg-danger">{{ $h->total_alpha }}</span></td>
-                        <td class="text-end">Rp {{ number_format($h->gaji_pokok, 0, ',', '.') }}</td>
-                        <td class="text-end text-success">+ Rp {{ number_format($h->tunjangan, 0, ',', '.') }}</td>
-                        <td class="text-end text-danger">- Rp {{ number_format($h->total_potongan, 0, ',', '.') }}</td>
-                        <td class="text-end fw-bold">Rp {{ number_format($h->gaji_bersih, 0, ',', '.') }}</td>
-                        <td class="text-center">
-                            <span class="badge bg-{{ $h->status == 'final' ? 'success' : 'warning' }}">
-                                {{ ucfirst($h->status) }}
-                            </span>
-                        </td>
-                        <td>
-                            <a href="{{ route('admin.honorarium.show', $h) }}"
-                                class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-eye"></i>
-                            </a>
-                            <a href="{{ route('admin.laporan.slip', $h) }}"
-                                class="btn btn-outline-danger btn-sm" target="_blank">
-                                <i class="bi bi-printer"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="11" class="text-center text-muted py-4">
-                            <i class="bi bi-cash-stack fs-3 d-block mb-2"></i>
-                            Belum ada data. Klik <strong>Generate</strong> untuk membuat honorarium.
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-                @if($honorarium->isNotEmpty())
-                <tfoot class="table-light fw-semibold">
-                    <tr>
-                        <td colspan="8" class="text-end">Total Pengeluaran:</td>
-                        <td class="text-end text-success">
-                            Rp {{ number_format($honorarium->sum('gaji_bersih'), 0, ',', '.') }}
-                        </td>
-                        <td colspan="2"></td>
-                    </tr>
-                </tfoot>
-                @endif
-            </table>
-        </div>
-    </div>
-    @if($honorarium->hasPages())
-    <div class="card-footer bg-white">
-        {{ $honorarium->appends(request()->query())->links() }}
-    </div>
-    @endif
-</div>
+
 @endsection

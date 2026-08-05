@@ -1,192 +1,284 @@
 @extends('layouts.app')
 
 @section('title', 'Edit Karyawan')
-@section('page-title', 'Edit Karyawan')
 
 @section('content')
-<div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="card">
-            <div class="card-header bg-white fw-semibold">
-                <i class="bi bi-pencil text-warning me-2"></i>Edit Data Karyawan — {{ $karyawan->nama }}
-            </div>
-            <div class="card-body">
-                <form action="{{ route('admin.karyawan.update', $karyawan) }}" method="POST">
-                    @csrf @method('PUT')
 
-                    <h6 class="fw-bold text-muted mb-3">Data Pribadi</h6>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">NIP <span class="text-danger">*</span></label>
-                            <input type="text" name="nip"
-                                   class="form-control @error('nip') is-invalid @enderror"
-                                   value="{{ old('nip', $karyawan->nip) }}" required>
-                            @error('nip')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Nama Lengkap <span class="text-danger">*</span></label>
-                            <input type="text" name="nama"
-                                   class="form-control @error('nama') is-invalid @enderror"
-                                   value="{{ old('nama', $karyawan->nama) }}" required>
-                            @error('nama')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
+    <div class="mx-auto max-w-5xl">
+
+        <div
+            class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800">
+
+            {{-- Header --}}
+            <div class="border-b border-slate-200 px-6 py-5 dark:border-slate-700">
+
+                <div class="flex items-center gap-3">
+
+                    <div class="rounded-xl bg-amber-100 p-3 text-amber-600 dark:bg-amber-900/40 dark:text-amber-300">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
+                            stroke="currentColor" class="h-6 w-6">
+
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m16.862 4.487 1.687-1.688a2.25 2.25 0 1 1 3.182 3.182L10.582 17.13a4.5 4.5 0 0 1-1.897 1.13L6 19l.74-2.685a4.5 4.5 0 0 1 1.13-1.897L16.862 4.487Z" />
+
+                        </svg>
+
                     </div>
 
-                    <div class="row">
+                    <div>
 
-    <div class="col-md-6 mb-3">
-        <label class="form-label fw-semibold">
-            Bidang
-            <span class="text-danger">*</span>
-        </label>
+                        <h2 class="text-xl font-bold text-slate-800 dark:text-white">
+                            Edit Karyawan
+                        </h2>
 
-        <select id="bidang" class="form-select">
+                        <p class="text-sm text-slate-500">
+                            {{ $karyawan->nama }}
+                        </p>
 
-            <option value="">-- Pilih Bidang --</option>
+                    </div>
 
-            @foreach($bidangs as $bidang)
+                </div>
 
-                <option value="{{ $bidang->id }}"
-                    {{ $karyawan->jabatan->bidang_id == $bidang->id ? 'selected' : '' }}>
-
-                    {{ $bidang->nama }}
-
-                </option>
-
-            @endforeach
-
-        </select>
-
-    </div>
-
-    <div class="col-md-6 mb-3">
-
-        <label class="form-label fw-semibold">
-            Jabatan
-            <span class="text-danger">*</span>
-        </label>
-
-        <select
-            name="jabatan_id"
-            id="jabatan"
-            class="form-select @error('jabatan_id') is-invalid @enderror"
-            required>
-
-            @foreach($jabatans as $jabatan)
-
-                <option
-                    value="{{ $jabatan->id }}"
-                    data-bidang="{{ $jabatan->bidang_id }}"
-                    {{ old('jabatan_id',$karyawan->jabatan_id)==$jabatan->id?'selected':'' }}>
-
-                    {{ $jabatan->nama }}
-
-                </option>
-
-            @endforeach
-
-        </select>
-
-        @error('jabatan_id')
-            <div class="invalid-feedback">
-                {{ $message }}
             </div>
-        @enderror
 
-    </div>
+            {{-- Form --}}
+            <form action="{{ route('admin.karyawan.update', $karyawan) }}" method="POST" class="space-y-8 p-6">
 
-</div>
+                @csrf
+                @method('PUT')
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Jenis Kelamin <span class="text-danger">*</span></label>
-                            <select name="jenis_kelamin" class="form-select" required>
-                                <option value="L" {{ old('jenis_kelamin', $karyawan->jenis_kelamin) == 'L' ? 'selected' : '' }}>Laki-laki</option>
-                                <option value="P" {{ old('jenis_kelamin', $karyawan->jenis_kelamin) == 'P' ? 'selected' : '' }}>Perempuan</option>
+                {{-- Data Pribadi --}}
+                <div>
+
+                    <h3 class="mb-5 text-lg font-semibold text-slate-800 dark:text-white">
+                        Data Pribadi
+                    </h3>
+
+                    <div class="grid gap-6 md:grid-cols-2">
+
+                        <div>
+
+                            <label class="mb-2 block text-sm font-medium">
+                                NIP
+                            </label>
+
+                            <input type="text" name="nip" value="{{ old('nip', $karyawan->nip) }}"
+                                class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-500 focus:outline-none dark:border-slate-600 dark:bg-slate-900">
+
+                            @error('nip')
+                                <p class="mt-1 text-sm text-red-500">{{ $message }}</p>
+                            @enderror
+
+                        </div>
+
+                        <div>
+
+                            <label class="mb-2 block text-sm font-medium">
+                                Nama Lengkap
+                            </label>
+
+                            <input type="text" name="nama" value="{{ old('nama', $karyawan->nama) }}"
+                                class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-500 focus:outline-none dark:border-slate-600 dark:bg-slate-900">
+
+                        </div>
+
+                        <div>
+
+                            <label class="mb-2 block text-sm font-medium">
+                                Bidang
+                            </label>
+
+                            <select id="bidang"
+                                class="w-full rounded-xl border border-slate-300 px-4 py-3 dark:border-slate-600 dark:bg-slate-900">
+
+                                @foreach ($bidangs as $bidang)
+                                    <option value="{{ $bidang->id }}"
+                                        {{ $karyawan->jabatan->bidang_id == $bidang->id ? 'selected' : '' }}>
+
+                                        {{ $bidang->nama }}
+
+                                    </option>
+                                @endforeach
+
                             </select>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">No. HP</label>
-                            <input type="text" name="no_hp"
-                                   class="form-control"
-                                   value="{{ old('no_hp', $karyawan->no_hp) }}">
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Tanggal Masuk <span class="text-danger">*</span></label>
+                        </div>
+
+                        <div>
+
+                            <label class="mb-2 block text-sm font-medium">
+                                Jabatan
+                            </label>
+
+                            <select id="jabatan" name="jabatan_id"
+                                class="w-full rounded-xl border border-slate-300 px-4 py-3 dark:border-slate-600 dark:bg-slate-900">
+
+                                @foreach ($jabatans as $jabatan)
+                                    <option value="{{ $jabatan->id }}" data-bidang="{{ $jabatan->bidang_id }}"
+                                        {{ old('jabatan_id', $karyawan->jabatan_id) == $jabatan->id ? 'selected' : '' }}>
+
+                                        {{ $jabatan->nama }}
+
+                                    </option>
+                                @endforeach
+
+                            </select>
+
+                        </div>
+
+                        <div>
+
+                            <label class="mb-2 block text-sm font-medium">
+                                Jenis Kelamin
+                            </label>
+
+                            <select name="jenis_kelamin"
+                                class="w-full rounded-xl border border-slate-300 px-4 py-3 dark:border-slate-600 dark:bg-slate-900">
+
+                                <option value="L"
+                                    {{ old('jenis_kelamin', $karyawan->jenis_kelamin) == 'L' ? 'selected' : '' }}>
+                                    Laki-laki
+                                </option>
+
+                                <option value="P"
+                                    {{ old('jenis_kelamin', $karyawan->jenis_kelamin) == 'P' ? 'selected' : '' }}>
+                                    Perempuan
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div>
+
+                            <label class="mb-2 block text-sm font-medium">
+                                No HP
+                            </label>
+
+                            <input type="text" name="no_hp" value="{{ old('no_hp', $karyawan->no_hp) }}"
+                                class="w-full rounded-xl border border-slate-300 px-4 py-3 dark:border-slate-600 dark:bg-slate-900">
+
+                        </div>
+
+                        <div>
+
+                            <label class="mb-2 block text-sm font-medium">
+                                Tanggal Masuk
+                            </label>
+
                             <input type="date" name="tanggal_masuk"
-                                   class="form-control"
-                                   value="{{ old('tanggal_masuk', $karyawan->tanggal_masuk->format('Y-m-d')) }}" required>
+                                value="{{ old('tanggal_masuk', $karyawan->tanggal_masuk->format('Y-m-d')) }}"
+                                class="w-full rounded-xl border border-slate-300 px-4 py-3 dark:border-slate-600 dark:bg-slate-900">
+
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label fw-semibold">Alamat</label>
-                            <input type="text" name="alamat"
-                                   class="form-control"
-                                   value="{{ old('alamat', $karyawan->alamat) }}">
+
+                        <div>
+
+                            <label class="mb-2 block text-sm font-medium">
+                                Status
+                            </label>
+
+                            <select name="status"
+                                class="w-full rounded-xl border border-slate-300 px-4 py-3 dark:border-slate-600 dark:bg-slate-900">
+
+                                <option value="aktif" {{ old('status', $karyawan->status) == 'aktif' ? 'selected' : '' }}>
+                                    Aktif
+                                </option>
+
+                                <option value="nonaktif"
+                                    {{ old('status', $karyawan->status) == 'nonaktif' ? 'selected' : '' }}>
+                                    Nonaktif
+                                </option>
+
+                            </select>
+
                         </div>
+
                     </div>
 
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold">Status</label>
-                        <select name="status" class="form-select" required>
-                            <option value="aktif"    {{ old('status', $karyawan->status) == 'aktif'    ? 'selected' : '' }}>Aktif</option>
-                            <option value="nonaktif" {{ old('status', $karyawan->status) == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
-                        </select>
+                    <div class="mt-6">
+
+                        <label class="mb-2 block text-sm font-medium">
+                            Alamat
+                        </label>
+
+                        <textarea name="alamat" rows="3"
+                            class="w-full rounded-xl border border-slate-300 px-4 py-3 dark:border-slate-600 dark:bg-slate-900">{{ old('alamat', $karyawan->alamat) }}</textarea>
+
                     </div>
 
-                    <div class="alert alert-info small">
-                        <i class="bi bi-info-circle me-1"></i>
-                        Untuk mengubah email, password, atau role — silakan edit langsung di database atau tambahkan fitur tersebut.
-                    </div>
+                </div>
 
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-warning px-4">
-                            <i class="bi bi-save me-2"></i>Update Data
-                        </button>
-                        <a href="{{ route('admin.karyawan.index') }}" class="btn btn-outline-secondary px-4">
-                            Batal
-                        </a>
-                    </div>
-                </form>
-            </div>
+                {{-- Info --}}
+                <div
+                    class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+
+                    Email, password, dan role belum dapat diubah melalui halaman ini.
+
+                </div>
+
+                {{-- Button --}}
+                <div class="flex gap-3">
+
+                    <button
+                        class="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-6 py-3 font-medium text-white transition hover:bg-amber-600">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
+                            stroke="currentColor" class="h-5 w-5">
+
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M16.862 5.487A2.25 2.25 0 1 1 20.045 8.67L10.5 18.216 6 19.5l1.284-4.5 9.578-9.513Z" />
+
+                        </svg>
+
+                        Update Data
+
+                    </button>
+
+                    <a href="{{ route('admin.karyawan.index') }}"
+                        class="rounded-xl border border-slate-300 px-6 py-3 font-medium transition hover:bg-slate-100 dark:border-slate-600 dark:hover:bg-slate-700">
+
+                        Batal
+
+                    </a>
+
+                </div>
+
+            </form>
+
         </div>
+
     </div>
-</div>
-@push('scripts')
-<script>
 
-const bidang=document.getElementById('bidang');
-const jabatan=document.getElementById('jabatan');
+    @push('scripts')
+        <script>
+            const bidang = document.getElementById('bidang');
+            const jabatan = document.getElementById('jabatan');
 
-function filterJabatan(){
+            function filterJabatan() {
 
-    let bidangId=bidang.value;
+                let bidangId = bidang.value;
 
-    [...jabatan.options].forEach(function(option){
+                [...jabatan.options].forEach(option => {
 
-        if(option.value==""){
-            option.hidden=false;
-            return;
-        }
+                    if (option.dataset.bidang === undefined) return;
 
-        option.hidden=option.dataset.bidang!=bidangId;
+                    option.hidden = option.dataset.bidang != bidangId;
 
-    });
+                });
 
-}
+            }
 
-filterJabatan();
+            filterJabatan();
 
-bidang.addEventListener('change',function(){
+            bidang.addEventListener('change', () => {
 
-    filterJabatan();
+                filterJabatan();
+                jabatan.value = "";
 
-    jabatan.value="";
+            });
+        </script>
+    @endpush
 
-});
-
-</script>
-@endpush
 @endsection
