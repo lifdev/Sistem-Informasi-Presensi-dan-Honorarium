@@ -23,9 +23,16 @@ class HonorariumController extends Controller
             ->where("tahun", $tahun)
             ->paginate(20);
 
+        if (Auth::user()->role === 'pimpinan') {
+            return view(
+                'pimpinan.honorarium.index',
+                compact('honorarium', 'bulan', 'tahun')
+            );
+        }
+
         return view(
-            "admin.honorarium.index",
-            compact("honorarium", "bulan", "tahun"),
+            'admin.honorarium.index',
+            compact('honorarium', 'bulan', 'tahun')
         );
     }
 
@@ -89,12 +96,16 @@ class HonorariumController extends Controller
             );
         }
 
+        $route = Auth::user()->role === 'pimpinan'
+            ? 'pimpinan.honorarium.index'
+            : 'admin.honorarium.index';
+
         return redirect()
-            ->route("admin.honorarium.index", [
-                "bulan" => $bulan,
-                "tahun" => $tahun,
+            ->route($route, [
+                'bulan' => $bulan,
+                'tahun' => $tahun,
             ])
-            ->with("success", "Honorarium berhasil digenerate.");
+            ->with('success', 'Honorarium berhasil digenerate.');
     }
 
     // Finalisasi honorarium
@@ -118,8 +129,13 @@ class HonorariumController extends Controller
     // Detail honorarium karyawan
     public function show(Honorarium $honorarium)
     {
-        $honorarium->load("karyawan");
-        return view("admin.honorarium.show", compact("honorarium"));
+        $honorarium->load('karyawan');
+
+        if (Auth::user()->role === 'pimpinan') {
+            return view('pimpinan.honorarium.show', compact('honorarium'));
+        }
+
+        return view('admin.honorarium.show', compact('honorarium'));
     }
 
     // Honorarium karyawan sendiri

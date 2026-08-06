@@ -61,7 +61,7 @@ Route::middleware(["auth", "role:admin"])
 
         // Jabatan
         Route::resource('jabatan', JabatanController::class);
-        
+
         // Izin
         Route::prefix("izin")
             ->name("izin.")
@@ -195,9 +195,60 @@ Route::middleware(["auth", "role:pimpinan"])
         ])->name("presensi.rekap");
 
         // Lihat honorarium
-        Route::get("/honorarium", [HonorariumController::class, "index"])->name(
-            "honorarium.index",
-        );
+        Route::get("/honorarium", [HonorariumController::class, "index"])
+            ->name("honorarium.index");
+
+        // Generate honorarium
+        Route::post("/honorarium/generate", [
+            HonorariumController::class,
+            "generate",
+        ])->name("honorarium.generate");
+
+        // Finalisasi honorarium
+        Route::post("/honorarium/finalize", [
+            HonorariumController::class,
+            "finalize",
+        ])->name("honorarium.finalize");
+
+        // Detail honorarium
+        Route::get("/honorarium/{honorarium}", [
+            HonorariumController::class,
+            "show",
+        ])->name("honorarium.show");
+
+        // Laporan & Ekspor
+        Route::prefix("laporan")
+            ->name("laporan.")
+            ->group(function () {
+
+                // Presensi
+                Route::get("/presensi/export-excel", [
+                    LaporanController::class,
+                    "exportPresensiExcel",
+                ])->name("presensi.excel");
+
+                Route::get("/presensi/export-pdf", [
+                    LaporanController::class,
+                    "exportPresensiPdf",
+                ])->name("presensi.pdf");
+
+                // Honorarium
+                Route::get("/honorarium/export-excel", [
+                    LaporanController::class,
+                    "exportHonorariumExcel",
+                ])->name("honorarium.excel");
+
+                Route::get("/honorarium/export-pdf", [
+                    LaporanController::class,
+                    "exportHonorariumPdf",
+                ])->name("honorarium.pdf");
+
+                // Slip
+                Route::get("/slip/{honorarium}", [
+                    LaporanController::class,
+                    "slipGaji",
+                ])->name("slip");
+            });
     });
 
 // ============================================================

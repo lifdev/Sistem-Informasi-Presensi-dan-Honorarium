@@ -28,7 +28,7 @@
 
         </div>
 
-        <form action="{{ route('admin.honorarium.generate') }}" method="POST" class="grid gap-5 p-6 md:grid-cols-3">
+        <form action="{{ route('pimpinan.honorarium.generate') }}" method="POST" class="grid gap-5 p-6 md:grid-cols-3">
 
             @csrf
 
@@ -110,7 +110,7 @@
             <div class="flex flex-wrap gap-2">
 
                 @if ($honorarium->isNotEmpty())
-                <form action="{{ route('admin.honorarium.finalize') }}" method="POST">
+                <form action="{{ route('pimpinan.honorarium.finalize') }}" method="POST">
 
                     @csrf
 
@@ -126,14 +126,14 @@
 
                 </form>
 
-                <a href="{{ route('admin.laporan.honorarium.excel', ['bulan' => $bulan, 'tahun' => $tahun]) }}"
+                <a href="{{ route('pimpinan.laporan.honorarium.excel', ['bulan' => $bulan, 'tahun' => $tahun]) }}"
                     class="rounded-xl bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700">
 
                     Excel
 
                 </a>
 
-                <a href="{{ route('admin.laporan.honorarium.pdf', ['bulan' => $bulan, 'tahun' => $tahun]) }}"
+                <a href="{{ route('pimpinan.laporan.honorarium.pdf', ['bulan' => $bulan, 'tahun' => $tahun]) }}"
                     class="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">
 
                     PDF
@@ -252,14 +252,14 @@
 
                             <div class="flex justify-center gap-2">
 
-                                <a href="{{ route('admin.honorarium.show', $h) }}"
+                                <a href="{{ route('pimpinan.honorarium.show', $h) }}"
                                     class="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-blue-700">
 
                                     Detail
 
                                 </a>
 
-                                <a href="{{ route('admin.laporan.slip', $h) }}" target="_blank"
+                                <a href="{{ route('pimpinan.laporan.slip', $h) }}" target="_blank"
                                     class="rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-red-700">
 
                                     Slip

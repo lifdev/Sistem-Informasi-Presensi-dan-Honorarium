@@ -39,15 +39,31 @@ class DashboardController extends Controller
         $bulan     = $today->month;
         $tahun     = $today->year;
 
-        $rekap = Presensi::whereMonth('tanggal', $bulan)
-            ->whereYear('tanggal', $tahun)
-            ->selectRaw('status, COUNT(*) as total')
-            ->groupBy('status')
-            ->pluck('total', 'status');
+        $totalKaryawan = Karyawan::where('status', 'aktif')->count();
+        $hadirHariIni = Presensi::whereDate('tanggal', $today)
+            ->where('status', 'hadir')
+            ->count();
 
-        $izinPending = Izin::where('status', 'pending')->with('karyawan')->latest()->take(5)->get();
+        $totalIzinPending = Izin::where('status', 'pending')->count();
 
-        return view('pimpinan.dashboard', compact('rekap', 'izinPending'));
+        $honorariumDraft = Honorarium::where('bulan', $bulan)
+            ->where('tahun', $tahun)
+            ->where('status', 'draft')
+            ->count();
+
+        $izinPending = Izin::where('status', 'pending')
+            ->with('karyawan')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('pimpinan.dashboard', compact(
+            'totalKaryawan',
+            'hadirHariIni',
+            'totalIzinPending',
+            'honorariumDraft',
+            'izinPending'
+        ));
     }
 
     // Dashboard Karyawan

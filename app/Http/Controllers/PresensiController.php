@@ -24,7 +24,7 @@ class PresensiController extends Controller
             ->first();
 
         $lokasi    = PengaturanLokasi::where('aktif', true)->first();
-        $jamKerja = \App\Models\PengaturanJam::aktif(); 
+        $jamKerja = \App\Models\PengaturanJam::aktif();
 
         return view('karyawan.presensi.index', compact('presensi', 'lokasi', 'today', 'jamKerja'));
     }
@@ -71,8 +71,10 @@ class PresensiController extends Controller
             $mulai     = $jamSetting->jam_masuk_mulai;
             $selesai   = $jamSetting->jam_masuk_selesai;
             if ($now < $mulai || $now > $selesai) {
-                return back()->with('error',
-                    "Absen masuk hanya bisa dilakukan antara {$mulai} - {$selesai}.");
+                return back()->with(
+                    'error',
+                    "Absen masuk hanya bisa dilakukan antara {$mulai} - {$selesai}."
+                );
             }
         }
 
@@ -119,8 +121,10 @@ class PresensiController extends Controller
             $mulai   = $jamSetting->jam_pulang_mulai;
             $selesai = $jamSetting->jam_pulang_selesai;
             if ($now < $mulai || $now > $selesai) {
-                return back()->with('error',
-                    "Absen pulang hanya bisa dilakukan antara {$mulai} - {$selesai}.");
+                return back()->with(
+                    'error',
+                    "Absen pulang hanya bisa dilakukan antara {$mulai} - {$selesai}."
+                );
             }
         }
 
@@ -133,11 +137,11 @@ class PresensiController extends Controller
         return back()->with('success', 'Absen pulang berhasil dicatat.');
     }
 
-    // Rekap presensi (Admin)
+    // Rekap presensi (Admin & Pimpinan)
     public function rekap(Request $request)
     {
-        $bulan    = $request->bulan ?? Carbon::now()->month;
-        $tahun    = $request->tahun ?? Carbon::now()->year;
+        $bulan = $request->bulan ?? Carbon::now()->month;
+        $tahun = $request->tahun ?? Carbon::now()->year;
 
         $presensi = Presensi::with('karyawan')
             ->whereMonth('tanggal', $bulan)
@@ -147,7 +151,17 @@ class PresensiController extends Controller
 
         $karyawan = Karyawan::where('status', 'aktif')->get();
 
-        return view('admin.presensi.rekap', compact('presensi', 'karyawan', 'bulan', 'tahun'));
+        if (Auth::user()->role === 'pimpinan') {
+            return view(
+                'pimpinan.presensi.rekap',
+                compact('presensi', 'karyawan', 'bulan', 'tahun')
+            );
+        }
+
+        return view(
+            'admin.presensi.rekap',
+            compact('presensi', 'karyawan', 'bulan', 'tahun')
+        );
     }
 
     // Riwayat presensi karyawan sendiri
