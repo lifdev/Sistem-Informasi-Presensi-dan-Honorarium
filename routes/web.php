@@ -12,6 +12,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\BidangController;
 use App\Http\Controllers\Admin\JabatanController;
 use App\Http\Controllers\KalenderKerjaController;
+use App\Http\Controllers\ProfileController;
 
 // ============================================================
 // AUTH ROUTES (Guest only)
@@ -28,6 +29,20 @@ Route::middleware("guest")->group(function () {
 Route::post("/logout", [LoginController::class, "logout"])
     ->middleware("auth")
     ->name("logout");
+
+// ============================================================
+// PROFILE ROUTES (semua role: admin, pimpinan, karyawan)
+// ============================================================
+
+Route::middleware(["auth"])
+    ->prefix("profile")
+    ->name("profile.")
+    ->group(function () {
+        Route::get("/", [ProfileController::class, "edit"])->name("edit");
+        Route::patch("/", [ProfileController::class, "update"])->name(
+            "update",
+        );
+    });
 
 // ============================================================
 // ADMIN ROUTES
@@ -268,19 +283,14 @@ Route::middleware(["auth", "role:pimpinan"])
     });
 
 // ============================================================
-// KARYAWAN ROUTES
+// FITUR SELF-SERVICE KARYAWAN (bisa diakses karyawan, admin, pimpinan
+// karena admin & pimpinan juga tercatat sebagai karyawan)
 // ============================================================
 
-Route::middleware(["auth", "role:karyawan"])
+Route::middleware(["auth", "role:karyawan,admin,pimpinan"])
     ->prefix("karyawan")
     ->name("karyawan.")
     ->group(function () {
-        // Dashboard
-        Route::get("/dashboard", [
-            DashboardController::class,
-            "karyawan",
-        ])->name("dashboard");
-
         // Presensi
         Route::prefix("presensi")
             ->name("presensi.")
@@ -314,8 +324,23 @@ Route::middleware(["auth", "role:karyawan"])
                 );
             });
 
-        // Honorarium
+        // Honorarium (milik sendiri)
         Route::get("/honorarium", [HonorariumController::class, "milik"])->name(
             "honorarium.index",
         );
+    });
+
+// ============================================================
+// KARYAWAN ROUTES (khusus role karyawan)
+// ============================================================
+
+Route::middleware(["auth", "role:karyawan"])
+    ->prefix("karyawan")
+    ->name("karyawan.")
+    ->group(function () {
+        // Dashboard
+        Route::get("/dashboard", [
+            DashboardController::class,
+            "karyawan",
+        ])->name("dashboard");
     });

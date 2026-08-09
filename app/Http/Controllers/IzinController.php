@@ -64,8 +64,12 @@ class IzinController extends Controller
     // Daftar izin pending (Pimpinan/Admin)
     public function approval()
     {
+        $user = Auth::user();
+
         $izin = Izin::with('karyawan')
             ->where('status', 'pending')
+            // Jangan tampilkan izin milik sendiri di daftar approval
+            ->where('karyawan_id', '!=', $user->karyawan?->id)
             ->latest()->paginate(10);
 
         return view('pimpinan.izin.approval', compact('izin'));
@@ -74,6 +78,13 @@ class IzinController extends Controller
     // Setujui izin
     public function approve(Izin $izin)
     {
+        $user = Auth::user();
+
+        // Cegah approve izin milik sendiri
+        if ($user->karyawan && $izin->karyawan_id === $user->karyawan->id) {
+            return back()->with('error', 'Anda tidak dapat menyetujui izin milik Anda sendiri.');
+        }
+
         $izin->update([
             'status'        => 'disetujui',
             'disetujui_oleh' => Auth::id(),
@@ -89,6 +100,13 @@ class IzinController extends Controller
     // Tolak izin
     public function reject(Izin $izin)
     {
+        $user = Auth::user();
+
+        // Cegah reject izin milik sendiri
+        if ($user->karyawan && $izin->karyawan_id === $user->karyawan->id) {
+            return back()->with('error', 'Anda tidak dapat menolak izin milik Anda sendiri.');
+        }
+
         $izin->update([
             'status'            => 'ditolak',
             'disetujui_oleh'    => Auth::id(),

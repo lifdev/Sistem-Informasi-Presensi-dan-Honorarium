@@ -36,7 +36,7 @@
         </button>
 
         {{-- User --}}
-        <div class="flex items-center gap-3">
+        <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 rounded-lg transition hover:opacity-80">
             <div class="text-right">
                 <p class="font-semibold text-slate-800 dark:text-white">
                     {{ auth()->user()->name }}
@@ -48,6 +48,6 @@
             <div class="flex h-11 w-11 items-center justify-center rounded-full bg-blue-600 font-bold text-white">
                 {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
             </div>
-        </div>
+        </a>
     </div>
 </header>

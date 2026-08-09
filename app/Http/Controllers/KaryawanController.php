@@ -102,6 +102,7 @@ class KaryawanController extends Controller
             'alamat'        => 'nullable|string',
             'tanggal_masuk' => 'required|date',
             'status'        => 'required|in:aktif,nonaktif',
+            'role'          => 'nullable|in:admin,karyawan,pimpinan',
         ]);
 
         $karyawan->update([
@@ -114,6 +115,18 @@ class KaryawanController extends Controller
             'tanggal_masuk'  => $request->tanggal_masuk,
             'status'         => $request->status,
         ]);
+
+        // Update role akun terkait (kalau ada dan diisi di form)
+        if ($request->filled('role') && $karyawan->user) {
+            // Cegah admin mengubah role akun miliknya sendiri
+            // (mencegah admin tidak sengaja mengunci akses admin sendiri)
+            if ($karyawan->user->id === auth()->id()) {
+                return redirect()->route('admin.karyawan.index')
+                    ->with('error', 'Anda tidak dapat mengubah role akun Anda sendiri.');
+            }
+
+            $karyawan->user->update(['role' => $request->role]);
+        }
 
         return redirect()->route('admin.karyawan.index')
             ->with('success', 'Data karyawan berhasil diperbarui.');
