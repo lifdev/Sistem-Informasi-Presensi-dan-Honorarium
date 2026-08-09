@@ -10,6 +10,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PengaturanJam;
 use App\Models\KalenderKerja;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PresensiController extends Controller
 {
@@ -36,6 +38,7 @@ class PresensiController extends Controller
         $request->validate([
             'latitude'  => 'required|numeric',
             'longitude' => 'required|numeric',
+            'foto'      => 'required|string|starts_with:data:image/',
         ]);
 
         $user = Auth::user();
@@ -89,16 +92,54 @@ class PresensiController extends Controller
             }
         }
 
+        // Simpan foto selfie (sudah ada watermark jam & koordinat dari sisi client)
+        $fotoPath = $this->simpanFotoBase64($request->foto, $karyawan->id);
+
+        if (!$fotoPath) {
+            return back()->with('error', 'Foto absen gagal diproses. Silakan coba lagi.');
+        }
+
         Presensi::create([
             'karyawan_id' => $karyawan->id,
             'tanggal'     => $today,
             'jam_masuk'   => Carbon::now()->format('H:i:s'),
             'lat_masuk'   => $request->latitude,
             'lng_masuk'   => $request->longitude,
+            'foto_masuk'  => $fotoPath,
             'status'      => 'hadir',
         ]);
 
         return back()->with('success', 'Absen masuk berhasil dicatat.');
+    }
+
+    // Decode foto base64 (data:image/...;base64,....) hasil capture kamera & simpan ke storage
+    private function simpanFotoBase64(string $base64Image, int $karyawanId): ?string
+    {
+        try {
+            if (!preg_match('/^data:image\/(png|jpe?g|webp);base64,(.+)$/', $base64Image, $matches)) {
+                return null;
+            }
+
+            $extension = $matches[1] === 'jpeg' ? 'jpg' : $matches[1];
+            $data      = base64_decode($matches[2]);
+
+            if ($data === false || strlen($data) < 100) {
+                return null;
+            }
+
+            // Batasi ukuran file maksimal 5MB untuk mencegah penyalahgunaan
+            if (strlen($data) > 5 * 1024 * 1024) {
+                return null;
+            }
+
+            $filename = 'presensi/masuk/' . $karyawanId . '_' . Carbon::now()->format('Ymd_His') . '_' . Str::random(6) . '.' . $extension;
+
+            Storage::disk('public')->put($filename, $data);
+
+            return $filename;
+        } catch (\Throwable $e) {
+            return null;
+        }
     }
 
     // Rekap presensi (Admin & Pimpinan)

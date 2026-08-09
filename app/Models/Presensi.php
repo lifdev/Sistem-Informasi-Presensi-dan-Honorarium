@@ -15,6 +15,7 @@ class Presensi extends Model
         'jam_masuk',
         'lat_masuk',
         'lng_masuk',
+        'foto_masuk',
         'status',
         'keterangan',
     ];
@@ -24,6 +25,12 @@ class Presensi extends Model
         'lat_masuk' => 'float',
         'lng_masuk' => 'float',
     ];
+
+    // Accessor: URL publik foto absen masuk
+    public function getFotoMasukUrlAttribute(): ?string
+    {
+        return $this->foto_masuk ? asset('storage/' . $this->foto_masuk) : null;
+    }
 
     // Relasi ke Karyawan
     public function karyawan(): BelongsTo

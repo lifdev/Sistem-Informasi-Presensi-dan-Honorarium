@@ -64,6 +64,7 @@
                 <thead class="bg-slate-50 dark:bg-slate-800">
                     <tr>
                         <th class="px-4 py-3 pl-6 text-sm font-semibold text-slate-600 dark:text-slate-300">Tanggal</th>
+                        <th class="px-4 py-3 text-sm font-semibold text-slate-600 dark:text-slate-300">Foto</th>
                         <th class="px-4 py-3 text-sm font-semibold text-slate-600 dark:text-slate-300">Masuk</th>
                         <th class="px-4 py-3 text-sm font-semibold text-slate-600 dark:text-slate-300">Status</th>
                         <th class="px-4 py-3 text-sm font-semibold text-slate-600 dark:text-slate-300">Keterangan</th>
@@ -90,6 +91,17 @@
                             <small class="text-slate-500 dark:text-slate-400">
                                 {{ $p->tanggal->translatedFormat('l') }}
                             </small>
+                        </td>
+
+                        <td class="px-4 py-3">
+                            @if ($p->foto_masuk)
+                            <a href="{{ $p->foto_masuk_url }}" target="_blank" rel="noopener">
+                                <img src="{{ $p->foto_masuk_url }}" alt="Foto absen"
+                                    class="h-12 w-12 rounded-lg object-cover ring-1 ring-slate-200 dark:ring-slate-700">
+                            </a>
+                            @else
+                            <span class="text-slate-400 dark:text-slate-500">-</span>
+                            @endif
                         </td>
 
                         <td class="px-4 py-3">
@@ -121,7 +133,7 @@
                     @empty
 
                     <tr>
-                        <td colspan="4">
+                        <td colspan="5">
                             <div class="py-16 text-center">
                                 <svg class="mx-auto mb-3 h-16 w-16 text-slate-300 dark:text-slate-600"
                                     fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2">

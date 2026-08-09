@@ -108,6 +108,57 @@
             </div>
         </div>
 
+        {{-- Kamera Selfie --}}
+        @if (!$presensi || !$presensi->jam_masuk)
+        <div
+            class="mb-4 overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-700">
+            <div
+                class="flex items-center justify-between border-b border-slate-200 px-5 py-4 font-semibold text-slate-800 dark:border-slate-700 dark:text-white">
+                <span class="flex items-center gap-2">
+                    <svg class="h-5 w-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="1.8">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.113-1.132.178C3.046 7.6 2.25 8.507 2.25 9.574v9.176c0 1.24 1.01 2.25 2.25 2.25h15c1.24 0 2.25-1.01 2.25-2.25V9.574c0-1.067-.796-1.974-1.803-2.166a48.756 48.756 0 00-1.132-.178 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.041 48.774 48.774 0 00-5.324 0 2.192 2.192 0 00-1.736 1.041l-.822 1.316z" />
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+                    </svg>
+                    Foto Selfie Absen
+                </span>
+                <span id="status-foto"
+                    class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                    Belum ambil foto
+                </span>
+            </div>
+
+            <div class="p-5">
+                <div class="relative mx-auto max-w-sm overflow-hidden rounded-xl bg-slate-900" style="aspect-ratio: 3/4;">
+                    <video id="video-cam" autoplay playsinline muted class="h-full w-full object-cover"></video>
+                    <img id="preview-foto" class="hidden h-full w-full object-cover" alt="Preview foto selfie">
+                </div>
+                <canvas id="canvas-cam" class="hidden"></canvas>
+
+                <p id="camera-error" class="mt-2 hidden text-center text-sm text-red-600 dark:text-red-400"></p>
+
+                <div class="mt-3 flex justify-center gap-3">
+                    <button type="button" id="btn-ambil-foto"
+                        class="flex items-center justify-center gap-2 rounded-xl bg-slate-700 px-5 py-2.5 font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.113-1.132.178C3.046 7.6 2.25 8.507 2.25 9.574v9.176c0 1.24 1.01 2.25 2.25 2.25h15c1.24 0 2.25-1.01 2.25-2.25V9.574c0-1.067-.796-1.974-1.803-2.166a48.756 48.756 0 00-1.132-.178 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.041 48.774 48.774 0 00-5.324 0 2.192 2.192 0 00-1.736 1.041l-.822 1.316z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
+                        </svg>
+                        Ambil Foto
+                    </button>
+                    <button type="button" id="btn-ulang-foto"
+                        class="hidden items-center justify-center gap-2 rounded-xl border border-slate-300 px-5 py-2.5 font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800">
+                        Ambil Ulang
+                    </button>
+                </div>
+            </div>
+        </div>
+        @endif
+
         {{-- Tombol Absen --}}
         <div>
             @if (!$presensi || !$presensi->jam_masuk)
@@ -115,6 +166,7 @@
                 @csrf
                 <input type="hidden" name="latitude" id="lat-masuk">
                 <input type="hidden" name="longitude" id="lng-masuk">
+                <input type="hidden" name="foto" id="foto-masuk">
 
                 <button type="submit" id="btn-masuk"
                     class="flex w-full items-center justify-center rounded-xl bg-blue-600 py-3 text-lg font-semibold text-white transition hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
@@ -128,6 +180,9 @@
 
                     Absen Masuk
                 </button>
+                <p id="hint-belum-lengkap" class="mt-2 text-center text-xs text-slate-400 dark:text-slate-500">
+                    Pastikan lokasi dalam radius kantor &amp; foto selfie sudah diambil.
+                </p>
             </form>
             @else
             <div
@@ -203,6 +258,22 @@
     }
 
     let userMarker = null;
+    let dalamRadius = false;
+    let fotoDiambil = false;
+    let lastLat = null;
+    let lastLng = null;
+
+    // Update state tombol absen: aktif hanya jika dalam radius DAN foto sudah diambil
+    function updateTombolAbsen() {
+        const btnM = document.getElementById('btn-masuk');
+        if (btnM) {
+            btnM.disabled = !(dalamRadius && fotoDiambil);
+        }
+        const hint = document.getElementById('hint-belum-lengkap');
+        if (hint) {
+            hint.classList.toggle('hidden', dalamRadius && fotoDiambil);
+        }
+    }
 
     // Deteksi GPS
     if (navigator.geolocation) {
@@ -210,6 +281,9 @@
             const lat = pos.coords.latitude;
             const lng = pos.coords.longitude;
             const jarak = Math.round(hitungJarak(lat, lng, kantorLat, kantorLng));
+
+            lastLat = lat;
+            lastLng = lng;
 
             document.getElementById('lat-val').textContent = lat.toFixed(6);
             document.getElementById('lng-val').textContent = lng.toFixed(6);
@@ -231,19 +305,15 @@
                 })
             }).addTo(map).bindPopup('Lokasi Anda');
 
-            // Aktifkan tombol & update status
-            const dlmRadius = jarak <= radius;
+            // Update status radius
+            dalamRadius = jarak <= radius;
             const statusEl = document.getElementById('status-gps');
-            statusEl.textContent = dlmRadius ? '✓ Dalam radius kantor' : `✗ Di luar radius (${jarak}m)`;
-            statusEl.className = dlmRadius ?
+            statusEl.textContent = dalamRadius ? '✓ Dalam radius kantor' : `✗ Di luar radius (${jarak}m)`;
+            statusEl.className = dalamRadius ?
                 'rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700' :
                 'rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700';
 
-            const btnM = document.getElementById('btn-masuk');
-
-            if (btnM) {
-                btnM.disabled = !dlmRadius;
-            }
+            updateTombolAbsen();
 
         }, err => {
             const statusEl = document.getElementById('status-gps');
@@ -253,6 +323,154 @@
             enableHighAccuracy: true,
             maximumAge: 10000,
             timeout: 10000
+        });
+    }
+
+    // ============================================================
+    // Kamera Selfie + Watermark (jam & koordinat)
+    // ============================================================
+    const videoEl = document.getElementById('video-cam');
+    const canvasEl = document.getElementById('canvas-cam');
+    const previewEl = document.getElementById('preview-foto');
+    const btnAmbil = document.getElementById('btn-ambil-foto');
+    const btnUlang = document.getElementById('btn-ulang-foto');
+    const statusFoto = document.getElementById('status-foto');
+    const cameraError = document.getElementById('camera-error');
+    const fotoInput = document.getElementById('foto-masuk');
+
+    let cameraStream = null;
+
+    async function mulaiKamera() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            tampilkanErrorKamera('Browser tidak mendukung akses kamera.');
+            return;
+        }
+        try {
+            cameraStream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: 'user'
+                },
+                audio: false
+            });
+            if (videoEl) {
+                videoEl.srcObject = cameraStream;
+            }
+        } catch (err) {
+            tampilkanErrorKamera('Tidak bisa mengakses kamera. Izinkan akses kamera pada browser Anda.');
+        }
+    }
+
+    function tampilkanErrorKamera(pesan) {
+        if (cameraError) {
+            cameraError.textContent = pesan;
+            cameraError.classList.remove('hidden');
+        }
+        if (btnAmbil) btnAmbil.disabled = true;
+    }
+
+    function formatWatermarkWaktu() {
+        const now = new Date();
+        return now.toLocaleDateString('id-ID', {
+            weekday: 'long',
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+        }) + ' ' + now.toLocaleTimeString('id-ID', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+    }
+
+    function ambilFoto() {
+        if (!videoEl || !videoEl.videoWidth) return;
+
+        canvasEl.width = videoEl.videoWidth;
+        canvasEl.height = videoEl.videoHeight;
+        const ctx = canvasEl.getContext('2d');
+
+        // Mirror horizontal supaya sesuai preview (selfie)
+        ctx.translate(canvasEl.width, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(videoEl, 0, 0, canvasEl.width, canvasEl.height);
+        ctx.setTransform(1, 0, 0, 1, 0, 0); // reset transform
+
+        // Susun teks watermark
+        const baris1 = formatWatermarkWaktu();
+        const lat = lastLat !== null ? lastLat.toFixed(6) : '-';
+        const lng = lastLng !== null ? lastLng.toFixed(6) : '-';
+        const baris2 = `Lat: ${lat}, Lng: ${lng}`;
+
+        const fontSize = Math.max(14, Math.round(canvasEl.width / 28));
+        ctx.font = `600 ${fontSize}px sans-serif`;
+        const paddingX = 14;
+        const lineHeight = fontSize * 1.4;
+        const boxHeight = lineHeight * 2 + 16;
+
+        // Background semi transparan di bawah foto
+        ctx.fillStyle = 'rgba(0,0,0,0.55)';
+        ctx.fillRect(0, canvasEl.height - boxHeight, canvasEl.width, boxHeight);
+
+        // Teks watermark
+        ctx.fillStyle = '#ffffff';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(baris1, paddingX, canvasEl.height - boxHeight + lineHeight * 0.5 + 8);
+        ctx.fillText(baris2, paddingX, canvasEl.height - boxHeight + lineHeight * 1.5 + 8);
+
+        const dataUrl = canvasEl.toDataURL('image/jpeg', 0.85);
+
+        if (fotoInput) fotoInput.value = dataUrl;
+        if (previewEl) {
+            previewEl.src = dataUrl;
+            previewEl.classList.remove('hidden');
+        }
+        if (videoEl) videoEl.classList.add('hidden');
+
+        fotoDiambil = true;
+
+        if (statusFoto) {
+            statusFoto.textContent = '✓ Foto siap';
+            statusFoto.className = 'rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700';
+        }
+
+        if (btnAmbil) btnAmbil.classList.add('hidden');
+        if (btnUlang) btnUlang.classList.remove('hidden');
+
+        updateTombolAbsen();
+    }
+
+    function ambilUlangFoto() {
+        fotoDiambil = false;
+        if (fotoInput) fotoInput.value = '';
+        if (previewEl) {
+            previewEl.classList.add('hidden');
+            previewEl.src = '';
+        }
+        if (videoEl) videoEl.classList.remove('hidden');
+        if (statusFoto) {
+            statusFoto.textContent = 'Belum ambil foto';
+            statusFoto.className = 'rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-500 dark:bg-slate-800 dark:text-slate-400';
+        }
+        if (btnAmbil) btnAmbil.classList.remove('hidden');
+        if (btnUlang) btnUlang.classList.add('hidden');
+        updateTombolAbsen();
+    }
+
+    if (btnAmbil) btnAmbil.addEventListener('click', ambilFoto);
+    if (btnUlang) btnUlang.addEventListener('click', ambilUlangFoto);
+
+    if (videoEl) {
+        mulaiKamera();
+    }
+
+    // Validasi terakhir sebelum submit (jaga-jaga jika tombol ter-enable manual via devtools)
+    const formMasuk = document.getElementById('form-masuk');
+    if (formMasuk) {
+        formMasuk.addEventListener('submit', function(e) {
+            if (!dalamRadius || !fotoDiambil) {
+                e.preventDefault();
+                alert('Pastikan Anda berada dalam radius kantor dan sudah mengambil foto selfie.');
+            }
         });
     }
 </script>

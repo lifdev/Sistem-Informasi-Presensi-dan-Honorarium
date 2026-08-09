@@ -97,6 +97,10 @@
                         </th>
 
                         <th class="px-6 py-4 text-left text-sm font-semibold">
+                            Foto
+                        </th>
+
+                        <th class="px-6 py-4 text-left text-sm font-semibold">
                             Karyawan
                         </th>
 
@@ -123,6 +127,17 @@
 
                         <td class="px-6 py-4 text-slate-700 dark:text-slate-300">
                             {{ $p->tanggal->translatedFormat('d M Y') }}
+                        </td>
+
+                        <td class="px-6 py-4">
+                            @if ($p->foto_masuk)
+                            <a href="{{ $p->foto_masuk_url }}" target="_blank" rel="noopener">
+                                <img src="{{ $p->foto_masuk_url }}" alt="Foto absen {{ $p->karyawan->nama }}"
+                                    class="h-12 w-12 rounded-lg object-cover ring-1 ring-slate-200 dark:ring-slate-700">
+                            </a>
+                            @else
+                            <span class="text-slate-400 dark:text-slate-500">-</span>
+                            @endif
                         </td>
 
                         <td class="px-6 py-4">
@@ -172,7 +187,7 @@
 
                     <tr>
 
-                        <td colspan="5" class="px-6 py-12 text-center">
+                        <td colspan="6" class="px-6 py-12 text-center">
 
                             <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4 h-14 w-14 text-slate-300"
                                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
