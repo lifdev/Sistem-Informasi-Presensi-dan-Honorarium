@@ -108,26 +108,24 @@
                 <th>Jabatan</th>
                 <th>Tanggal</th>
                 <th>Jam Masuk</th>
-                <th>Jam Pulang</th>
                 <th>Status</th>
             </tr>
         </thead>
         <tbody>
             @forelse($presensi as $i => $p)
-                <tr>
-                    <td>{{ $i + 1 }}</td>
-                    <td>{{ $p->karyawan->nip }}</td>
-                    <td>{{ $p->karyawan->nama }}</td>
-                    <td>{{ $p->karyawan->jabatan?->nama }}</td>
-                    <td>{{ $p->tanggal->format('d/m/Y') }}</td>
-                    <td>{{ $p->jam_masuk ?? '-' }}</td>
-                    <td>{{ $p->jam_pulang ?? '-' }}</td>
-                    <td><span class="badge {{ $p->status }}">{{ ucfirst($p->status) }}</span></td>
-                </tr>
+            <tr>
+                <td>{{ $i + 1 }}</td>
+                <td>{{ $p->karyawan->nip }}</td>
+                <td>{{ $p->karyawan->nama }}</td>
+                <td>{{ $p->karyawan->jabatan?->nama }}</td>
+                <td>{{ $p->tanggal->format('d/m/Y') }}</td>
+                <td>{{ $p->jam_masuk ?? '-' }}</td>
+                <td><span class="badge {{ $p->status }}">{{ ucfirst($p->status) }}</span></td>
+            </tr>
             @empty
-                <tr>
-                    <td colspan="8" style="text-align:center;padding:20px">Tidak ada data.</td>
-                </tr>
+            <tr>
+                <td colspan="7" style="text-align:center;padding:20px">Tidak ada data.</td>
+            </tr>
             @endforelse
         </tbody>
     </table>

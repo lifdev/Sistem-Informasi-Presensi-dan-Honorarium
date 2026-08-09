@@ -11,6 +11,7 @@ use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\BidangController;
 use App\Http\Controllers\Admin\JabatanController;
+use App\Http\Controllers\KalenderKerjaController;
 
 // ============================================================
 // AUTH ROUTES (Guest only)
@@ -124,6 +125,21 @@ Route::middleware(["auth", "role:admin"])
 
                 Route::get('/jam', [PengaturanController::class, 'jam'])->name('jam');
                 Route::put('/jam', [PengaturanController::class, 'updateJam'])->name('jam.update');
+            });
+
+        // Kalender Kerja
+        Route::prefix('kalender-kerja')
+            ->name('kalender-kerja.')
+            ->group(function () {
+
+                Route::get('/', [KalenderKerjaController::class, 'index'])
+                    ->name('index');
+
+                Route::post('/generate', [KalenderKerjaController::class, 'generate'])
+                    ->name('generate');
+
+                Route::patch('/{kalenderKerja}', [KalenderKerjaController::class, 'update'])
+                    ->name('update');
             });
 
         // Laporan & Ekspor
@@ -270,16 +286,13 @@ Route::middleware(["auth", "role:karyawan"])
             ->name("presensi.")
             ->group(function () {
                 Route::get("/", [PresensiController::class, "index"])->name(
-                    "index",
+                    "index"
                 );
                 Route::post("/masuk", [
                     PresensiController::class,
                     "absenMasuk",
                 ])->name("masuk");
-                Route::post("/pulang", [
-                    PresensiController::class,
-                    "absenPulang",
-                ])->name("pulang");
+
                 Route::get("/riwayat", [
                     PresensiController::class,
                     "riwayat",

@@ -199,19 +199,18 @@
                     <td class="text-right">Rp {{ number_format($honorarium->gaji_pokok, 0, ',', '.') }}</td>
                 </tr>
                 <tr>
-                    <td>Tunjangan Kehadiran ({{ $honorarium->total_hadir }} hari)</td>
+                    <td>Bonus</td>
                     <td class="text-right" style="color:#198754">+ Rp
-                        {{ number_format($honorarium->tunjangan, 0, ',', '.') }}</td>
+                        {{ number_format($honorarium->bonus, 0, ',', '.') }}
+                    </td>
                 </tr>
                 <tr>
                     <td>
-                        Potongan
-                        (Alpha: {{ $honorarium->total_alpha }},
-                        Izin: {{ $honorarium->total_izin }},
-                        Sakit: {{ $honorarium->total_sakit }} hari)
+                        Potongan (Alpha: {{ $honorarium->total_alpha }} hari)
                     </td>
                     <td class="text-right" style="color:#dc3545">- Rp
-                        {{ number_format($honorarium->total_potongan, 0, ',', '.') }}</td>
+                        {{ number_format($honorarium->total_potongan, 0, ',', '.') }}
+                    </td>
                 </tr>
                 <tr class="total-row">
                     <td>GAJI BERSIH</td>

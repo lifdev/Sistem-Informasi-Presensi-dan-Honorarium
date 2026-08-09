@@ -159,7 +159,7 @@
                         <th class="px-6 py-4 text-center text-sm font-semibold">Sakit</th>
                         <th class="px-6 py-4 text-center text-sm font-semibold">Alpha</th>
                         <th class="px-6 py-4 text-right text-sm font-semibold">Gaji Pokok</th>
-                        <th class="px-6 py-4 text-right text-sm font-semibold">Tunjangan</th>
+                        <th class="px-6 py-4 text-right text-sm font-semibold">Bonus</th>
                         <th class="px-6 py-4 text-right text-sm font-semibold">Potongan</th>
                         <th class="px-6 py-4 text-right text-sm font-semibold">Gaji Bersih</th>
                         <th class="px-6 py-4 text-center text-sm font-semibold">Status</th>
@@ -221,7 +221,7 @@
                         </td>
 
                         <td class="px-6 py-4 text-right font-medium text-emerald-600">
-                            + Rp {{ number_format($h->tunjangan, 0, ',', '.') }}
+                            + Rp {{ number_format($h->bonus, 0, ',', '.') }}
                         </td>
 
                         <td class="px-6 py-4 text-right font-medium text-red-600">

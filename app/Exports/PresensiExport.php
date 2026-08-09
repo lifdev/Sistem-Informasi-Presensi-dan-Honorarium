@@ -39,7 +39,6 @@ class PresensiExport implements
             "Jabatan",
             "Tanggal",
             "Jam Masuk",
-            "Jam Pulang",
             "Status",
             "Keterangan",
         ];
@@ -49,6 +48,7 @@ class PresensiExport implements
     {
         static $no = 0;
         $no++;
+
         return [
             $no,
             $row->karyawan->nip,
@@ -56,7 +56,6 @@ class PresensiExport implements
             $row->karyawan->jabatan?->nama,
             $row->tanggal->format("d/m/Y"),
             $row->jam_masuk ?? "-",
-            $row->jam_pulang ?? "-",
             ucfirst($row->status),
             $row->keterangan ?? "-",
         ];
@@ -66,12 +65,11 @@ class PresensiExport implements
     {
         return [
             1 => [
-                "font" => ["bold" => true],
+                "font" => ["bold" => true, "color" => ["rgb" => "FFFFFF"]],
                 "fill" => [
                     "fillType" => "solid",
                     "startColor" => ["rgb" => "1e3a5f"],
                 ],
-                "font" => ["bold" => true, "color" => ["rgb" => "FFFFFF"]],
             ],
         ];
     }

@@ -9,8 +9,8 @@ class PengaturanJam extends Model
     protected $table = 'pengaturan_jam';
 
     protected $fillable = [
-        'jam_masuk_mulai', 'jam_masuk_selesai',
-        'jam_pulang_mulai', 'jam_pulang_selesai',
+        'jam_masuk_mulai',
+        'jam_masuk_selesai',
         'aktif',
     ];
 

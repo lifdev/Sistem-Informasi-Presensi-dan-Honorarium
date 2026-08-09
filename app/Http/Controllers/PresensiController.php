@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PengaturanJam;
+use App\Models\KalenderKerja;
 
 class PresensiController extends Controller
 {
@@ -39,7 +40,17 @@ class PresensiController extends Controller
 
         $user = Auth::user();
         $karyawan = $user->karyawan;
-        $today    = Carbon::today();
+        $today = Carbon::today();
+
+        // Cek kalender kerja
+        $kalender = KalenderKerja::whereDate('tanggal', $today)->first();
+
+        if ($kalender && !$kalender->is_hari_kerja) {
+            return back()->with(
+                'error',
+                'Hari ini merupakan hari libur. Anda tidak dapat melakukan absen.'
+            );
+        }
 
         // Cek sudah absen masuk hari ini
         $existing = Presensi::where('karyawan_id', $karyawan->id)
@@ -88,53 +99,6 @@ class PresensiController extends Controller
         ]);
 
         return back()->with('success', 'Absen masuk berhasil dicatat.');
-    }
-
-    // Proses absen pulang
-    public function absenPulang(Request $request)
-    {
-        $request->validate([
-            'latitude'  => 'required|numeric',
-            'longitude' => 'required|numeric',
-        ]);
-
-        $user = Auth::user();
-        $karyawan = $user->karyawan;
-        $today    = Carbon::today();
-
-        $presensi = Presensi::where('karyawan_id', $karyawan->id)
-            ->whereDate('tanggal', $today)
-            ->first();
-
-        if (!$presensi) {
-            return back()->with('error', 'Anda belum melakukan absen masuk.');
-        }
-
-        if ($presensi->jam_pulang) {
-            return back()->with('error', 'Anda sudah melakukan absen pulang hari ini.');
-        }
-
-        // Validasi jam pulang
-        $jamSetting = PengaturanJam::aktif();
-        if ($jamSetting) {
-            $now     = Carbon::now()->format('H:i:s');
-            $mulai   = $jamSetting->jam_pulang_mulai;
-            $selesai = $jamSetting->jam_pulang_selesai;
-            if ($now < $mulai || $now > $selesai) {
-                return back()->with(
-                    'error',
-                    "Absen pulang hanya bisa dilakukan antara {$mulai} - {$selesai}."
-                );
-            }
-        }
-
-        $presensi->update([
-            'jam_pulang'  => Carbon::now()->format('H:i:s'),
-            'lat_pulang'  => $request->latitude,
-            'lng_pulang'  => $request->longitude,
-        ]);
-
-        return back()->with('success', 'Absen pulang berhasil dicatat.');
     }
 
     // Rekap presensi (Admin & Pimpinan)

@@ -9,6 +9,7 @@ use App\Models\PengaturanGaji;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use App\Models\KalenderKerja;
 
 class HonorariumController extends Controller
 {
@@ -46,17 +47,20 @@ class HonorariumController extends Controller
 
         $bulan = $request->bulan;
         $tahun = $request->tahun;
+
         $karyawans = Karyawan::where("status", "aktif")
             ->with("jabatan.pengaturanGaji")
             ->get();
 
         foreach ($karyawans as $karyawan) {
+
             $setting = $karyawan->jabatan?->pengaturanGaji;
+
             if (!$setting) {
                 continue;
             }
 
-            // Hitung rekap presensi bulan ini
+            // Rekap presensi bulan ini
             $rekap = Presensi::where("karyawan_id", $karyawan->id)
                 ->whereMonth("tanggal", $bulan)
                 ->whereYear("tanggal", $tahun)
@@ -65,16 +69,40 @@ class HonorariumController extends Controller
                 ->pluck("total", "status");
 
             $totalHadir = $rekap["hadir"] ?? 0;
-            $totalIzin = $rekap["izin"] ?? 0;
+            $totalIzin  = $rekap["izin"] ?? 0;
             $totalSakit = $rekap["sakit"] ?? 0;
-            $totalAlpha = $rekap["alpha"] ?? 0;
 
-            $tunjangan = $totalHadir * $setting->tunjangan_hadir;
-            $potonganAlpha = $totalAlpha * $setting->potongan_alpha;
-            $potonganIzin = $totalIzin * $setting->potongan_izin;
-            $potonganSakit = $totalSakit * $setting->potongan_sakit;
-            $totalPotongan = $potonganAlpha + $potonganIzin + $potonganSakit;
-            $gajiBersih = $setting->gaji_pokok + $tunjangan - $totalPotongan;
+            // Jumlah hari kerja dari kalender kerja
+            $jumlahHariKerja = KalenderKerja::whereMonth("tanggal", $bulan)
+                ->whereYear("tanggal", $tahun)
+                ->where("is_hari_kerja", true)
+                ->count();
+
+            // Alpha otomatis
+            $totalAlpha = max(
+                0,
+                $jumlahHariKerja - (
+                    $totalHadir +
+                    $totalIzin +
+                    $totalSakit
+                )
+            );
+
+            // Hanya Alpha yang memotong gaji
+            $potonganAlpha = $jumlahHariKerja > 0
+                ? ($setting->gaji_pokok / $jumlahHariKerja) * $totalAlpha
+                : 0;
+
+            $totalPotongan = $potonganAlpha;
+
+            // Bonus bulanan dari pengaturan gaji
+            $bonus = $setting->bonus;
+
+            // Gaji bersih
+            $gajiBersih =
+                $setting->gaji_pokok
+                + $bonus
+                - $totalPotongan;
 
             Honorarium::updateOrCreate(
                 [
@@ -87,12 +115,15 @@ class HonorariumController extends Controller
                     "total_izin" => $totalIzin,
                     "total_sakit" => $totalSakit,
                     "total_alpha" => $totalAlpha,
+
                     "gaji_pokok" => $setting->gaji_pokok,
-                    "tunjangan" => $tunjangan,
+                    "bonus" => $bonus,
+
                     "total_potongan" => $totalPotongan,
                     "gaji_bersih" => $gajiBersih,
+
                     "status" => "draft",
-                ],
+                ]
             );
         }
 

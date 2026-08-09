@@ -105,10 +105,6 @@
                         </th>
 
                         <th class="px-6 py-4 text-left text-sm font-semibold">
-                            Jam Pulang
-                        </th>
-
-                        <th class="px-6 py-4 text-left text-sm font-semibold">
                             Status
                         </th>
 
@@ -145,10 +141,6 @@
                             {{ $p->jam_masuk ?? '-' }}
                         </td>
 
-                        <td class="px-6 py-4 text-slate-700 dark:text-slate-300">
-                            {{ $p->jam_pulang ?? '-' }}
-                        </td>
-
                         <td class="px-6 py-4">
 
                             @php
@@ -180,7 +172,7 @@
 
                     <tr>
 
-                        <td colspan="6" class="px-6 py-12 text-center">
+                        <td colspan="5" class="px-6 py-12 text-center">
 
                             <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4 h-14 w-14 text-slate-300"
                                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">

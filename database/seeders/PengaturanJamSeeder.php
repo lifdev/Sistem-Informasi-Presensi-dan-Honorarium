@@ -11,9 +11,7 @@ class PengaturanJamSeeder extends Seeder
     {
         PengaturanJam::create([
             'jam_masuk_mulai'   => '07:00:00',
-            'jam_masuk_selesai' => '09:00:00',
-            'jam_pulang_mulai'  => '16:00:00',
-            'jam_pulang_selesai'=> '20:00:00',
+            'jam_masuk_selesai' => '08:00:00',
             'aktif'             => true,
         ]);
     }

@@ -7,6 +7,7 @@ use App\Models\Karyawan;
 use App\Models\Presensi;
 use App\Models\Izin;
 use App\Models\Honorarium;
+use App\Models\KalenderKerja;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -84,6 +85,22 @@ class DashboardController extends Controller
             ->selectRaw('status, COUNT(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status');
+
+        // Alpha bukan status yang dicatat manual di tabel presensi,
+        // jadi dihitung dari hari kerja bulan ini dikurangi hadir/izin/sakit
+        // (sama seperti formula total_alpha di proses generate honorarium)
+        $totalHariKerja = KalenderKerja::where('is_hari_kerja', true)
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $tahun)
+            ->count();
+
+        $rekapBulanIni['alpha'] = max(
+            $totalHariKerja
+                - ($rekapBulanIni['hadir'] ?? 0)
+                - ($rekapBulanIni['izin'] ?? 0)
+                - ($rekapBulanIni['sakit'] ?? 0),
+            0
+        );
 
         $honorariumTerakhir = Honorarium::where('karyawan_id', $karyawan->id)
             ->latest()

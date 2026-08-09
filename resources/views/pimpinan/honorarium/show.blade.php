@@ -241,14 +241,11 @@
                     <tr>
 
                         <td class="px-6 py-4 text-slate-500">
-                            Tunjangan Kehadiran
-                            <span class="text-xs">
-                                ({{ $honorarium->total_hadir }} hari)
-                            </span>
+                            Bonus
                         </td>
 
                         <td class="px-6 py-4 text-right font-semibold text-emerald-600">
-                            + Rp {{ number_format($honorarium->tunjangan, 0, ',', '.') }}
+                            + Rp {{ number_format($honorarium->bonus, 0, ',', '.') }}
                         </td>
 
                     </tr>
@@ -258,9 +255,7 @@
                         <td class="px-6 py-4 text-slate-500">
                             Potongan
                             <span class="text-xs">
-                                (Alpha {{ $honorarium->total_alpha }},
-                                Izin {{ $honorarium->total_izin }},
-                                Sakit {{ $honorarium->total_sakit }})
+                                (Alpha {{ $honorarium->total_alpha }} hari)
                             </span>
                         </td>
 

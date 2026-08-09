@@ -6,36 +6,43 @@ use App\Models\PengaturanGaji;
 use App\Models\PengaturanLokasi;
 use Illuminate\Http\Request;
 use App\Models\PengaturanJam;
+use App\Models\KalenderKerja;
 
 class PengaturanController extends Controller
 {
     // Pengaturan gaji
     public function gaji()
     {
-    $data = PengaturanGaji::with('jabatan.bidang')
-        ->orderBy('jabatan_id')
-        ->get();
+        $data = PengaturanGaji::with('jabatan.bidang')
+            ->orderBy('jabatan_id')
+            ->get();
 
-    return view('admin.pengaturan.gaji', compact('data'));
+        return view('admin.pengaturan.gaji', compact('data'));
     }
 
     public function updateGaji(Request $request, PengaturanGaji $pengaturanGaji)
     {
         $request->validate([
-            'gaji_pokok'      => 'required|numeric|min:0',
-            'tunjangan_hadir' => 'required|numeric|min:0',
-            'potongan_alpha'  => 'required|numeric|min:0',
-            'potongan_izin'   => 'required|numeric|min:0',
-            'potongan_sakit'  => 'required|numeric|min:0',
+            'gaji_pokok' => 'required|numeric|min:0',
+            'bonus' => 'required|numeric|min:0',
         ]);
 
-        $pengaturanGaji->update($request->only([
-            'gaji_pokok',
-            'tunjangan_hadir',
-            'potongan_alpha',
-            'potongan_izin',
-            'potongan_sakit',
-        ]));
+        $jumlahHariKerja = KalenderKerja::where('is_hari_kerja', true)
+            ->whereMonth('tanggal', now()->month)
+            ->whereYear('tanggal', now()->year)
+            ->count();
+
+        // Potongan alpha = 100% gaji harian, dihitung otomatis dari gaji_pokok
+        // dibagi jumlah hari kerja bulan berjalan (bukan input manual)
+        $potonganAlpha = $jumlahHariKerja > 0
+            ? round($request->gaji_pokok / $jumlahHariKerja)
+            : 0;
+
+        $pengaturanGaji->update([
+            'gaji_pokok' => $request->gaji_pokok,
+            'bonus' => $request->bonus,
+            'potongan_alpha' => $potonganAlpha,
+        ]);
 
         return back()->with('success', 'Pengaturan gaji berhasil diperbarui.');
     }
@@ -77,26 +84,22 @@ class PengaturanController extends Controller
     public function updateJam(Request $request)
     {
         $request->validate([
-            'jam_masuk_mulai'    => 'required',
-            'jam_masuk_selesai'  => 'required|after:jam_masuk_mulai',
-            'jam_pulang_mulai'   => 'required|after:jam_masuk_selesai',
-            'jam_pulang_selesai' => 'required|after:jam_pulang_mulai',
+            'jam_masuk_mulai'   => 'required',
+            'jam_masuk_selesai' => 'required|after:jam_masuk_mulai',
         ], [
-            'jam_masuk_selesai.after'  => 'Batas akhir masuk harus setelah jam mulai masuk.',
-            'jam_pulang_mulai.after'   => 'Jam pulang harus setelah batas akhir masuk.',
-            'jam_pulang_selesai.after' => 'Batas akhir pulang harus setelah jam mulai pulang.',
+            'jam_masuk_selesai.after' => 'Batas akhir absen masuk harus setelah jam mulai masuk.',
         ]);
 
         $jam = PengaturanJam::aktif();
         if ($jam) {
             $jam->update($request->only([
-                'jam_masuk_mulai', 'jam_masuk_selesai',
-                'jam_pulang_mulai', 'jam_pulang_selesai',
+                'jam_masuk_mulai',
+                'jam_masuk_selesai',
             ]));
         } else {
             PengaturanJam::create($request->only([
-                'jam_masuk_mulai', 'jam_masuk_selesai',
-                'jam_pulang_mulai', 'jam_pulang_selesai',
+                'jam_masuk_mulai',
+                'jam_masuk_selesai',
             ]) + ['aktif' => true]);
         }
 

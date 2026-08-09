@@ -23,14 +23,14 @@
     <!-- Table -->
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-slate-700">
-            <thead class="bg-gray-50 dark:bg-slate-800">
-                <tr class="text-left text-sm font-semibold uppercase tracking-wider text-gray-600 dark:text-slate-300">
-                    <th class="px-6 py-3">Jenis</th>
-                    <th class="px-6 py-3">Tanggal Mulai</th>
-                    <th class="px-6 py-3">Tanggal Selesai</th>
-                    <th class="px-6 py-3">Durasi</th>
-                    <th class="px-6 py-3">Alasan</th>
-                    <th class="px-6 py-3">Status</th>
+            <thead class="bg-slate-50 dark:bg-slate-800">
+                <tr>
+                    <th class="px-4 py-3 pl-6 text-left text-sm font-semibold text-slate-600 dark:text-slate-300">Jenis</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-slate-600 dark:text-slate-300">Tanggal Mulai</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-slate-600 dark:text-slate-300">Tanggal Selesai</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-slate-600 dark:text-slate-300">Durasi</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-slate-600 dark:text-slate-300">Alasan</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-slate-600 dark:text-slate-300">Status</th>
                 </tr>
             </thead>
 

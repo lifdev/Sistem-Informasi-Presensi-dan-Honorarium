@@ -18,7 +18,7 @@ class Honorarium extends Model
         'total_sakit',
         'total_alpha',
         'gaji_pokok',
-        'tunjangan',
+        'bonus',
         'total_potongan',
         'gaji_bersih',
         'status',
@@ -26,7 +26,7 @@ class Honorarium extends Model
 
     protected $casts = [
         'gaji_pokok'     => 'float',
-        'tunjangan'      => 'float',
+        'bonus'          => 'float',
         'total_potongan' => 'float',
         'gaji_bersih'    => 'float',
     ];
@@ -41,19 +41,20 @@ class Honorarium extends Model
     public function namaBulan(): string
     {
         $bulan = [
-            1 => 'Januari',
-            2 => 'Februari',
-            3 => 'Maret',
-            4 => 'April',
-            5 => 'Mei',
-            6 => 'Juni',
-            7 => 'Juli',
-            8 => 'Agustus',
-            9 => 'September',
+            1  => 'Januari',
+            2  => 'Februari',
+            3  => 'Maret',
+            4  => 'April',
+            5  => 'Mei',
+            6  => 'Juni',
+            7  => 'Juli',
+            8  => 'Agustus',
+            9  => 'September',
             10 => 'Oktober',
             11 => 'November',
             12 => 'Desember',
         ];
+
         return $bulan[$this->bulan] ?? '-';
     }
 }

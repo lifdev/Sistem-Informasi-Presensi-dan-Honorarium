@@ -11,18 +11,14 @@ class PengaturanGaji extends Model
     protected $fillable = [
         'jabatan_id',
         'gaji_pokok',
-        'tunjangan_hadir',
+        'bonus',
         'potongan_alpha',
-        'potongan_izin',
-        'potongan_sakit',
     ];
 
     protected $casts = [
-        'gaji_pokok'      => 'float',
-        'tunjangan_hadir' => 'float',
-        'potongan_alpha'  => 'float',
-        'potongan_izin'   => 'float',
-        'potongan_sakit'  => 'float',
+        'gaji_pokok'     => 'float',
+        'bonus'          => 'float',
+        'potongan_alpha' => 'float',
     ];
 
     public function jabatan()

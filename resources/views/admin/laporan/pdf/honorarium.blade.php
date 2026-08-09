@@ -97,40 +97,40 @@
                 <th class="text-center">Sakit</th>
                 <th class="text-center">Alpha</th>
                 <th class="text-right">Gaji Pokok</th>
-                <th class="text-right">Tunjangan</th>
+                <th class="text-right">Bonus</th>
                 <th class="text-right">Potongan</th>
                 <th class="text-right">Gaji Bersih</th>
             </tr>
         </thead>
         <tbody>
             @forelse($honorarium as $i => $h)
-                <tr>
-                    <td>{{ $i + 1 }}</td>
-                    <td>{{ $h->karyawan->nip }}</td>
-                    <td>{{ $h->karyawan->nama }}</td>
-                    <td>{{ $h->karyawan->jabatan?->nama }}</td>
-                    <td class="text-center">{{ $h->total_hadir }}</td>
-                    <td class="text-center">{{ $h->total_izin }}</td>
-                    <td class="text-center">{{ $h->total_sakit }}</td>
-                    <td class="text-center">{{ $h->total_alpha }}</td>
-                    <td class="text-right">Rp {{ number_format($h->gaji_pokok, 0, ',', '.') }}</td>
-                    <td class="text-right">Rp {{ number_format($h->tunjangan, 0, ',', '.') }}</td>
-                    <td class="text-right">Rp {{ number_format($h->total_potongan, 0, ',', '.') }}</td>
-                    <td class="text-right">Rp {{ number_format($h->gaji_bersih, 0, ',', '.') }}</td>
-                </tr>
+            <tr>
+                <td>{{ $i + 1 }}</td>
+                <td>{{ $h->karyawan->nip }}</td>
+                <td>{{ $h->karyawan->nama }}</td>
+                <td>{{ $h->karyawan->jabatan?->nama }}</td>
+                <td class="text-center">{{ $h->total_hadir }}</td>
+                <td class="text-center">{{ $h->total_izin }}</td>
+                <td class="text-center">{{ $h->total_sakit }}</td>
+                <td class="text-center">{{ $h->total_alpha }}</td>
+                <td class="text-right">Rp {{ number_format($h->gaji_pokok, 0, ',', '.') }}</td>
+                <td class="text-right">Rp {{ number_format($h->bonus, 0, ',', '.') }}</td>
+                <td class="text-right">Rp {{ number_format($h->total_potongan, 0, ',', '.') }}</td>
+                <td class="text-right">Rp {{ number_format($h->gaji_bersih, 0, ',', '.') }}</td>
+            </tr>
             @empty
-                <tr>
-                    <td colspan="12" style="text-align:center;padding:20px">Tidak ada data.</td>
-                </tr>
+            <tr>
+                <td colspan="12" style="text-align:center;padding:20px">Tidak ada data.</td>
+            </tr>
             @endforelse
         </tbody>
         @if ($honorarium->isNotEmpty())
-            <tfoot>
-                <tr>
-                    <td colspan="11" class="text-right">Total Pengeluaran:</td>
-                    <td class="text-right">Rp {{ number_format($honorarium->sum('gaji_bersih'), 0, ',', '.') }}</td>
-                </tr>
-            </tfoot>
+        <tfoot>
+            <tr>
+                <td colspan="11" class="text-right">Total Pengeluaran:</td>
+                <td class="text-right">Rp {{ number_format($honorarium->sum('gaji_bersih'), 0, ',', '.') }}</td>
+            </tr>
+        </tfoot>
         @endif
     </table>
     <div class="footer">Total karyawan: {{ $honorarium->count() }}</div>
