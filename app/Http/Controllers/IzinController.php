@@ -7,6 +7,7 @@ use App\Models\Presensi;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use App\Models\LogAktivitas;
 
 class IzinController extends Controller
 {
@@ -44,6 +45,8 @@ class IzinController extends Controller
             'lampiran'        => $lampiranPath,
             'status'          => 'pending',
         ]);
+
+        LogAktivitas::catat('ajukan_izin', "Mengajukan {$request->jenis} ({$karyawan->nama}).");
 
         return redirect()->route('karyawan.izin.index')
             ->with('success', 'Pengajuan izin berhasil dikirim.');
@@ -94,6 +97,8 @@ class IzinController extends Controller
         // Update status presensi untuk tanggal izin
         $this->updatePresensiIzin($izin);
 
+        LogAktivitas::catat('approve_izin', "Menyetujui izin milik {$izin->karyawan->nama}.");
+
         return back()->with('success', 'Izin berhasil disetujui.');
     }
 
@@ -112,6 +117,8 @@ class IzinController extends Controller
             'disetujui_oleh'    => Auth::id(),
             'disetujui_at'      => Carbon::now(),
         ]);
+
+        LogAktivitas::catat('reject_izin', "Menolak izin milik {$izin->karyawan->nama}.");
 
         return back()->with('success', 'Izin berhasil ditolak.');
     }

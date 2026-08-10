@@ -13,6 +13,7 @@ use App\Http\Controllers\BidangController;
 use App\Http\Controllers\Admin\JabatanController;
 use App\Http\Controllers\KalenderKerjaController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\LogAktivitasController;
 
 // ============================================================
 // AUTH ROUTES (Guest only)
@@ -185,6 +186,12 @@ Route::middleware(["auth", "role:admin"])
                     "slipGaji",
                 ])->name("slip");
             });
+
+        // Log Aktivitas Sistem (khusus admin)
+        Route::get("/log-aktivitas", [
+            LogAktivitasController::class,
+            "index",
+        ])->name("log-aktivitas.index");
     });
 
 // ============================================================

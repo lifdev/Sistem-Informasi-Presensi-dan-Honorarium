@@ -1,24 +1,35 @@
 <header
-    class="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-slate-200 bg-white px-8 dark:border-slate-800 dark:bg-slate-900">
+    class="sticky top-0 z-30 flex h-20 items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 dark:border-slate-800 dark:bg-slate-900 sm:px-6 lg:px-8">
 
     {{-- Kiri --}}
-    <div class="flex items-center gap-4">
-        <div>
-            <h1 class="text-xl font-semibold text-slate-800 dark:text-white">
+    <div class="flex min-w-0 items-center gap-3 sm:gap-4">
+
+        {{-- Tombol buka sidebar (mobile only) --}}
+        <button id="sidebarToggle" type="button"
+            class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg border border-slate-300 bg-white text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700 lg:hidden"
+            aria-label="Buka menu">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+
+        <div class="min-w-0">
+            <h1 class="truncate text-lg font-semibold text-slate-800 dark:text-white sm:text-xl">
                 @yield('title', 'Dashboard')
             </h1>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            <p class="mt-1 hidden text-sm text-slate-500 dark:text-slate-400 sm:block">
                 Sistem Informasi Presensi dan Honorarium
             </p>
         </div>
     </div>
 
     {{-- Kanan --}}
-    <div class="flex items-center gap-4">
+    <div class="flex flex-shrink-0 items-center gap-2 sm:gap-4">
 
         {{-- Dark Mode --}}
         <button id="theme-toggle" onclick="toggleDarkMode()"
-            class="flex h-11 w-11 items-center justify-center rounded-lg border border-slate-300 bg-white text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-yellow-400 dark:hover:bg-slate-700">
+            class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg border border-slate-300 bg-white text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-yellow-400 dark:hover:bg-slate-700">
 
             {{-- Moon --}}
             <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 dark:hidden" fill="none"
@@ -37,7 +48,7 @@
 
         {{-- User --}}
         <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 rounded-lg transition hover:opacity-80">
-            <div class="text-right">
+            <div class="hidden text-right sm:block">
                 <p class="font-semibold text-slate-800 dark:text-white">
                     {{ auth()->user()->name }}
                 </p>
@@ -45,7 +56,8 @@
                     {{ ucfirst(auth()->user()->role) }}
                 </p>
             </div>
-            <div class="flex h-11 w-11 items-center justify-center rounded-full bg-blue-600 font-bold text-white">
+            <div
+                class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 font-bold text-white">
                 {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
             </div>
         </a>

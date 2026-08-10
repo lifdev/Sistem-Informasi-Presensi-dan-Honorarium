@@ -12,6 +12,7 @@ use App\Models\PengaturanJam;
 use App\Models\KalenderKerja;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Models\LogAktivitas;
 
 class PresensiController extends Controller
 {
@@ -108,6 +109,8 @@ class PresensiController extends Controller
             'foto_masuk'  => $fotoPath,
             'status'      => 'hadir',
         ]);
+
+        LogAktivitas::catat('absen_masuk', "Absen masuk oleh {$karyawan->nama}.");
 
         return back()->with('success', 'Absen masuk berhasil dicatat.');
     }

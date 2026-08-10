@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Jabatan;
 use App\Models\Bidang;
+use App\Models\LogAktivitas;
 
 class KaryawanController extends Controller
 {
@@ -75,6 +76,8 @@ class KaryawanController extends Controller
             'karyawan_id' => $karyawan->id,
         ]);
 
+        LogAktivitas::catat('tambah_karyawan', "Menambahkan karyawan {$karyawan->nama} (NIP: {$karyawan->nip}).");
+
         return redirect()->route('admin.karyawan.index')
             ->with('success', 'Karyawan berhasil ditambahkan.');
     }
@@ -128,14 +131,22 @@ class KaryawanController extends Controller
             $karyawan->user->update(['role' => $request->role]);
         }
 
+        LogAktivitas::catat('ubah_karyawan', "Mengubah data karyawan {$karyawan->nama} (NIP: {$karyawan->nip}).");
+
         return redirect()->route('admin.karyawan.index')
             ->with('success', 'Data karyawan berhasil diperbarui.');
     }
 
     public function destroy(Karyawan $karyawan)
     {
+        $namaKaryawan = $karyawan->nama;
+        $nipKaryawan  = $karyawan->nip;
+
         $karyawan->user()->delete();
         $karyawan->delete();
+
+        LogAktivitas::catat('hapus_karyawan', "Menghapus karyawan {$namaKaryawan} (NIP: {$nipKaryawan}).");
+
         return redirect()->route('admin.karyawan.index')
             ->with('success', 'Karyawan berhasil dihapus.');
     }

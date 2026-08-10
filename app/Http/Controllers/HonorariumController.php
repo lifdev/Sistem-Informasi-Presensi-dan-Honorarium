@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\KalenderKerja;
+use App\Models\LogAktivitas;
 
 class HonorariumController extends Controller
 {
@@ -131,6 +132,8 @@ class HonorariumController extends Controller
             ? 'pimpinan.honorarium.index'
             : 'admin.honorarium.index';
 
+        LogAktivitas::catat('generate_honorarium', "Generate honorarium periode {$bulan}/{$tahun}.");
+
         return redirect()
             ->route($route, [
                 'bulan' => $bulan,
@@ -150,6 +153,8 @@ class HonorariumController extends Controller
         Honorarium::where("bulan", $request->bulan)
             ->where("tahun", $request->tahun)
             ->update(["status" => "final"]);
+
+        LogAktivitas::catat('finalize_honorarium', "Finalisasi honorarium periode {$request->bulan}/{$request->tahun}.");
 
         return back()->with(
             "success",
