@@ -25,6 +25,7 @@ class BidangSeeder extends Seeder
             ['nama' => 'Bidang Relawan & Pendukung'],
             ['nama' => 'Penasehat & Pengembangan'],
             ['nama' => 'Unit Pengembangan Yayasan'],
+            ['nama' => 'Development'],
         ];
 
         foreach ($bidang as $item) {

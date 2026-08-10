@@ -79,18 +79,24 @@ class PresensiController extends Controller
             }
         }
 
-        // Validasi jam masuk
+        // Validasi jam masuk: hanya tolak kalau absen SEBELUM jam mulai.
+        // Kalau lewat jam selesai (telat), absen tetap diterima tapi ditandai "Terlambat".
         $jamSetting = PengaturanJam::aktif();
+        $keteranganWaktu = null;
+
         if ($jamSetting) {
-            $now       = Carbon::now()->format('H:i:s');
-            $mulai     = $jamSetting->jam_masuk_mulai;
-            $selesai   = $jamSetting->jam_masuk_selesai;
-            if ($now < $mulai || $now > $selesai) {
+            $now     = Carbon::now()->format('H:i:s');
+            $mulai   = $jamSetting->jam_masuk_mulai;
+            $selesai = $jamSetting->jam_masuk_selesai;
+
+            if ($now < $mulai) {
                 return back()->with(
                     'error',
-                    "Absen masuk hanya bisa dilakukan antara {$mulai} - {$selesai}."
+                    "Absen masuk baru bisa dilakukan mulai jam {$mulai}."
                 );
             }
+
+            $keteranganWaktu = $now > $selesai ? 'Terlambat' : 'Tepat Waktu';
         }
 
         // Simpan foto selfie (sudah ada watermark jam & koordinat dari sisi client)
@@ -108,11 +114,18 @@ class PresensiController extends Controller
             'lng_masuk'   => $request->longitude,
             'foto_masuk'  => $fotoPath,
             'status'      => 'hadir',
+            'keterangan'  => $keteranganWaktu,
         ]);
 
-        LogAktivitas::catat('absen_masuk', "Absen masuk oleh {$karyawan->nama}.");
+        $pesanLog = 'Absen masuk oleh ' . $karyawan->nama
+            . ($keteranganWaktu ? " ({$keteranganWaktu})." : '.');
+        LogAktivitas::catat('absen_masuk', $pesanLog);
 
-        return back()->with('success', 'Absen masuk berhasil dicatat.');
+        $pesanSukses = $keteranganWaktu === 'Terlambat'
+            ? 'Absen masuk berhasil dicatat. Anda tercatat terlambat.'
+            : 'Absen masuk berhasil dicatat.';
+
+        return back()->with('success', $pesanSukses);
     }
 
     // Decode foto base64 (data:image/...;base64,....) hasil capture kamera & simpan ke storage

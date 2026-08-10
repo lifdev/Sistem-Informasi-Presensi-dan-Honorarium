@@ -12,11 +12,14 @@ class DatabaseSeeder extends Seeder
             PengaturanLokasiSeeder::class,
 
             BidangSeeder::class,
+
             JabatanSeeder::class,
 
             PengaturanGajiSeeder::class,
 
             KaryawanSeeder::class,
+
+            // PresensiSeeder::class, //seeder presensi hapus jika database seeder dihapus
         ]);
     }
 }

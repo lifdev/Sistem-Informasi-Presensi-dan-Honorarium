@@ -97,19 +97,42 @@
 
             <div>
 
-                <h2 class="text-lg font-semibold text-slate-800 dark:text-white">
+                <div class="flex flex-wrap items-center gap-3">
 
-                    Honorarium —
-                    {{ DateTime::createFromFormat('!m', $bulan)->format('F') }}
-                    {{ $tahun }}
+                    <h2 class="text-lg font-semibold text-slate-800 dark:text-white">
 
-                </h2>
+                        Honorarium —
+                        {{ DateTime::createFromFormat('!m', $bulan)->format('F') }}
+                        {{ $tahun }}
+
+                    </h2>
+
+                    @if ($sedangBerjalan)
+                    <span
+                        class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">
+                        Sedang Berjalan — data s/d hari ini
+                    </span>
+                    @endif
+
+                </div>
+
+                @if ($sedangBerjalan)
+                <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                    Bulan ini belum selesai, jadi Alpha & potongan hanya dihitung sampai hari ini. Angka masih bisa
+                    berubah kalau di-generate ulang nanti.
+                </p>
+                @endif
 
             </div>
 
             <div class="flex flex-wrap gap-2">
 
                 @if ($honorarium->isNotEmpty())
+                @php
+                $pesanFinalisasi = $sedangBerjalan
+                ? 'Bulan ini masih berjalan (belum selesai). Finalisasi sekarang berarti hari-hari yang belum lewat tidak akan dihitung lagi walau nanti ada perubahan presensi. Lanjutkan finalisasi?'
+                : 'Finalisasi honorarium bulan ini?';
+                @endphp
                 <form action="{{ route('admin.honorarium.finalize') }}" method="POST">
 
                     @csrf
@@ -117,7 +140,7 @@
                     <input type="hidden" name="bulan" value="{{ $bulan }}">
                     <input type="hidden" name="tahun" value="{{ $tahun }}">
 
-                    <button onclick="return confirm('Finalisasi honorarium bulan ini?')"
+                    <button onclick="return confirm('{{ $pesanFinalisasi }}')"
                         class="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700">
 
                         Finalisasi

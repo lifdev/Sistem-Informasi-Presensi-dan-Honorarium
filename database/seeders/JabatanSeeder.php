@@ -137,6 +137,10 @@ class JabatanSeeder extends Seeder
                 'Staf Pendukung Yayasan',
             ],
 
+            'Development' => [
+                'Web Developer',
+            ],
+
         ];
 
         foreach ($data as $namaBidang => $jabatans) {
@@ -149,9 +153,7 @@ class JabatanSeeder extends Seeder
                     'bidang_id' => $bidang->id,
                     'nama' => $jabatan,
                 ]);
-
             }
-
         }
     }
 }

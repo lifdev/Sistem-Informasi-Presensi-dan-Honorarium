@@ -178,7 +178,17 @@
                         </td>
 
                         <td class="px-6 py-4 text-slate-600 dark:text-slate-400">
+                            @if ($p->keterangan === 'Terlambat')
+                            <span class="rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-300">
+                                Terlambat
+                            </span>
+                            @elseif ($p->keterangan === 'Tepat Waktu')
+                            <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-300">
+                                Tepat Waktu
+                            </span>
+                            @else
                             {{ $p->keterangan ?? '-' }}
+                            @endif
                         </td>
 
                     </tr>

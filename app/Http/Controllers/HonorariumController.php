@@ -25,16 +25,23 @@ class HonorariumController extends Controller
             ->where("tahun", $tahun)
             ->paginate(20);
 
+        // Flag: apakah periode yang sedang dilihat adalah bulan yang
+        // masih berjalan (belum selesai penuh). Dipakai di view untuk
+        // menampilkan badge "Sedang Berjalan" dan warning saat admin
+        // mencoba Finalisasi sebelum bulan itu selesai.
+        $sedangBerjalan = ((int) $bulan === Carbon::now()->month)
+            && ((int) $tahun === Carbon::now()->year);
+
         if (Auth::user()->role === 'pimpinan') {
             return view(
                 'pimpinan.honorarium.index',
-                compact('honorarium', 'bulan', 'tahun')
+                compact('honorarium', 'bulan', 'tahun', 'sedangBerjalan')
             );
         }
 
         return view(
             'admin.honorarium.index',
-            compact('honorarium', 'bulan', 'tahun')
+            compact('honorarium', 'bulan', 'tahun', 'sedangBerjalan')
         );
     }
 
@@ -73,23 +80,69 @@ class HonorariumController extends Controller
             $totalIzin  = $rekap["izin"] ?? 0;
             $totalSakit = $rekap["sakit"] ?? 0;
 
-            // Jumlah hari kerja dari kalender kerja
+            // FIX: ambil Alpha langsung dari data presensi asli,
+            // bukan hasil selisih dari KalenderKerja. Row status
+            // "alpha" yang sudah tercatat di tabel presensi adalah
+            // sumber kebenaran (source of truth) untuk absensi,
+            // sehingga tidak boleh dibuang/diabaikan.
+            $totalAlphaTercatat = $rekap["alpha"] ?? 0;
+
+            // Jumlah hari kerja dari kalender kerja (dipakai untuk
+            // validasi kelengkapan data, bukan untuk menebak Alpha).
+            // Nilai ini tetap total hari kerja SELURUH bulan, karena
+            // dipakai sebagai pembagi potongan per hari (konsisten
+            // dengan Pengaturan Gaji: gaji_pokok / jumlah hari kerja
+            // sebulan).
             $jumlahHariKerja = KalenderKerja::whereMonth("tanggal", $bulan)
                 ->whereYear("tanggal", $tahun)
                 ->where("is_hari_kerja", true)
                 ->count();
 
-            // Alpha otomatis
-            $totalAlpha = max(
-                0,
-                $jumlahHariKerja - (
-                    $totalHadir +
-                    $totalIzin +
-                    $totalSakit
-                )
-            );
+            // Batas akhir periode yang SUDAH BOLEH dinilai sebagai
+            // Alpha: kalau bulan yang digenerate adalah bulan berjalan,
+            // batasnya hari ini (hari yang belum lewat tidak mungkin
+            // sudah "bolos"). Kalau bulan yang digenerate sudah lewat,
+            // batasnya akhir bulan itu.
+            $akhirPeriode = Carbon::create($tahun, $bulan, 1)->endOfMonth();
+            $batasPenilaian = Carbon::now()->startOfDay()->lt($akhirPeriode)
+                ? Carbon::now()->startOfDay()
+                : $akhirPeriode;
 
-            // Hanya Alpha yang memotong gaji
+            // Batas awal periode yang boleh dinilai sebagai Alpha:
+            // tanggal masuk karyawan. Hari kerja SEBELUM karyawan
+            // resmi masuk tidak boleh dihitung bolos, karena dia
+            // belum menjadi karyawan pada hari itu.
+            $batasAwal = $karyawan->tanggal_masuk
+                ? Carbon::parse($karyawan->tanggal_masuk)->startOfDay()
+                : null;
+
+            // Hari kerja yang sudah lewat (yang seharusnya sudah ada
+            // presensinya sampai hari ini/akhir bulan), dihitung mulai
+            // dari tanggal masuk karyawan (kalau tanggal masuknya jatuh
+            // di bulan ini) atau dari awal bulan (kalau dia sudah masuk
+            // sebelum bulan ini).
+            $jumlahHariKerjaBerjalan = KalenderKerja::whereMonth("tanggal", $bulan)
+                ->whereYear("tanggal", $tahun)
+                ->where("is_hari_kerja", true)
+                ->whereDate("tanggal", "<=", $batasPenilaian)
+                ->when($batasAwal, function ($query) use ($batasAwal) {
+                    $query->whereDate("tanggal", ">=", $batasAwal);
+                })
+                ->count();
+
+            $totalTercatat = $totalHadir + $totalIzin + $totalSakit + $totalAlphaTercatat;
+
+            // Selisih hari kerja yang SUDAH LEWAT tapi sama sekali
+            // belum ada record presensinya (misal admin lupa input).
+            // Hari kerja yang belum terjadi TIDAK dihitung sebagai Alpha.
+            $hariTanpaRecord = max(0, $jumlahHariKerjaBerjalan - $totalTercatat);
+
+            $totalAlpha = $totalAlphaTercatat + $hariTanpaRecord;
+
+            // Potongan per hari tetap dihitung dari total hari kerja
+            // SEBULAN PENUH (bukan hari yang sudah lewat), supaya nilai
+            // potongan per hari konsisten dengan yang ditampilkan di
+            // Pengaturan Gaji.
             $potonganAlpha = $jumlahHariKerja > 0
                 ? ($setting->gaji_pokok / $jumlahHariKerja) * $totalAlpha
                 : 0;
