@@ -14,12 +14,6 @@
         </p>
     </div>
 
-    @if (session('success'))
-    <div class="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-900 dark:bg-emerald-900/20 dark:text-emerald-400">
-        {{ session('success') }}
-    </div>
-    @endif
-
     <div class="grid gap-6 lg:grid-cols-3">
 
         <div class="lg:col-span-2">
@@ -93,8 +87,8 @@
 
                     <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-900 dark:bg-blue-950/20">
                         <p class="text-sm text-blue-700 dark:text-blue-300">
-                            Presensi hanya dapat dilakukan sesuai rentang waktu yang ditentukan.
-                            Di luar jam tersebut sistem otomatis menolak presensi.
+                            Presensi dapat dilakukan sesuai rentang waktu yang ditentukan.
+                            Di luar jam tersebut sistem otomatis menandai terlambat presensi.
                         </p>
                     </div>
 
