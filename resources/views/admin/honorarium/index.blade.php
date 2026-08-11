@@ -127,6 +127,23 @@
 
             <div class="flex flex-wrap gap-2">
 
+                {{-- Toggle Tampilkan Semua / Per Halaman --}}
+                @if (request('show') === 'all')
+                <a href="{{ route('admin.honorarium.index', array_merge(request()->except(['show', 'page']), ['bulan' => $bulan, 'tahun' => $tahun])) }}"
+                    class="rounded-xl bg-slate-600 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700">
+
+                    Tampilkan Per Halaman
+
+                </a>
+                @else
+                <a href="{{ route('admin.honorarium.index', array_merge(request()->except(['show', 'page']), ['bulan' => $bulan, 'tahun' => $tahun, 'show' => 'all'])) }}"
+                    class="rounded-xl bg-slate-600 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700">
+
+                    Tampilkan Semua
+
+                </a>
+                @endif
+
                 @if ($honorarium->isNotEmpty())
                 @php
                 $pesanFinalisasi = $sedangBerjalan
@@ -176,6 +193,7 @@
 
                     <tr>
 
+                        <th class="px-6 py-4 text-center text-sm font-semibold">No.</th>
                         <th class="px-6 py-4 text-left text-sm font-semibold">Karyawan</th>
                         <th class="px-6 py-4 text-center text-sm font-semibold">Hadir</th>
                         <th class="px-6 py-4 text-center text-sm font-semibold">Izin</th>
@@ -196,6 +214,10 @@
 
                     @forelse($honorarium as $h)
                     <tr class="hover:bg-slate-50 transition dark:hover:bg-slate-800/50">
+
+                        <td class="px-6 py-4 text-center text-sm text-slate-500 dark:text-slate-400">
+                            {{ $honorarium->firstItem() + $loop->index }}
+                        </td>
 
                         <td class="px-6 py-4">
 
@@ -301,7 +323,7 @@
 
                     <tr>
 
-                        <td colspan="11" class="px-6 py-12 text-center">
+                        <td colspan="12" class="px-6 py-12 text-center">
 
                             <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-4 h-14 w-14 text-slate-300"
                                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
@@ -327,7 +349,7 @@
 
                     <tr>
 
-                        <td colspan="8" class="px-6 py-4 text-right font-semibold">
+                        <td colspan="9" class="px-6 py-4 text-right font-semibold">
                             Total Pengeluaran
                         </td>
 

@@ -100,6 +100,45 @@
     </x-card>
 </div>
 
+{{-- Grafik Section --}}
+<div class="mt-6 grid gap-6 xl:grid-cols-3">
+
+    {{-- Tren Kehadiran --}}
+    <x-card class="p-6 xl:col-span-2">
+        <div class="mb-5 flex items-center justify-between">
+            <h2 class="text-lg font-semibold">
+                Tren Kehadiran
+            </h2>
+            <select
+                onchange="window.location.href = window.location.pathname + '?periode=' + this.value"
+                class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                <option value="7hari" {{ ($periode ?? '7hari') === '7hari' ? 'selected' : '' }}>
+                    7 Hari Terakhir
+                </option>
+                <option value="bulan_ini" {{ ($periode ?? '') === 'bulan_ini' ? 'selected' : '' }}>
+                    Bulan Ini
+                </option>
+                <option value="bulan_lalu" {{ ($periode ?? '') === 'bulan_lalu' ? 'selected' : '' }}>
+                    Bulan Lalu
+                </option>
+            </select>
+        </div>
+        <div class="relative h-72">
+            <canvas id="chartTrenKehadiran"></canvas>
+        </div>
+    </x-card>
+
+    {{-- Komposisi Status Hari Ini --}}
+    <x-card class="p-6">
+        <h2 class="mb-5 text-lg font-semibold">
+            Status Hari Ini
+        </h2>
+        <div class="relative h-72">
+            <canvas id="chartStatusHariIni"></canvas>
+        </div>
+    </x-card>
+</div>
+
 {{-- Bottom Section --}}
 <div class="mt-6 grid gap-6 xl:grid-cols-2">
 
@@ -133,33 +172,78 @@
         </div>
     </x-card>
 
-    {{-- Informasi Sistem --}}
+    {{-- Presensi Saya + Informasi Sistem --}}
+    <div class="grid gap-6">
 
-    <x-card class="p-6">
-        <h2 class="mb-5 text-lg font-semibold">
-            Informasi Sistem
-        </h2>
-        <div class="space-y-4">
-            <div class="flex justify-between">
-                <span class="text-slate-500">Tanggal</span>
-                <span>{{ now()->translatedFormat('l, d F Y') }}</span>
-            </div>
-            <div class="flex justify-between">
-                <span class="text-slate-500">Jam</span>
-                <span id="jam">{{ now()->format('H:i:s') }}</span>
-            </div>
-            <div class="flex justify-between">
-                <span class="text-slate-500">Login Sebagai</span>
-                <span>{{ auth()->user()->name }}</span>
-            </div>
-            <div class="flex justify-between">
-                <span class="text-slate-500">Role</span>
-                <span class="rounded-full bg-blue-600 px-3 py-1 text-sm text-white">
-                    Admin
+        {{-- Presensi Saya --}}
+        <x-card class="p-6">
+            <div class="mb-4 flex items-center justify-between">
+                <h2 class="text-lg font-semibold">
+                    Presensi Saya
+                </h2>
+                <span class="text-xs text-slate-400">
+                    {{ now()->translatedFormat('d F Y') }}
                 </span>
             </div>
-        </div>
-    </x-card>
+
+            @if ($presensiSaya)
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-500">Status</p>
+                    <span class="mt-1 inline-block rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                        Sudah Absen
+                    </span>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-slate-500">Jam Masuk</p>
+                    <p class="mt-1 text-lg font-semibold">
+                        {{ \Carbon\Carbon::parse($presensiSaya->jam_masuk)->format('H:i') }}
+                    </p>
+                </div>
+            </div>
+            @else
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-500">Status</p>
+                    <span class="mt-1 inline-block rounded-full bg-yellow-100 px-3 py-1 text-sm font-medium text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
+                        Belum Absen
+                    </span>
+                </div>
+                <a href="{{ route('karyawan.presensi.index') }}"
+                    class="rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700">
+                    Absen Sekarang
+                </a>
+            </div>
+            @endif
+        </x-card>
+
+        {{-- Informasi Sistem --}}
+        <x-card class="p-6">
+            <h2 class="mb-5 text-lg font-semibold">
+                Informasi Sistem
+            </h2>
+            <div class="space-y-4">
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Tanggal</span>
+                    <span>{{ now()->translatedFormat('l, d F Y') }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Jam</span>
+                    <span id="jam">{{ now()->format('H:i:s') }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Login Sebagai</span>
+                    <span>{{ auth()->user()->name }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500">Role</span>
+                    <span class="rounded-full bg-blue-600 px-3 py-1 text-sm text-white">
+                        Admin
+                    </span>
+                </div>
+            </div>
+        </x-card>
+    </div>
 </div>
 
 @endsection
@@ -172,5 +256,180 @@
         const jamDashboard = document.getElementById('jam');
         if (jamDashboard) jamDashboard.textContent = jam;
     }, 1000);
+</script>
+
+<script>
+    // Dibungkus DOMContentLoaded karena Chart.js sekarang dimuat lewat
+    // bundle Vite (type="module" = deferred), jadi harus nunggu siap dulu
+    // sebelum manggil window.Chart
+    document.addEventListener('DOMContentLoaded', () => {
+        // ==== Data dari controller (lihat catatan variabel di bawah) ====
+        const trenLabels = @json($tanggalTren ?? []);
+        const trenData = @json($jumlahHadirTren ?? []);
+
+        const statusLabels = @json($statusLabels ?? []);
+        const statusData = @json($statusData ?? []);
+
+        // ==== Styling global biar nyatu sama tema dashboard ====
+        Chart.defaults.font.family = "'Inter', ui-sans-serif, system-ui, sans-serif";
+        Chart.defaults.font.size = 12;
+        Chart.defaults.color = '#64748b'; // slate-500
+
+        // ==== Chart 1: Tren Kehadiran (Line, dengan gradient fill) ====
+        const ctxTren = document.getElementById('chartTrenKehadiran');
+        if (ctxTren) {
+            const gradient = ctxTren.getContext('2d').createLinearGradient(0, 0, 0, 260);
+            gradient.addColorStop(0, 'rgba(37, 99, 235, 0.25)');
+            gradient.addColorStop(1, 'rgba(37, 99, 235, 0)');
+
+            new Chart(ctxTren, {
+                type: 'line',
+                data: {
+                    labels: trenLabels,
+                    datasets: [{
+                        label: 'Jumlah Hadir',
+                        data: trenData,
+                        borderColor: '#2563eb',
+                        backgroundColor: gradient,
+                        borderWidth: 2.5,
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: '#2563eb',
+                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            padding: 10,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            callbacks: {
+                                label: (ctx) => `${ctx.parsed.y} orang hadir`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            border: {
+                                display: false
+                            },
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#f1f5f9'
+                            },
+                            border: {
+                                display: false
+                            },
+                            ticks: {
+                                precision: 0,
+                                padding: 8
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ==== Chart 2: Komposisi Status Hari Ini (Doughnut + label total di tengah) ====
+        const ctxStatus = document.getElementById('chartStatusHariIni');
+        if (ctxStatus) {
+            const totalStatus = statusData.reduce((a, b) => a + b, 0);
+
+            const centerTextPlugin = {
+                id: 'centerText',
+                beforeDraw(chart) {
+                    const {
+                        ctx,
+                        chartArea: {
+                            left,
+                            right,
+                            top,
+                            bottom
+                        }
+                    } = chart;
+                    const x = (left + right) / 2;
+                    const y = (top + bottom) / 2;
+
+                    ctx.save();
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+
+                    ctx.font = '600 24px Inter, sans-serif';
+                    ctx.fillStyle = '#1e293b';
+                    ctx.fillText(totalStatus, x, y - 10);
+
+                    ctx.font = '400 12px Inter, sans-serif';
+                    ctx.fillStyle = '#94a3b8';
+                    ctx.fillText('Karyawan', x, y + 14);
+
+                    ctx.restore();
+                }
+            };
+
+            new Chart(ctxStatus, {
+                type: 'doughnut',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        data: statusData,
+                        backgroundColor: [
+                            '#22c55e', // Hadir - hijau
+                            '#f59e0b', // Izin - amber
+                            '#38bdf8', // Sakit - sky
+                            '#cbd5e1', // Belum Absen - abu netral (bukan warning)
+                        ],
+                        borderWidth: 0,
+                        spacing: 3,
+                        borderRadius: 4,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '72%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 8,
+                                boxHeight: 8,
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                padding: 16,
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            padding: 10,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: (ctx) => ` ${ctx.label}: ${ctx.parsed} orang`
+                            }
+                        }
+                    }
+                },
+                plugins: [centerTextPlugin]
+            });
+        }
+    });
 </script>
 @endpush

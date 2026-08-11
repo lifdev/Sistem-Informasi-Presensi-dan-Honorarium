@@ -20,10 +20,21 @@ class HonorariumController extends Controller
         $bulan = $request->bulan ?? Carbon::now()->month;
         $tahun = $request->tahun ?? Carbon::now()->year;
 
-        $honorarium = Honorarium::with("karyawan")
+        $queryHonorarium = Honorarium::with("karyawan")
             ->where("bulan", $bulan)
-            ->where("tahun", $tahun)
-            ->paginate(20);
+            ->where("tahun", $tahun);
+
+        // Opsi "Tampilkan Semua": kalau ?show=all, per-page dibuat
+        // sebesar total data yang cocok filter di atas. Tetap pakai
+        // paginate() (bukan get()) supaya hasPages()/appends()/links()
+        // yang dipanggil di view tidak error — cuma jadi 1 halaman.
+        $tampilkanSemua = $request->show === 'all';
+
+        $perPage = $tampilkanSemua
+            ? max(1, $queryHonorarium->count())
+            : 20;
+
+        $honorarium = $queryHonorarium->paginate($perPage);
 
         // Flag: apakah periode yang sedang dilihat adalah bulan yang
         // masih berjalan (belum selesai penuh). Dipakai di view untuk
@@ -80,47 +91,22 @@ class HonorariumController extends Controller
             $totalIzin  = $rekap["izin"] ?? 0;
             $totalSakit = $rekap["sakit"] ?? 0;
 
-            // FIX: ambil Alpha langsung dari data presensi asli,
-            // bukan hasil selisih dari KalenderKerja. Row status
-            // "alpha" yang sudah tercatat di tabel presensi adalah
-            // sumber kebenaran (source of truth) untuk absensi,
-            // sehingga tidak boleh dibuang/diabaikan.
             $totalAlphaTercatat = $rekap["alpha"] ?? 0;
 
-            // Jumlah hari kerja dari kalender kerja (dipakai untuk
-            // validasi kelengkapan data, bukan untuk menebak Alpha).
-            // Nilai ini tetap total hari kerja SELURUH bulan, karena
-            // dipakai sebagai pembagi potongan per hari (konsisten
-            // dengan Pengaturan Gaji: gaji_pokok / jumlah hari kerja
-            // sebulan).
             $jumlahHariKerja = KalenderKerja::whereMonth("tanggal", $bulan)
                 ->whereYear("tanggal", $tahun)
                 ->where("is_hari_kerja", true)
                 ->count();
 
-            // Batas akhir periode yang SUDAH BOLEH dinilai sebagai
-            // Alpha: kalau bulan yang digenerate adalah bulan berjalan,
-            // batasnya hari ini (hari yang belum lewat tidak mungkin
-            // sudah "bolos"). Kalau bulan yang digenerate sudah lewat,
-            // batasnya akhir bulan itu.
             $akhirPeriode = Carbon::create($tahun, $bulan, 1)->endOfMonth();
             $batasPenilaian = Carbon::now()->startOfDay()->lt($akhirPeriode)
                 ? Carbon::now()->startOfDay()
                 : $akhirPeriode;
 
-            // Batas awal periode yang boleh dinilai sebagai Alpha:
-            // tanggal masuk karyawan. Hari kerja SEBELUM karyawan
-            // resmi masuk tidak boleh dihitung bolos, karena dia
-            // belum menjadi karyawan pada hari itu.
             $batasAwal = $karyawan->tanggal_masuk
                 ? Carbon::parse($karyawan->tanggal_masuk)->startOfDay()
                 : null;
 
-            // Hari kerja yang sudah lewat (yang seharusnya sudah ada
-            // presensinya sampai hari ini/akhir bulan), dihitung mulai
-            // dari tanggal masuk karyawan (kalau tanggal masuknya jatuh
-            // di bulan ini) atau dari awal bulan (kalau dia sudah masuk
-            // sebelum bulan ini).
             $jumlahHariKerjaBerjalan = KalenderKerja::whereMonth("tanggal", $bulan)
                 ->whereYear("tanggal", $tahun)
                 ->where("is_hari_kerja", true)
@@ -132,33 +118,16 @@ class HonorariumController extends Controller
 
             $totalTercatat = $totalHadir + $totalIzin + $totalSakit + $totalAlphaTercatat;
 
-            // Selisih hari kerja yang SUDAH LEWAT tapi sama sekali
-            // belum ada record presensinya (misal admin lupa input).
-            // Hari kerja yang belum terjadi TIDAK dihitung sebagai Alpha.
             $hariTanpaRecord = max(0, $jumlahHariKerjaBerjalan - $totalTercatat);
 
             $totalAlpha = $totalAlphaTercatat + $hariTanpaRecord;
 
-            // Potongan per hari tetap dihitung dari total hari kerja
-            // SEBULAN PENUH (bukan hari yang sudah lewat), supaya nilai
-            // potongan per hari konsisten dengan yang ditampilkan di
-            // Pengaturan Gaji.
             $potonganAlpha = $jumlahHariKerja > 0
                 ? ($setting->gaji_pokok / $jumlahHariKerja) * $totalAlpha
                 : 0;
 
             $totalPotongan = $potonganAlpha;
 
-            // Bonus TIDAK lagi ditarik dari pengaturan gaji per jabatan.
-            // Bonus bersifat tidak rutin dan per individu, sehingga
-            // diinput manual oleh admin di halaman Detail Honorarium
-            // (lihat HonorariumController::updateBonus).
-            //
-            // Kalau baris honorarium karyawan ini untuk periode ini
-            // SUDAH ADA (misal admin generate ulang setelah ada koreksi
-            // presensi), bonus yang sudah diinput manual sebelumnya
-            // TETAP DIPERTAHANKAN, tidak ditimpa/direset ke 0. Kalau
-            // baris ini baru pertama kali dibuat, bonus dimulai dari 0.
             $existing = Honorarium::where("karyawan_id", $karyawan->id)
                 ->where("bulan", $bulan)
                 ->where("tahun", $tahun)
@@ -166,13 +135,10 @@ class HonorariumController extends Controller
 
             $bonus = $existing->bonus ?? 0;
 
-            // Bonus tidak boleh diubah lagi kalau status sudah final,
-            // sama seperti data lain di baris ini.
             if ($existing && $existing->status === "final") {
                 continue;
             }
 
-            // Gaji bersih
             $gajiBersih =
                 $setting->gaji_pokok
                 + $bonus

@@ -107,6 +107,16 @@
         </x-card>
     </div>
 
+    {{-- Komposisi Kehadiran --}}
+    <x-card class="p-6">
+        <h2 class="mb-5 text-lg font-semibold">
+            Komposisi Kehadiran Bulan Ini
+        </h2>
+        <div class="relative h-64 sm:h-72">
+            <canvas id="chartKomposisiBulanIni"></canvas>
+        </div>
+    </x-card>
+
     {{-- Content --}}
     <div class="grid gap-6 lg:grid-cols-2">
 
@@ -352,5 +362,107 @@
     setInterval(() => {
         const now = new Date();
     }, 1000);
+</script>
+
+@php
+$statusDataKaryawan = [
+$rekapBulanIni['hadir'] ?? 0,
+$rekapBulanIni['izin'] ?? 0,
+$rekapBulanIni['sakit'] ?? 0,
+$rekapBulanIni['alpha'] ?? 0,
+];
+@endphp
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // ==== Data dari $rekapBulanIni yang sudah dikirim controller (tanpa query baru) ====
+        const statusLabels = ['Hadir', 'Izin', 'Sakit', 'Alpha'];
+        const statusData = @json($statusDataKaryawan);
+
+        Chart.defaults.font.family = "'Inter', ui-sans-serif, system-ui, sans-serif";
+        Chart.defaults.font.size = 12;
+        Chart.defaults.color = '#64748b';
+
+        const ctxKomposisi = document.getElementById('chartKomposisiBulanIni');
+        if (ctxKomposisi) {
+            const totalStatus = statusData.reduce((a, b) => a + b, 0);
+
+            const centerTextPlugin = {
+                id: 'centerText',
+                beforeDraw(chart) {
+                    const {
+                        ctx,
+                        chartArea: {
+                            left,
+                            right,
+                            top,
+                            bottom
+                        }
+                    } = chart;
+                    const x = (left + right) / 2;
+                    const y = (top + bottom) / 2;
+
+                    ctx.save();
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+
+                    ctx.font = '600 22px Inter, sans-serif';
+                    ctx.fillStyle = '#1e293b';
+                    ctx.fillText(totalStatus, x, y - 10);
+
+                    ctx.font = '400 12px Inter, sans-serif';
+                    ctx.fillStyle = '#94a3b8';
+                    ctx.fillText('Hari Tercatat', x, y + 14);
+
+                    ctx.restore();
+                }
+            };
+
+            new Chart(ctxKomposisi, {
+                type: 'doughnut',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        data: statusData,
+                        backgroundColor: [
+                            '#22c55e', // Hadir - hijau
+                            '#f59e0b', // Izin - amber
+                            '#ef4444', // Sakit - merah
+                            '#94a3b8', // Alpha - abu
+                        ],
+                        borderWidth: 0,
+                        spacing: 3,
+                        borderRadius: 4,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 8,
+                                boxHeight: 8,
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                padding: 16,
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            padding: 10,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: (ctx) => ` ${ctx.label}: ${ctx.parsed} hari`
+                            }
+                        }
+                    }
+                },
+                plugins: [centerTextPlugin]
+            });
+        }
+    });
 </script>
 @endpush

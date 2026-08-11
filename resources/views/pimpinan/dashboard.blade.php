@@ -103,6 +103,45 @@
         </x-card>
     </div>
 
+    {{-- Grafik Section --}}
+    <div class="grid gap-6 xl:grid-cols-3">
+
+        {{-- Tren Kehadiran --}}
+        <x-card class="p-6 xl:col-span-2">
+            <div class="mb-5 flex items-center justify-between">
+                <h2 class="text-lg font-semibold">
+                    Tren Kehadiran
+                </h2>
+                <select
+                    onchange="window.location.href = window.location.pathname + '?periode=' + this.value"
+                    class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                    <option value="7hari" {{ ($periode ?? '7hari') === '7hari' ? 'selected' : '' }}>
+                        7 Hari Terakhir
+                    </option>
+                    <option value="bulan_ini" {{ ($periode ?? '') === 'bulan_ini' ? 'selected' : '' }}>
+                        Bulan Ini
+                    </option>
+                    <option value="bulan_lalu" {{ ($periode ?? '') === 'bulan_lalu' ? 'selected' : '' }}>
+                        Bulan Lalu
+                    </option>
+                </select>
+            </div>
+            <div class="relative h-72">
+                <canvas id="chartTrenKehadiran"></canvas>
+            </div>
+        </x-card>
+
+        {{-- Komposisi Status Hari Ini --}}
+        <x-card class="p-6">
+            <h2 class="mb-5 text-lg font-semibold">
+                Status Hari Ini
+            </h2>
+            <div class="relative h-72">
+                <canvas id="chartStatusHariIni"></canvas>
+            </div>
+        </x-card>
+    </div>
+
     {{-- Tabel --}}
     <div
         class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
@@ -276,3 +315,176 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // ==== Data dari controller ====
+        const trenLabels = @json($tanggalTren ?? []);
+        const trenData = @json($jumlahHadirTren ?? []);
+
+        const statusLabels = @json($statusLabels ?? []);
+        const statusData = @json($statusData ?? []);
+
+        Chart.defaults.font.family = "'Inter', ui-sans-serif, system-ui, sans-serif";
+        Chart.defaults.font.size = 12;
+        Chart.defaults.color = '#64748b';
+
+        // ==== Chart 1: Tren Kehadiran ====
+        const ctxTren = document.getElementById('chartTrenKehadiran');
+        if (ctxTren) {
+            const gradient = ctxTren.getContext('2d').createLinearGradient(0, 0, 0, 260);
+            gradient.addColorStop(0, 'rgba(37, 99, 235, 0.25)');
+            gradient.addColorStop(1, 'rgba(37, 99, 235, 0)');
+
+            new Chart(ctxTren, {
+                type: 'line',
+                data: {
+                    labels: trenLabels,
+                    datasets: [{
+                        label: 'Jumlah Hadir',
+                        data: trenData,
+                        borderColor: '#2563eb',
+                        backgroundColor: gradient,
+                        borderWidth: 2.5,
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: '#2563eb',
+                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            padding: 10,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            callbacks: {
+                                label: (ctx) => `${ctx.parsed.y} orang hadir`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            border: {
+                                display: false
+                            },
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#f1f5f9'
+                            },
+                            border: {
+                                display: false
+                            },
+                            ticks: {
+                                precision: 0,
+                                padding: 8
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ==== Chart 2: Status Hari Ini ====
+        const ctxStatus = document.getElementById('chartStatusHariIni');
+        if (ctxStatus) {
+            const totalStatus = statusData.reduce((a, b) => a + b, 0);
+
+            const centerTextPlugin = {
+                id: 'centerText',
+                beforeDraw(chart) {
+                    const {
+                        ctx,
+                        chartArea: {
+                            left,
+                            right,
+                            top,
+                            bottom
+                        }
+                    } = chart;
+                    const x = (left + right) / 2;
+                    const y = (top + bottom) / 2;
+
+                    ctx.save();
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+
+                    ctx.font = '600 24px Inter, sans-serif';
+                    ctx.fillStyle = '#1e293b';
+                    ctx.fillText(totalStatus, x, y - 10);
+
+                    ctx.font = '400 12px Inter, sans-serif';
+                    ctx.fillStyle = '#94a3b8';
+                    ctx.fillText('Karyawan', x, y + 14);
+
+                    ctx.restore();
+                }
+            };
+
+            new Chart(ctxStatus, {
+                type: 'doughnut',
+                data: {
+                    labels: statusLabels,
+                    datasets: [{
+                        data: statusData,
+                        backgroundColor: [
+                            '#22c55e',
+                            '#f59e0b',
+                            '#38bdf8',
+                            '#cbd5e1',
+                        ],
+                        borderWidth: 0,
+                        spacing: 3,
+                        borderRadius: 4,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '72%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 8,
+                                boxHeight: 8,
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                padding: 16,
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            padding: 10,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: (ctx) => ` ${ctx.label}: ${ctx.parsed} orang`
+                            }
+                        }
+                    }
+                },
+                plugins: [centerTextPlugin]
+            });
+        }
+    });
+</script>
+@endpush
