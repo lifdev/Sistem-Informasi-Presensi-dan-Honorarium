@@ -149,8 +149,28 @@ class HonorariumController extends Controller
 
             $totalPotongan = $potonganAlpha;
 
-            // Bonus bulanan dari pengaturan gaji
-            $bonus = $setting->bonus;
+            // Bonus TIDAK lagi ditarik dari pengaturan gaji per jabatan.
+            // Bonus bersifat tidak rutin dan per individu, sehingga
+            // diinput manual oleh admin di halaman Detail Honorarium
+            // (lihat HonorariumController::updateBonus).
+            //
+            // Kalau baris honorarium karyawan ini untuk periode ini
+            // SUDAH ADA (misal admin generate ulang setelah ada koreksi
+            // presensi), bonus yang sudah diinput manual sebelumnya
+            // TETAP DIPERTAHANKAN, tidak ditimpa/direset ke 0. Kalau
+            // baris ini baru pertama kali dibuat, bonus dimulai dari 0.
+            $existing = Honorarium::where("karyawan_id", $karyawan->id)
+                ->where("bulan", $bulan)
+                ->where("tahun", $tahun)
+                ->first();
+
+            $bonus = $existing->bonus ?? 0;
+
+            // Bonus tidak boleh diubah lagi kalau status sudah final,
+            // sama seperti data lain di baris ini.
+            if ($existing && $existing->status === "final") {
+                continue;
+            }
 
             // Gaji bersih
             $gajiBersih =
@@ -213,6 +233,37 @@ class HonorariumController extends Controller
             "success",
             "Honorarium bulan ini telah difinalisasi.",
         );
+    }
+
+    // Update bonus manual per karyawan (hanya boleh saat status draft)
+    public function updateBonus(Request $request, Honorarium $honorarium)
+    {
+        if ($honorarium->status === "final") {
+            return back()->with(
+                "error",
+                "Honorarium ini sudah difinalisasi, bonus tidak bisa diubah lagi.",
+            );
+        }
+
+        $request->validate([
+            "bonus" => "required|numeric|min:0",
+        ]);
+
+        $honorarium->update([
+            "bonus" => $request->bonus,
+            "gaji_bersih" =>
+            $honorarium->gaji_pokok
+                + $request->bonus
+                - $honorarium->total_potongan,
+        ]);
+
+        LogAktivitas::catat(
+            "update_bonus_honorarium",
+            "Update bonus honorarium {$honorarium->karyawan?->nama} periode {$honorarium->bulan}/{$honorarium->tahun} menjadi Rp " .
+                number_format($request->bonus, 0, ",", "."),
+        );
+
+        return back()->with("success", "Bonus berhasil disimpan.");
     }
 
     // Detail honorarium karyawan

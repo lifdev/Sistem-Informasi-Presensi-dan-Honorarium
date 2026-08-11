@@ -24,7 +24,6 @@ class PengaturanController extends Controller
     {
         $request->validate([
             'gaji_pokok' => 'required|numeric|min:0',
-            'bonus' => 'required|numeric|min:0',
         ]);
 
         $jumlahHariKerja = KalenderKerja::where('is_hari_kerja', true)
@@ -38,9 +37,11 @@ class PengaturanController extends Controller
             ? round($request->gaji_pokok / $jumlahHariKerja)
             : 0;
 
+        // Catatan: bonus TIDAK diatur di sini lagi. Bonus bersifat
+        // tidak rutin dan per individu, sehingga diinput langsung
+        // per karyawan di halaman Detail Honorarium tiap bulan.
         $pengaturanGaji->update([
             'gaji_pokok' => $request->gaji_pokok,
-            'bonus' => $request->bonus,
             'potongan_alpha' => $potonganAlpha,
         ]);
 

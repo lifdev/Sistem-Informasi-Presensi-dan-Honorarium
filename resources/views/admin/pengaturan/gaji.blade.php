@@ -11,7 +11,9 @@
                 Pengaturan Gaji
             </h1>
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                Kelola gaji pokok dan bonus setiap jabatan. Potongan alpha dihitung otomatis.
+                Kelola gaji pokok setiap jabatan. Potongan alpha dihitung otomatis. Bonus tidak diatur di sini &mdash;
+                bonus bersifat tidak rutin dan diinput langsung per karyawan di halaman
+                <span class="font-medium">Detail Honorarium</span> tiap bulan.
             </p>
         </div>
     </div>
@@ -73,29 +75,6 @@
                 </div>
 
                 <div>
-                    <label for="bonus_{{ $item->id }}" class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Bonus Bulanan
-                    </label>
-
-                    <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">Rp</span>
-                        <input
-                            type="number"
-                            id="bonus_{{ $item->id }}"
-                            name="bonus"
-                            value="{{ old('bonus', $item->bonus) }}"
-                            min="0"
-                            step="1000"
-                            class="w-full rounded-xl border bg-white py-3 pl-12 pr-4 outline-none transition focus:ring-2 dark:bg-slate-800
-                                    {{ $errors->has('bonus') ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-slate-300 focus:border-blue-500 focus:ring-blue-200 dark:border-slate-700' }}">
-                    </div>
-
-                    @error('bonus')
-                    <p class="mt-1.5 text-sm text-red-500">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div>
                     <label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
                         Potongan Alpha (per hari)
                     </label>
@@ -108,6 +87,15 @@
                             Dihitung otomatis dari gaji pokok &divide; jumlah hari kerja bulan berjalan. Diperbarui saat gaji pokok disimpan.
                         </p>
                     </div>
+                </div>
+
+                <div class="rounded-xl border border-dashed border-blue-200 bg-blue-50 px-4 py-3 dark:border-blue-900 dark:bg-blue-900/10">
+                    <p class="text-sm font-semibold text-blue-700 dark:text-blue-300">
+                        Bonus tidak diatur per jabatan
+                    </p>
+                    <p class="mt-1 text-xs text-blue-600/80 dark:text-blue-400/80">
+                        Bonus bersifat tidak rutin dan berbeda tiap karyawan, jadi diinput langsung per orang di halaman Detail Honorarium saat honorarium bulan itu masih berstatus Draft.
+                    </p>
                 </div>
 
                 <div class="flex justify-end border-t border-slate-200 pt-5 dark:border-slate-800">

@@ -240,12 +240,46 @@
 
                     <tr>
 
-                        <td class="px-6 py-4 text-slate-500">
+                        <td class="px-6 py-4 text-slate-500 align-top">
                             Bonus
+                            <p class="mt-1 text-xs font-normal text-slate-400">
+                                Tidak rutin, diisi manual per karyawan.
+                            </p>
                         </td>
 
-                        <td class="px-6 py-4 text-right font-semibold text-emerald-600">
-                            + Rp {{ number_format($honorarium->bonus, 0, ',', '.') }}
+                        <td class="px-6 py-4 text-right">
+                            @if ($honorarium->status === 'final')
+                            <span class="font-semibold text-emerald-600">
+                                + Rp {{ number_format($honorarium->bonus, 0, ',', '.') }}
+                            </span>
+                            @else
+                            <form action="{{ route('admin.honorarium.bonus.update', $honorarium) }}" method="POST"
+                                class="flex items-center justify-end gap-2">
+                                @csrf
+                                @method('PUT')
+
+                                <div class="relative">
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">Rp</span>
+                                    <input
+                                        type="number"
+                                        name="bonus"
+                                        value="{{ old('bonus', $honorarium->bonus) }}"
+                                        min="0"
+                                        step="1000"
+                                        class="w-40 rounded-lg border bg-white py-2 pl-9 pr-3 text-right text-sm font-semibold outline-none transition focus:ring-2 dark:bg-slate-800
+                                                {{ $errors->has('bonus') ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-slate-300 focus:border-blue-500 focus:ring-blue-200 dark:border-slate-700' }}">
+                                </div>
+
+                                <button type="submit"
+                                    class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700">
+                                    Simpan
+                                </button>
+                            </form>
+
+                            @error('bonus')
+                            <p class="mt-1.5 text-right text-sm text-red-500">{{ $message }}</p>
+                            @enderror
+                            @endif
                         </td>
 
                     </tr>

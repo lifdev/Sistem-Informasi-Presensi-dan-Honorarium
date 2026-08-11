@@ -11,13 +11,11 @@ class PengaturanGaji extends Model
     protected $fillable = [
         'jabatan_id',
         'gaji_pokok',
-        'bonus',
         'potongan_alpha',
     ];
 
     protected $casts = [
         'gaji_pokok'     => 'float',
-        'bonus'          => 'float',
         'potongan_alpha' => 'float',
     ];
 

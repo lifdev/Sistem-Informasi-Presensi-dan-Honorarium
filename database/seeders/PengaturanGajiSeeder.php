@@ -18,7 +18,6 @@ class PengaturanGajiSeeder extends Seeder
             PengaturanGaji::create([
                 'jabatan_id'     => $jabatan->id,
                 'gaji_pokok'      => 0,
-                'bonus'           => 0,
                 'potongan_alpha'  => 0,
             ]);
         }

@@ -27,10 +27,25 @@ class PresensiJuliSeeder extends Seeder
      *   - 1 hari Alpha
      *   Total = 23 hari (= jumlah hari kerja Juli 2026)
      *
-     * Hitungan manual (pembanding):
+     * PENTING soal Bonus:
+     * Bonus TIDAK LAGI otomatis diambil dari Pengaturan Gaji per jabatan
+     * (kolom itu sudah dihapus). Bonus sekarang bersifat tidak rutin dan
+     * per individu, diinput manual oleh admin lewat halaman Detail
+     * Honorarium SETELAH honorarium digenerate (selama status masih
+     * Draft). Jadi begitu honorarium digenerate dari data presensi
+     * seeder ini, bonusnya akan Rp 0 dulu.
+     *
+     * Hitungan manual (pembanding) — SEBELUM bonus diinput manual:
      *   Gaji Pokok   = Rp 4.000.000
-     *   Bonus        = Rp 100.000
+     *   Bonus        = Rp 0 (default saat generate)
      *   Potongan     = (4.000.000 / 23) x 1 Alpha = Rp 173.913
+     *   Gaji Bersih  = 4.000.000 + 0 - 173.913 = Rp 3.826.087
+     *
+     * Hitungan manual (pembanding) — SETELAH admin input bonus manual
+     * Rp 100.000 lewat halaman Detail Honorarium:
+     *   Gaji Pokok   = Rp 4.000.000
+     *   Bonus        = Rp 100.000 (diinput manual)
+     *   Potongan     = Rp 173.913 (tidak berubah)
      *   Gaji Bersih  = 4.000.000 + 100.000 - 173.913 = Rp 3.926.087
      */
     public function run(): void
@@ -144,6 +159,6 @@ class PresensiJuliSeeder extends Seeder
             }
         }
 
-        $this->command->info("[Data Pembanding] Presensi Juli 2026 selesai: Alif -> 20 Hadir, 1 Izin, 1 Sakit, 1 Alpha (total 23 hari kerja). Bandingkan hasil Honorarium dengan hitungan manual di komentar seeder ini.");
+        $this->command->info("[Data Pembanding] Presensi Juli 2026 selesai: Alif -> 20 Hadir, 1 Izin, 1 Sakit, 1 Alpha (total 23 hari kerja). Generate honorarium akan menghasilkan bonus Rp 0 (default) -- input bonus manual Rp 100.000 di halaman Detail Honorarium untuk mencocokkan hitungan pembanding di komentar seeder ini.");
     }
 }

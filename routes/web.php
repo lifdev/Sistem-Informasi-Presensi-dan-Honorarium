@@ -116,6 +116,10 @@ Route::middleware(["auth", "role:admin"])
                     HonorariumController::class,
                     "show",
                 ])->name("show");
+                Route::put("/{honorarium}/bonus", [
+                    HonorariumController::class,
+                    "updateBonus",
+                ])->name("bonus.update");
             });
 
         // Pengaturan
