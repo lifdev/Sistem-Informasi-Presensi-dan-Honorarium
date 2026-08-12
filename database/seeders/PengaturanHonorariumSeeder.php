@@ -16,9 +16,11 @@ class PengaturanHonorariumSeeder extends Seeder
         foreach ($jabatans as $jabatan) {
 
             PengaturanHonorarium::create([
-                'jabatan_id'     => $jabatan->id,
-                'honorarium_pokok'      => 0,
-                'potongan_alpha'  => 0,
+                'jabatan_id'       => $jabatan->id,
+                'tipe'             => 'bulanan',
+                'honorarium_pokok' => 0,
+                'potongan_alpha'   => 0,
+                'tarif_per_hadir'  => 0,
             ]);
         }
     }

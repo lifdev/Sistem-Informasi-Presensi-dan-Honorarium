@@ -195,7 +195,13 @@
             {{-- Rincian Honorarium --}}
             <table class="honorarium-table">
                 <tr>
-                    <td>Honorarium Pokok</td>
+                    <td>
+                        @if ($honorarium->isPerHadir())
+                        Honorarium ({{ $honorarium->total_hadir }} hari &times; Rp {{ number_format($honorarium->tarif_per_hadir, 0, ',', '.') }})
+                        @else
+                        Honorarium Pokok
+                        @endif
+                    </td>
                     <td class="text-right">Rp {{ number_format($honorarium->honorarium_pokok, 0, ',', '.') }}</td>
                 </tr>
                 <tr>
@@ -204,6 +210,7 @@
                         {{ number_format($honorarium->bonus, 0, ',', '.') }}
                     </td>
                 </tr>
+                @if (!$honorarium->isPerHadir())
                 <tr>
                     <td>
                         Potongan (Alpha: {{ $honorarium->total_alpha }} hari)
@@ -212,6 +219,7 @@
                         {{ number_format($honorarium->total_potongan, 0, ',', '.') }}
                     </td>
                 </tr>
+                @endif
                 <tr class="total-row">
                     <td>HONORARIUM BERSIH</td>
                     <td class="text-right">Rp {{ number_format($honorarium->honorarium_bersih, 0, ',', '.') }}</td>

@@ -11,6 +11,7 @@ class Honorarium extends Model
 
     protected $fillable = [
         'karyawan_id',
+        'tipe_honorarium',
         'bulan',
         'tahun',
         'total_hadir',
@@ -18,6 +19,7 @@ class Honorarium extends Model
         'total_sakit',
         'total_alpha',
         'honorarium_pokok',
+        'tarif_per_hadir',
         'bonus',
         'total_potongan',
         'honorarium_bersih',
@@ -25,11 +27,17 @@ class Honorarium extends Model
     ];
 
     protected $casts = [
-        'honorarium_pokok'     => 'float',
-        'bonus'          => 'float',
-        'total_potongan' => 'float',
-        'honorarium_bersih'    => 'float',
+        'honorarium_pokok'  => 'float',
+        'tarif_per_hadir'   => 'float',
+        'bonus'             => 'float',
+        'total_potongan'    => 'float',
+        'honorarium_bersih' => 'float',
     ];
+
+    public function isPerHadir(): bool
+    {
+        return $this->tipe_honorarium === 'per_hadir';
+    }
 
     // Relasi ke Karyawan
     public function karyawan(): BelongsTo

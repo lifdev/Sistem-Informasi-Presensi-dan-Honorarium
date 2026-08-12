@@ -23,9 +23,26 @@ class PengaturanController extends Controller
     public function updateHonorarium(Request $request, PengaturanHonorarium $pengaturanHonorarium)
     {
         $request->validate([
-            'honorarium_pokok' => 'required|numeric|min:0',
+            'tipe' => 'required|in:bulanan,per_hadir',
+            'honorarium_pokok' => 'required_if:tipe,bulanan|nullable|numeric|min:0',
+            'tarif_per_hadir' => 'required_if:tipe,per_hadir|nullable|numeric|min:0',
         ]);
 
+        // Tipe "per_hadir" untuk relawan guru / ustad part-time:
+        // dibayar tarif x jumlah hari hadir, tanpa potongan alpha
+        // (hari tidak hadir memang tidak dibayar).
+        if ($request->tipe === 'per_hadir') {
+            $pengaturanHonorarium->update([
+                'tipe' => 'per_hadir',
+                'tarif_per_hadir' => $request->tarif_per_hadir,
+                'honorarium_pokok' => 0,
+                'potongan_alpha' => 0,
+            ]);
+
+            return back()->with('success', 'Pengaturan honorarium berhasil diperbarui.');
+        }
+
+        // Tipe "bulanan" untuk karyawan tetap: honorarium flat per bulan.
         $jumlahHariKerja = KalenderKerja::where('is_hari_kerja', true)
             ->whereMonth('tanggal', now()->month)
             ->whereYear('tanggal', now()->year)
@@ -41,8 +58,10 @@ class PengaturanController extends Controller
         // tidak rutin dan per individu, sehingga diinput langsung
         // per karyawan di halaman Detail Honorarium tiap bulan.
         $pengaturanHonorarium->update([
+            'tipe' => 'bulanan',
             'honorarium_pokok' => $request->honorarium_pokok,
             'potongan_alpha' => $potonganAlpha,
+            'tarif_per_hadir' => 0,
         ]);
 
         return back()->with('success', 'Pengaturan honorarium berhasil diperbarui.');

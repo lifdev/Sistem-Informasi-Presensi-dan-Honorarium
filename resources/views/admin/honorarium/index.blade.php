@@ -231,6 +231,12 @@
                                 {{ $h->karyawan->jabatan?->nama }}
                             </div>
 
+                            @if ($h->isPerHadir())
+                            <span class="mt-1 inline-flex rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+                                Per Hadir
+                            </span>
+                            @endif
+
                         </td>
 
                         <td class="px-6 py-4 text-center">

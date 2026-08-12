@@ -11,9 +11,11 @@
                 Pengaturan Honorarium
             </h1>
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                Kelola honorarium pokok setiap jabatan. Potongan alpha dihitung otomatis. Bonus tidak diatur di sini &mdash;
-                bonus bersifat tidak rutin dan diinput langsung per karyawan di halaman
-                <span class="font-medium">Detail Honorarium</span> tiap bulan.
+                Kelola honorarium tiap jabatan. Pilih <span class="font-medium">Bulanan</span> untuk karyawan tetap
+                (flat per bulan, potongan alpha dihitung otomatis) atau <span class="font-medium">Per Hari Hadir</span>
+                untuk relawan guru / ustad part-time (dibayar sesuai jumlah hari hadir, tanpa potongan alpha).
+                Bonus tidak diatur di sini &mdash; bonus bersifat tidak rutin dan diinput langsung per karyawan
+                di halaman <span class="font-medium">Detail Honorarium</span> tiap bulan.
             </p>
         </div>
     </div>
@@ -46,40 +48,114 @@
                 @method('PUT')
 
                 <div>
-                    <label for="honorarium_pokok_{{ $item->id }}" class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Honorarium Pokok
+                    <label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                        Tipe Honorarium
                     </label>
 
-                    <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">Rp</span>
-                        <input
-                            type="number"
-                            id="honorarium_pokok_{{ $item->id }}"
-                            name="honorarium_pokok"
-                            value="{{ old('honorarium_pokok', $item->honorarium_pokok) }}"
-                            min="0"
-                            step="1000"
-                            class="w-full rounded-xl border bg-white py-3 pl-12 pr-4 outline-none transition focus:ring-2 dark:bg-slate-800
-                                    {{ $errors->has('honorarium_pokok') ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-slate-300 focus:border-blue-500 focus:ring-blue-200 dark:border-slate-700' }}">
+                    <div class="grid grid-cols-2 gap-3">
+                        <label
+                            class="tipe-option cursor-pointer rounded-xl border px-4 py-3 text-sm font-medium transition
+                                    {{ old('tipe', $item->tipe) === 'bulanan' ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : 'border-slate-300 text-slate-600 dark:border-slate-700 dark:text-slate-300' }}">
+                            <input
+                                type="radio"
+                                name="tipe"
+                                value="bulanan"
+                                class="tipe-radio mr-2"
+                                data-target="bulanan-{{ $item->id }}"
+                                onchange="toggleTipeHonorarium('{{ $item->id }}', 'bulanan')"
+                                {{ old('tipe', $item->tipe) === 'bulanan' ? 'checked' : '' }}>
+                            Bulanan
+                            <span class="block text-xs font-normal opacity-75">Karyawan tetap</span>
+                        </label>
+
+                        <label
+                            class="tipe-option cursor-pointer rounded-xl border px-4 py-3 text-sm font-medium transition
+                                    {{ old('tipe', $item->tipe) === 'per_hadir' ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : 'border-slate-300 text-slate-600 dark:border-slate-700 dark:text-slate-300' }}">
+                            <input
+                                type="radio"
+                                name="tipe"
+                                value="per_hadir"
+                                class="tipe-radio mr-2"
+                                data-target="per_hadir-{{ $item->id }}"
+                                onchange="toggleTipeHonorarium('{{ $item->id }}', 'per_hadir')"
+                                {{ old('tipe', $item->tipe) === 'per_hadir' ? 'checked' : '' }}>
+                            Per Hari Hadir
+                            <span class="block text-xs font-normal opacity-75">Relawan guru / ustad</span>
+                        </label>
                     </div>
 
-                    @error('honorarium_pokok')
+                    @error('tipe')
                     <p class="mt-1.5 text-sm text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <div>
-                    <label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Potongan Alpha (per hari)
-                    </label>
+                <div id="bulanan-{{ $item->id }}" class="space-y-6" style="{{ old('tipe', $item->tipe) === 'bulanan' ? '' : 'display:none' }}">
+                    <div>
+                        <label for="honorarium_pokok_{{ $item->id }}" class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                            Honorarium Pokok (per bulan)
+                        </label>
 
-                    <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-800/50">
-                        <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
-                            Rp {{ number_format($item->potongan_alpha, 0, ',', '.') }}
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">Rp</span>
+                            <input
+                                type="number"
+                                id="honorarium_pokok_{{ $item->id }}"
+                                name="honorarium_pokok"
+                                value="{{ old('honorarium_pokok', $item->honorarium_pokok) }}"
+                                min="0"
+                                step="1000"
+                                class="w-full rounded-xl border bg-white py-3 pl-12 pr-4 outline-none transition focus:ring-2 dark:bg-slate-800
+                                        {{ $errors->has('honorarium_pokok') ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-slate-300 focus:border-blue-500 focus:ring-blue-200 dark:border-slate-700' }}">
+                        </div>
+
+                        @error('honorarium_pokok')
+                        <p class="mt-1.5 text-sm text-red-500">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                            Potongan Alpha (per hari)
+                        </label>
+
+                        <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-800/50">
+                            <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                                Rp {{ number_format($item->potongan_alpha, 0, ',', '.') }}
+                            </p>
+                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                Dihitung otomatis dari honorarium pokok &divide; jumlah hari kerja bulan berjalan. Diperbarui saat honorarium pokok disimpan.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="per_hadir-{{ $item->id }}" class="space-y-6" style="{{ old('tipe', $item->tipe) === 'per_hadir' ? '' : 'display:none' }}">
+                    <div>
+                        <label for="tarif_per_hadir_{{ $item->id }}" class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                            Tarif per Hari Hadir
+                        </label>
+
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">Rp</span>
+                            <input
+                                type="number"
+                                id="tarif_per_hadir_{{ $item->id }}"
+                                name="tarif_per_hadir"
+                                value="{{ old('tarif_per_hadir', $item->tarif_per_hadir) }}"
+                                min="0"
+                                step="1000"
+                                class="w-full rounded-xl border bg-white py-3 pl-12 pr-4 outline-none transition focus:ring-2 dark:bg-slate-800
+                                        {{ $errors->has('tarif_per_hadir') ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-slate-300 focus:border-blue-500 focus:ring-blue-200 dark:border-slate-700' }}">
+                        </div>
+
+                        <p class="mt-1.5 text-xs text-slate-500 dark:text-slate-400">
+                            Honorarium bulan berjalan = tarif ini &times; jumlah hari hadir. Tidak ada potongan alpha &mdash;
+                            hari tidak hadir otomatis tidak dibayar.
                         </p>
-                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                            Dihitung otomatis dari honorarium pokok &divide; jumlah hari kerja bulan berjalan. Diperbarui saat honorarium pokok disimpan.
-                        </p>
+
+                        @error('tarif_per_hadir')
+                        <p class="mt-1.5 text-sm text-red-500">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
 
@@ -107,4 +183,27 @@
     </div>
 
 </div>
+
+<script>
+    function toggleTipeHonorarium(itemId, tipe) {
+        const bulanan = document.getElementById('bulanan-' + itemId);
+        const perHadir = document.getElementById('per_hadir-' + itemId);
+
+        if (bulanan) bulanan.style.display = tipe === 'bulanan' ? '' : 'none';
+        if (perHadir) perHadir.style.display = tipe === 'per_hadir' ? '' : 'none';
+
+        document
+            .querySelectorAll(`input.tipe-radio[data-target^="bulanan-${itemId}"], input.tipe-radio[data-target^="per_hadir-${itemId}"]`)
+            .forEach((radio) => {
+                const label = radio.closest('.tipe-option');
+                if (!label) return;
+                const isActive = radio.value === tipe;
+                label.classList.toggle('border-blue-500', isActive);
+                label.classList.toggle('bg-blue-50', isActive);
+                label.classList.toggle('text-blue-700', isActive);
+                label.classList.toggle('border-slate-300', !isActive);
+                label.classList.toggle('text-slate-600', !isActive);
+            });
+    }
+</script>
 @endsection

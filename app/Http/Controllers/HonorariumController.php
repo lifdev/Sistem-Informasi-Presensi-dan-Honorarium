@@ -122,12 +122,6 @@ class HonorariumController extends Controller
 
             $totalAlpha = $totalAlphaTercatat + $hariTanpaRecord;
 
-            $potonganAlpha = $jumlahHariKerja > 0
-                ? ($setting->honorarium_pokok / $jumlahHariKerja) * $totalAlpha
-                : 0;
-
-            $totalPotongan = $potonganAlpha;
-
             $existing = Honorarium::where("karyawan_id", $karyawan->id)
                 ->where("bulan", $bulan)
                 ->where("tahun", $tahun)
@@ -138,6 +132,47 @@ class HonorariumController extends Controller
             if ($existing && $existing->status === "final") {
                 continue;
             }
+
+            if ($setting->isPerHadir()) {
+                // Relawan guru / ustad part-time: dibayar per hari hadir.
+                // Tidak ada potongan alpha — hari tidak hadir memang tidak dibayar.
+                $honorariumPokok = $totalHadir * $setting->tarif_per_hadir;
+                $totalPotongan = 0;
+                $honorariumBersih = $honorariumPokok + $bonus;
+
+                Honorarium::updateOrCreate(
+                    [
+                        "karyawan_id" => $karyawan->id,
+                        "bulan" => $bulan,
+                        "tahun" => $tahun,
+                    ],
+                    [
+                        "tipe_honorarium" => "per_hadir",
+                        "total_hadir" => $totalHadir,
+                        "total_izin" => $totalIzin,
+                        "total_sakit" => $totalSakit,
+                        "total_alpha" => $totalAlpha,
+
+                        "honorarium_pokok" => $honorariumPokok,
+                        "tarif_per_hadir" => $setting->tarif_per_hadir,
+                        "bonus" => $bonus,
+
+                        "total_potongan" => $totalPotongan,
+                        "honorarium_bersih" => $honorariumBersih,
+
+                        "status" => "draft",
+                    ]
+                );
+
+                continue;
+            }
+
+            // Karyawan tetap: honorarium flat bulanan, dipotong per hari alpha.
+            $potonganAlpha = $jumlahHariKerja > 0
+                ? ($setting->honorarium_pokok / $jumlahHariKerja) * $totalAlpha
+                : 0;
+
+            $totalPotongan = $potonganAlpha;
 
             $honorariumBersih =
                 $setting->honorarium_pokok
@@ -151,12 +186,14 @@ class HonorariumController extends Controller
                     "tahun" => $tahun,
                 ],
                 [
+                    "tipe_honorarium" => "bulanan",
                     "total_hadir" => $totalHadir,
                     "total_izin" => $totalIzin,
                     "total_sakit" => $totalSakit,
                     "total_alpha" => $totalAlpha,
 
                     "honorarium_pokok" => $setting->honorarium_pokok,
+                    "tarif_per_hadir" => null,
                     "bonus" => $bonus,
 
                     "total_potongan" => $totalPotongan,

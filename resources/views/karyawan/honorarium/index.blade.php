@@ -82,7 +82,11 @@
 
                 <div class="flex items-center justify-between">
                     <span class="text-gray-500 dark:text-slate-400">
+                        @if ($h->isPerHadir())
+                        Honorarium ({{ $h->total_hadir }}x hadir @ Rp {{ number_format($h->tarif_per_hadir, 0, ',', '.') }})
+                        @else
                         Honorarium Pokok
+                        @endif
                     </span>
 
                     <span class="font-medium text-gray-800 dark:text-slate-200">
@@ -100,6 +104,7 @@
                     </span>
                 </div>
 
+                @if (!$h->isPerHadir())
                 <div class="flex items-center justify-between">
                     <span class="text-gray-500 dark:text-slate-400">
                         Potongan
@@ -109,6 +114,7 @@
                         - Rp {{ number_format($h->total_potongan, 0, ',', '.') }}
                     </span>
                 </div>
+                @endif
 
             </div>
 

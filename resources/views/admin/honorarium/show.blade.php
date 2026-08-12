@@ -228,8 +228,15 @@
 
                     <tr>
 
-                        <td class="px-6 py-4 text-slate-500">
+                        <td class="px-6 py-4 text-slate-500 align-top">
+                            @if ($honorarium->isPerHadir())
+                            Honorarium ({{ $honorarium->total_hadir }} hari hadir)
+                            <p class="mt-1 text-xs font-normal text-slate-400">
+                                Tarif Rp {{ number_format($honorarium->tarif_per_hadir, 0, ',', '.') }} / hari hadir.
+                            </p>
+                            @else
                             Honorarium Pokok
+                            @endif
                         </td>
 
                         <td class="px-6 py-4 text-right font-semibold text-slate-800 dark:text-white">
@@ -284,6 +291,7 @@
 
                     </tr>
 
+                    @if (!$honorarium->isPerHadir())
                     <tr>
 
                         <td class="px-6 py-4 text-slate-500">
@@ -298,6 +306,7 @@
                         </td>
 
                     </tr>
+                    @endif
 
                 </tbody>
 
