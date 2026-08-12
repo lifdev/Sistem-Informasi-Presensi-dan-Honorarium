@@ -58,11 +58,10 @@ class JabatanController extends Controller
         PengaturanHonorarium::firstOrCreate(
             ['jabatan_id' => $jabatan->id],
             [
-                'honorarium_pokok'      => 0,
-                'tunjangan_hadir' => 0,
-                'potongan_alpha'  => 0,
-                'potongan_izin'   => 0,
-                'potongan_sakit'  => 0,
+                'tipe'             => 'bulanan',
+                'honorarium_pokok' => 0,
+                'potongan_alpha'   => 0,
+                'tarif_per_hadir'  => 0,
             ]
         );
 

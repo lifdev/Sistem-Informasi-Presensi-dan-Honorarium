@@ -14,6 +14,9 @@ class Karyawan extends Model
         'nip',
         'nama',
         'jabatan_id',
+        'honorarium_tipe',
+        'honorarium_pokok',
+        'tarif_per_hadir',
         'jenis_kelamin',
         'no_hp',
         'alamat',
@@ -22,7 +25,9 @@ class Karyawan extends Model
     ];
 
     protected $casts = [
-        'tanggal_masuk' => 'date',
+        'tanggal_masuk'    => 'date',
+        'honorarium_pokok' => 'float',
+        'tarif_per_hadir'  => 'float',
     ];
 
     // Relasi ke User (1 karyawan punya 1 akun)
