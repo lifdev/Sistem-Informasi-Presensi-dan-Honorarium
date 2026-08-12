@@ -22,11 +22,11 @@ return new class extends Migration {
             $table->integer('total_sakit')->default(0);
             $table->integer('total_alpha')->default(0);
 
-            $table->decimal('gaji_pokok', 15, 2)->default(0);
+            $table->decimal('honorarium_pokok', 15, 2)->default(0);
             $table->decimal('bonus', 15, 2)->default(0);
 
             $table->decimal('total_potongan', 15, 2)->default(0);
-            $table->decimal('gaji_bersih', 15, 2)->default(0);
+            $table->decimal('honorarium_bersih', 15, 2)->default(0);
 
             $table->enum('status', ['draft', 'final'])->default('draft');
 

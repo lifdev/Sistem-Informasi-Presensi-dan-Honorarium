@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PengaturanGaji;
+use App\Models\PengaturanHonorarium;
 use App\Models\PengaturanLokasi;
 use Illuminate\Http\Request;
 use App\Models\PengaturanJam;
@@ -10,20 +10,20 @@ use App\Models\KalenderKerja;
 
 class PengaturanController extends Controller
 {
-    // Pengaturan gaji
-    public function gaji()
+    // Pengaturan honorarium
+    public function honorarium()
     {
-        $data = PengaturanGaji::with('jabatan.bidang')
+        $data = PengaturanHonorarium::with('jabatan.bidang')
             ->orderBy('jabatan_id')
             ->get();
 
-        return view('admin.pengaturan.gaji', compact('data'));
+        return view('admin.pengaturan.honorarium', compact('data'));
     }
 
-    public function updateGaji(Request $request, PengaturanGaji $pengaturanGaji)
+    public function updateHonorarium(Request $request, PengaturanHonorarium $pengaturanHonorarium)
     {
         $request->validate([
-            'gaji_pokok' => 'required|numeric|min:0',
+            'honorarium_pokok' => 'required|numeric|min:0',
         ]);
 
         $jumlahHariKerja = KalenderKerja::where('is_hari_kerja', true)
@@ -31,21 +31,21 @@ class PengaturanController extends Controller
             ->whereYear('tanggal', now()->year)
             ->count();
 
-        // Potongan alpha = 100% gaji harian, dihitung otomatis dari gaji_pokok
+        // Potongan alpha = 100% honorarium harian, dihitung otomatis dari honorarium_pokok
         // dibagi jumlah hari kerja bulan berjalan (bukan input manual)
         $potonganAlpha = $jumlahHariKerja > 0
-            ? round($request->gaji_pokok / $jumlahHariKerja)
+            ? round($request->honorarium_pokok / $jumlahHariKerja)
             : 0;
 
         // Catatan: bonus TIDAK diatur di sini lagi. Bonus bersifat
         // tidak rutin dan per individu, sehingga diinput langsung
         // per karyawan di halaman Detail Honorarium tiap bulan.
-        $pengaturanGaji->update([
-            'gaji_pokok' => $request->gaji_pokok,
+        $pengaturanHonorarium->update([
+            'honorarium_pokok' => $request->honorarium_pokok,
             'potongan_alpha' => $potonganAlpha,
         ]);
 
-        return back()->with('success', 'Pengaturan gaji berhasil diperbarui.');
+        return back()->with('success', 'Pengaturan honorarium berhasil diperbarui.');
     }
 
     // Pengaturan lokasi GPS

@@ -19,9 +19,9 @@ class Jabatan extends Model
         return $this->belongsTo(Bidang::class);
     }
 
-    public function pengaturanGaji()
+    public function pengaturanHonorarium()
     {
-        return $this->hasOne(PengaturanGaji::class);
+        return $this->hasOne(PengaturanHonorarium::class);
     }
 
     public function karyawan()

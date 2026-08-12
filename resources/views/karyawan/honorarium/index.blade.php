@@ -33,14 +33,14 @@
         <!-- Body -->
         <div class="p-6">
 
-            <!-- Gaji Bersih -->
+            <!-- Honorarium Bersih -->
             <div class="mb-6 text-center">
                 <p class="text-sm text-gray-500 dark:text-slate-400">
-                    Gaji Bersih
+                    Honorarium Bersih
                 </p>
 
                 <h2 class="mt-1 text-3xl font-bold text-green-600 dark:text-green-400">
-                    Rp {{ number_format($h->gaji_bersih, 0, ',', '.') }}
+                    Rp {{ number_format($h->honorarium_bersih, 0, ',', '.') }}
                 </h2>
             </div>
 
@@ -82,11 +82,11 @@
 
                 <div class="flex items-center justify-between">
                     <span class="text-gray-500 dark:text-slate-400">
-                        Gaji Pokok
+                        Honorarium Pokok
                     </span>
 
                     <span class="font-medium text-gray-800 dark:text-slate-200">
-                        Rp {{ number_format($h->gaji_pokok, 0, ',', '.') }}
+                        Rp {{ number_format($h->honorarium_pokok, 0, ',', '.') }}
                     </span>
                 </div>
 

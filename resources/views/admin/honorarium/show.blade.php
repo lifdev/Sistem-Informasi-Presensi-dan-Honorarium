@@ -229,11 +229,11 @@
                     <tr>
 
                         <td class="px-6 py-4 text-slate-500">
-                            Gaji Pokok
+                            Honorarium Pokok
                         </td>
 
                         <td class="px-6 py-4 text-right font-semibold text-slate-800 dark:text-white">
-                            Rp {{ number_format($honorarium->gaji_pokok, 0, ',', '.') }}
+                            Rp {{ number_format($honorarium->honorarium_pokok, 0, ',', '.') }}
                         </td>
 
                     </tr>
@@ -306,11 +306,11 @@
                     <tr>
 
                         <th class="px-6 py-5 text-left text-lg font-bold text-slate-800 dark:text-white">
-                            Gaji Bersih
+                            Honorarium Bersih
                         </th>
 
                         <th class="px-6 py-5 text-right text-2xl font-bold text-emerald-600">
-                            Rp {{ number_format($honorarium->gaji_bersih, 0, ',', '.') }}
+                            Rp {{ number_format($honorarium->honorarium_bersih, 0, ',', '.') }}
                         </th>
 
                     </tr>

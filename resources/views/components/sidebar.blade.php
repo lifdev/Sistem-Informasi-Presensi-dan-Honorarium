@@ -202,8 +202,8 @@
             Pengaturan
         </p>
 
-        <a href="{{ route('admin.pengaturan.gaji') }}"
-            class="flex items-center gap-3 rounded-lg px-4 py-3 transition {{ request()->routeIs('admin.pengaturan.gaji*') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
+        <a href="{{ route('admin.pengaturan.honorarium') }}"
+            class="flex items-center gap-3 rounded-lg px-4 py-3 transition {{ request()->routeIs('admin.pengaturan.honorarium*') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -211,7 +211,7 @@
                 <path d="M7 10a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v8a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1l0 -8" />
                 <path d="M12 14a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
             </svg>
-            <span>Pengaturan Gaji</span>
+            <span>Pengaturan Honorarium</span>
         </a>
 
         <a href="{{ route('admin.pengaturan.lokasi') }}"

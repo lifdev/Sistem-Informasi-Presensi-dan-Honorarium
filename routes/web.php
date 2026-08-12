@@ -126,14 +126,14 @@ Route::middleware(["auth", "role:admin"])
         Route::prefix("pengaturan")
             ->name("pengaturan.")
             ->group(function () {
-                Route::get("/gaji", [
+                Route::get("/honorarium", [
                     PengaturanController::class,
-                    "gaji",
-                ])->name("gaji");
-                Route::put("/gaji/{pengaturanGaji}", [
+                    "honorarium",
+                ])->name("honorarium");
+                Route::put("/honorarium/{pengaturanHonorarium}", [
                     PengaturanController::class,
-                    "updateGaji",
-                ])->name("gaji.update");
+                    "updateHonorarium",
+                ])->name("honorarium.update");
                 Route::get("/lokasi", [
                     PengaturanController::class,
                     "lokasi",
@@ -187,7 +187,7 @@ Route::middleware(["auth", "role:admin"])
                 ])->name("honorarium.pdf");
                 Route::get("/slip/{honorarium}", [
                     LaporanController::class,
-                    "slipGaji",
+                    "slipHonorarium",
                 ])->name("slip");
             });
 
@@ -288,7 +288,7 @@ Route::middleware(["auth", "role:pimpinan"])
                 // Slip
                 Route::get("/slip/{honorarium}", [
                     LaporanController::class,
-                    "slipGaji",
+                    "slipHonorarium",
                 ])->name("slip");
             });
     });

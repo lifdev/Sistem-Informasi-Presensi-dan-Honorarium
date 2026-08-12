@@ -96,10 +96,10 @@
                 <th class="text-center">Izin</th>
                 <th class="text-center">Sakit</th>
                 <th class="text-center">Alpha</th>
-                <th class="text-right">Gaji Pokok</th>
+                <th class="text-right">Honorarium Pokok</th>
                 <th class="text-right">Bonus</th>
                 <th class="text-right">Potongan</th>
-                <th class="text-right">Gaji Bersih</th>
+                <th class="text-right">Honorarium Bersih</th>
             </tr>
         </thead>
         <tbody>
@@ -113,10 +113,10 @@
                 <td class="text-center">{{ $h->total_izin }}</td>
                 <td class="text-center">{{ $h->total_sakit }}</td>
                 <td class="text-center">{{ $h->total_alpha }}</td>
-                <td class="text-right">Rp {{ number_format($h->gaji_pokok, 0, ',', '.') }}</td>
+                <td class="text-right">Rp {{ number_format($h->honorarium_pokok, 0, ',', '.') }}</td>
                 <td class="text-right">Rp {{ number_format($h->bonus, 0, ',', '.') }}</td>
                 <td class="text-right">Rp {{ number_format($h->total_potongan, 0, ',', '.') }}</td>
-                <td class="text-right">Rp {{ number_format($h->gaji_bersih, 0, ',', '.') }}</td>
+                <td class="text-right">Rp {{ number_format($h->honorarium_bersih, 0, ',', '.') }}</td>
             </tr>
             @empty
             <tr>
@@ -128,7 +128,7 @@
         <tfoot>
             <tr>
                 <td colspan="11" class="text-right">Total Pengeluaran:</td>
-                <td class="text-right">Rp {{ number_format($honorarium->sum('gaji_bersih'), 0, ',', '.') }}</td>
+                <td class="text-right">Rp {{ number_format($honorarium->sum('honorarium_bersih'), 0, ',', '.') }}</td>
             </tr>
         </tfoot>
         @endif

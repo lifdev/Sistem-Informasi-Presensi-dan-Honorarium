@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Slip Gaji</title>
+    <title>Slip Honorarium</title>
     <style>
         * {
             margin: 0;
@@ -76,20 +76,20 @@
             margin: 12px 0;
         }
 
-        .gaji-table {
+        .honorarium-table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .gaji-table td {
+        .honorarium-table td {
             padding: 5px 8px;
         }
 
-        .gaji-table tr:nth-child(even) td {
+        .honorarium-table tr:nth-child(even) td {
             background: #f5f7fa;
         }
 
-        .gaji-table .total-row td {
+        .honorarium-table .total-row td {
             background: #1e3a5f;
             color: #fff;
             font-weight: bold;
@@ -192,11 +192,11 @@
 
             <hr class="divider">
 
-            {{-- Rincian Gaji --}}
-            <table class="gaji-table">
+            {{-- Rincian Honorarium --}}
+            <table class="honorarium-table">
                 <tr>
-                    <td>Gaji Pokok</td>
-                    <td class="text-right">Rp {{ number_format($honorarium->gaji_pokok, 0, ',', '.') }}</td>
+                    <td>Honorarium Pokok</td>
+                    <td class="text-right">Rp {{ number_format($honorarium->honorarium_pokok, 0, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td>Bonus</td>
@@ -213,8 +213,8 @@
                     </td>
                 </tr>
                 <tr class="total-row">
-                    <td>GAJI BERSIH</td>
-                    <td class="text-right">Rp {{ number_format($honorarium->gaji_bersih, 0, ',', '.') }}</td>
+                    <td>HONORARIUM BERSIH</td>
+                    <td class="text-right">Rp {{ number_format($honorarium->honorarium_bersih, 0, ',', '.') }}</td>
                 </tr>
             </table>
 

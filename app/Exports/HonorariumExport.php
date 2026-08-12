@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Exports;
 
 use App\Models\Honorarium;
@@ -39,10 +40,10 @@ class HonorariumExport implements
             "Izin",
             "Sakit",
             "Alpha",
-            "Gaji Pokok",
+            "Honorarium Pokok",
             "Tunjangan",
             "Potongan",
-            "Gaji Bersih",
+            "Honorarium Bersih",
             "Status",
         ];
     }
@@ -61,10 +62,10 @@ class HonorariumExport implements
             $row->total_izin,
             $row->total_sakit,
             $row->total_alpha,
-            $row->gaji_pokok,
+            $row->honorarium_pokok,
             $row->tunjangan,
             $row->total_potongan,
-            $row->gaji_bersih,
+            $row->honorarium_bersih,
             ucfirst($row->status),
         ];
     }

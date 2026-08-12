@@ -82,12 +82,12 @@ class LaporanController extends Controller
         return $pdf->download("Honorarium_{$namaBulan}_{$tahun}.pdf");
     }
 
-    // Cetak slip gaji
-    public function slipGaji(Honorarium $honorarium)
+    // Cetak slip honorarium
+    public function slipHonorarium(Honorarium $honorarium)
     {
         $honorarium->load('karyawan');
         $pdf = Pdf::loadView('admin.laporan.pdf.slip', compact('honorarium'))
             ->setPaper([0, 0, 595, 350]);
-        return $pdf->stream("Slip_Gaji_{$honorarium->karyawan->nip}_{$honorarium->namaBulan()}_{$honorarium->tahun}.pdf");
+        return $pdf->stream("Slip_Honorarium_{$honorarium->karyawan->nip}_{$honorarium->namaBulan()}_{$honorarium->tahun}.pdf");
     }
 }

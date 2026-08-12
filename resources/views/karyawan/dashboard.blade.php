@@ -257,7 +257,7 @@
 
                     <h2 class="mt-2 text-4xl font-bold text-green-600">
 
-                        Rp {{ number_format($honorariumTerakhir->gaji_bersih, 0, ',', '.') }}
+                        Rp {{ number_format($honorariumTerakhir->honorarium_bersih, 0, ',', '.') }}
 
                     </h2>
 
@@ -276,12 +276,12 @@
                     <div class="flex justify-between border-b pb-3">
 
                         <span class="text-slate-500">
-                            Gaji Pokok
+                            Honorarium Pokok
                         </span>
 
                         <span class="font-semibold">
 
-                            Rp {{ number_format($honorariumTerakhir->gaji_pokok, 0, ',', '.') }}
+                            Rp {{ number_format($honorariumTerakhir->honorarium_pokok, 0, ',', '.') }}
 
                         </span>
 

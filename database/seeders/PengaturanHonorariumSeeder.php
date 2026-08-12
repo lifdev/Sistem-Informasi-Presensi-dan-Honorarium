@@ -3,21 +3,21 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\PengaturanGaji;
+use App\Models\PengaturanHonorarium;
 
-class PengaturanGajiSeeder extends Seeder
+class PengaturanHonorariumSeeder extends Seeder
 {
     public function run(): void
     {
-        PengaturanGaji::truncate();
+        PengaturanHonorarium::truncate();
 
         $jabatans = \App\Models\Jabatan::all();
 
         foreach ($jabatans as $jabatan) {
 
-            PengaturanGaji::create([
+            PengaturanHonorarium::create([
                 'jabatan_id'     => $jabatan->id,
-                'gaji_pokok'      => 0,
+                'honorarium_pokok'      => 0,
                 'potongan_alpha'  => 0,
             ]);
         }

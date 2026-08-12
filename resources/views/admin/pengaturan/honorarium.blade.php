@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Pengaturan Gaji')
+@section('title', 'Pengaturan Honorarium')
 
 @section('content')
 <div class="mx-auto max-w-7xl">
@@ -8,10 +8,10 @@
     <div class="mb-6 flex items-center justify-between">
         <div>
             <h1 class="text-3xl font-bold text-slate-800 dark:text-white">
-                Pengaturan Gaji
+                Pengaturan Honorarium
             </h1>
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                Kelola gaji pokok setiap jabatan. Potongan alpha dihitung otomatis. Bonus tidak diatur di sini &mdash;
+                Kelola honorarium pokok setiap jabatan. Potongan alpha dihitung otomatis. Bonus tidak diatur di sini &mdash;
                 bonus bersifat tidak rutin dan diinput langsung per karyawan di halaman
                 <span class="font-medium">Detail Honorarium</span> tiap bulan.
             </p>
@@ -41,29 +41,29 @@
                 </div>
             </div>
 
-            <form action="{{ route('admin.pengaturan.gaji.update', $item) }}" method="POST" class="space-y-6 p-6">
+            <form action="{{ route('admin.pengaturan.honorarium.update', $item) }}" method="POST" class="space-y-6 p-6">
                 @csrf
                 @method('PUT')
 
                 <div>
-                    <label for="gaji_pokok_{{ $item->id }}" class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Gaji Pokok
+                    <label for="honorarium_pokok_{{ $item->id }}" class="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                        Honorarium Pokok
                     </label>
 
                     <div class="relative">
                         <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">Rp</span>
                         <input
                             type="number"
-                            id="gaji_pokok_{{ $item->id }}"
-                            name="gaji_pokok"
-                            value="{{ old('gaji_pokok', $item->gaji_pokok) }}"
+                            id="honorarium_pokok_{{ $item->id }}"
+                            name="honorarium_pokok"
+                            value="{{ old('honorarium_pokok', $item->honorarium_pokok) }}"
                             min="0"
                             step="1000"
                             class="w-full rounded-xl border bg-white py-3 pl-12 pr-4 outline-none transition focus:ring-2 dark:bg-slate-800
-                                    {{ $errors->has('gaji_pokok') ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-slate-300 focus:border-blue-500 focus:ring-blue-200 dark:border-slate-700' }}">
+                                    {{ $errors->has('honorarium_pokok') ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-slate-300 focus:border-blue-500 focus:ring-blue-200 dark:border-slate-700' }}">
                     </div>
 
-                    @error('gaji_pokok')
+                    @error('honorarium_pokok')
                     <p class="mt-1.5 text-sm text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
@@ -78,7 +78,7 @@
                             Rp {{ number_format($item->potongan_alpha, 0, ',', '.') }}
                         </p>
                         <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                            Dihitung otomatis dari gaji pokok &divide; jumlah hari kerja bulan berjalan. Diperbarui saat gaji pokok disimpan.
+                            Dihitung otomatis dari honorarium pokok &divide; jumlah hari kerja bulan berjalan. Diperbarui saat honorarium pokok disimpan.
                         </p>
                     </div>
                 </div>
@@ -100,7 +100,7 @@
                 Belum Ada Data
             </h3>
             <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                Pengaturan gaji belum tersedia.
+                Pengaturan honorarium belum tersedia.
             </p>
         </div>
         @endforelse

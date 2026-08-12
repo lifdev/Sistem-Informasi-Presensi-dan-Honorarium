@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Honorarium;
 use App\Models\Karyawan;
 use App\Models\Presensi;
-use App\Models\PengaturanGaji;
+use App\Models\PengaturanHonorarium;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -68,12 +68,12 @@ class HonorariumController extends Controller
         $tahun = $request->tahun;
 
         $karyawans = Karyawan::where("status", "aktif")
-            ->with("jabatan.pengaturanGaji")
+            ->with("jabatan.pengaturanHonorarium")
             ->get();
 
         foreach ($karyawans as $karyawan) {
 
-            $setting = $karyawan->jabatan?->pengaturanGaji;
+            $setting = $karyawan->jabatan?->pengaturanHonorarium;
 
             if (!$setting) {
                 continue;
@@ -123,7 +123,7 @@ class HonorariumController extends Controller
             $totalAlpha = $totalAlphaTercatat + $hariTanpaRecord;
 
             $potonganAlpha = $jumlahHariKerja > 0
-                ? ($setting->gaji_pokok / $jumlahHariKerja) * $totalAlpha
+                ? ($setting->honorarium_pokok / $jumlahHariKerja) * $totalAlpha
                 : 0;
 
             $totalPotongan = $potonganAlpha;
@@ -139,8 +139,8 @@ class HonorariumController extends Controller
                 continue;
             }
 
-            $gajiBersih =
-                $setting->gaji_pokok
+            $honorariumBersih =
+                $setting->honorarium_pokok
                 + $bonus
                 - $totalPotongan;
 
@@ -156,11 +156,11 @@ class HonorariumController extends Controller
                     "total_sakit" => $totalSakit,
                     "total_alpha" => $totalAlpha,
 
-                    "gaji_pokok" => $setting->gaji_pokok,
+                    "honorarium_pokok" => $setting->honorarium_pokok,
                     "bonus" => $bonus,
 
                     "total_potongan" => $totalPotongan,
-                    "gaji_bersih" => $gajiBersih,
+                    "honorarium_bersih" => $honorariumBersih,
 
                     "status" => "draft",
                 ]
@@ -217,8 +217,8 @@ class HonorariumController extends Controller
 
         $honorarium->update([
             "bonus" => $request->bonus,
-            "gaji_bersih" =>
-            $honorarium->gaji_pokok
+            "honorarium_bersih" =>
+            $honorarium->honorarium_pokok
                 + $request->bonus
                 - $honorarium->total_potongan,
         ]);

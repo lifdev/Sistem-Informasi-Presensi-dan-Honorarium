@@ -4,18 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PengaturanGaji extends Model
+class PengaturanHonorarium extends Model
 {
-    protected $table = 'pengaturan_gaji';
+    protected $table = 'pengaturan_honorarium';
 
     protected $fillable = [
         'jabatan_id',
-        'gaji_pokok',
+        'honorarium_pokok',
         'potongan_alpha',
     ];
 
     protected $casts = [
-        'gaji_pokok'     => 'float',
+        'honorarium_pokok'     => 'float',
         'potongan_alpha' => 'float',
     ];
 

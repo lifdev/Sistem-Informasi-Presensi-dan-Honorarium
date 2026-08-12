@@ -17,18 +17,18 @@ class Honorarium extends Model
         'total_izin',
         'total_sakit',
         'total_alpha',
-        'gaji_pokok',
+        'honorarium_pokok',
         'bonus',
         'total_potongan',
-        'gaji_bersih',
+        'honorarium_bersih',
         'status',
     ];
 
     protected $casts = [
-        'gaji_pokok'     => 'float',
+        'honorarium_pokok'     => 'float',
         'bonus'          => 'float',
         'total_potongan' => 'float',
-        'gaji_bersih'    => 'float',
+        'honorarium_bersih'    => 'float',
     ];
 
     // Relasi ke Karyawan

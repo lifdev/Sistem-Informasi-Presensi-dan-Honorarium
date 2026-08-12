@@ -7,14 +7,14 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('pengaturan_gaji', function (Blueprint $table) {
+        Schema::create('pengaturan_honorarium', function (Blueprint $table) {
             $table->id();
 
             $table->foreignId('jabatan_id')
                 ->constrained('jabatan')
                 ->cascadeOnDelete();
 
-            $table->decimal('gaji_pokok', 15, 2)
+            $table->decimal('honorarium_pokok', 15, 2)
                 ->default(0);
 
             $table->decimal('bonus', 15, 2)
@@ -31,6 +31,6 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('pengaturan_gaji');
+        Schema::dropIfExists('pengaturan_honorarium');
     }
 };

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Bidang;
 use App\Models\Jabatan;
-use App\Models\PengaturanGaji;
+use App\Models\PengaturanHonorarium;
 
 class JabatanController extends Controller
 {
@@ -54,11 +54,11 @@ class JabatanController extends Controller
             'deskripsi' => $request->deskripsi,
         ]);
 
-        // Otomatis buat pengaturan gaji
-        PengaturanGaji::firstOrCreate(
+        // Otomatis buat pengaturan honorarium
+        PengaturanHonorarium::firstOrCreate(
             ['jabatan_id' => $jabatan->id],
             [
-                'gaji_pokok'      => 0,
+                'honorarium_pokok'      => 0,
                 'tunjangan_hadir' => 0,
                 'potongan_alpha'  => 0,
                 'potongan_izin'   => 0,
@@ -115,8 +115,8 @@ class JabatanController extends Controller
             );
         }
 
-        // Hapus pengaturan gaji yang terkait
-        $jabatan->pengaturanGaji()->delete();
+        // Hapus pengaturan honorarium yang terkait
+        $jabatan->pengaturanHonorarium()->delete();
 
         // Hapus jabatan
         $jabatan->delete();

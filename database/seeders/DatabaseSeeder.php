@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
 
             JabatanSeeder::class,
 
-            PengaturanGajiSeeder::class,
+            PengaturanHonorariumSeeder::class,
 
             KaryawanSeeder::class,
 
