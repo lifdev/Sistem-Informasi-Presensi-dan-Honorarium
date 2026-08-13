@@ -173,7 +173,7 @@
     </x-card>
 
     {{-- Informasi Sistem --}}
-    <div class="grid gap-6 xl:grid-cols-2">
+    <div class="grid gap-6 xl:grid-cols-1">
         <x-card class="p-6">
             <h2 class="mb-5 text-lg font-semibold">Informasi Sistem</h2>
             <div class="space-y-4">
@@ -182,11 +182,6 @@
                 <div class="flex justify-between"><span class="text-slate-500">Login Sebagai</span><span>{{ auth()->user()->name }}</span></div>
                 <div class="flex justify-between"><span class="text-slate-500">Role</span><span class="rounded-full bg-blue-600 px-3 py-1 text-sm text-white">Admin</span></div>
             </div>
-        </x-card>
-
-        <x-card class="p-6">
-            <h2 class="mb-5 text-lg font-semibold">Catatan</h2>
-            <p class="text-sm leading-6 text-slate-500 dark:text-slate-400">Akun Admin digunakan untuk mengelola sistem. Data presensi dan izin hanya terkait dengan akun yang memiliki role Karyawan.</p>
         </x-card>
     </div>
 </div>

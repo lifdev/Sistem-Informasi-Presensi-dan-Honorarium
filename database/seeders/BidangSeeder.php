@@ -15,16 +15,6 @@ class BidangSeeder extends Seeder
     public function run(): void
     {
         $bidang = [
-            ['nama' => 'Yayasan'],
-            ['nama' => 'Bidang Pendidikan'],
-            ['nama' => "Bidang Majelis Qur'an Saung Hijaiyah"],
-            ['nama' => 'Bidang Unit Sosial'],
-            ['nama' => 'Pengajian Orang Dewasa'],
-            ['nama' => 'Bidang Sosial & Humas'],
-            ['nama' => 'Bidang Administrasi & Umum'],
-            ['nama' => 'Bidang Relawan & Pendukung'],
-            ['nama' => 'Penasehat & Pengembangan'],
-            ['nama' => 'Unit Pengembangan Yayasan'],
             ['nama' => 'Development'],
         ];
 

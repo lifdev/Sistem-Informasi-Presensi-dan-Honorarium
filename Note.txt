@@ -1,8 +1,0 @@
-php artisan db:seed --class=PresensiJuliSeeder
-php artisan migrate:fresh 
-php artisan db:seed
-composer dump-autoload 
-php artisan optimize:clear
-php artisan route:clear
-php artisan tinker
-php artisan tinker --execute="App\Models\Presensi::where('karyawan_id', 99)->where('tanggal', '2026-08-13')->delete();"

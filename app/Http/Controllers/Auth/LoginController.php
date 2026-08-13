@@ -33,6 +33,19 @@ class LoginController extends Controller
 
         $credentials = $request->only('email', 'password');
 
+        // Cek apakah akun ada dan masih aktif
+        $user = \App\Models\User::where('email', $request->email)->first();
+
+        $user = \App\Models\User::with('karyawan')
+            ->where('email', $request->email)
+            ->first();
+
+        if ($user && $user->karyawan && $user->karyawan->status === 'nonaktif') {
+            return back()->withErrors([
+                'email' => 'Akun Anda sudah dinonaktifkan. Silakan hubungi administrator.',
+            ])->onlyInput('email');
+        }
+
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
             LogAktivitas::catat('login', 'Login berhasil ke sistem.');

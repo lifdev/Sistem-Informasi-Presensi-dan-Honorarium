@@ -83,7 +83,7 @@
                 <div class="flex items-center justify-between">
                     <span class="text-gray-500 dark:text-slate-400">
                         @if ($h->isPerHadir())
-                        Honorarium ({{ $h->total_hadir }}x hadir @ Rp {{ number_format($h->tarif_per_hadir, 0, ',', '.') }})
+                        Honorarium ({{ $h->total_hadir }}x hadir x Rp {{ number_format($h->tarif_per_hadir, 0, ',', '.') }})
                         @else
                         Honorarium Pokok
                         @endif

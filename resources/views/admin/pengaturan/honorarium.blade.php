@@ -65,7 +65,6 @@
                                 onchange="toggleTipeHonorarium('{{ $item->id }}', 'bulanan')"
                                 {{ old('tipe', $item->tipe) === 'bulanan' ? 'checked' : '' }}>
                             Bulanan
-                            <span class="block text-xs font-normal opacity-75">Karyawan tetap</span>
                         </label>
 
                         <label
@@ -80,7 +79,6 @@
                                 onchange="toggleTipeHonorarium('{{ $item->id }}', 'per_hadir')"
                                 {{ old('tipe', $item->tipe) === 'per_hadir' ? 'checked' : '' }}>
                             Per Hari Hadir
-                            <span class="block text-xs font-normal opacity-75">Relawan guru / ustad</span>
                         </label>
                     </div>
 

@@ -120,7 +120,6 @@ class PenggunaController extends Controller
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($pengguna->id)],
             'password' => ['nullable', 'string', 'min:6'],
             'role' => ['required', Rule::in(['admin', 'karyawan', 'pimpinan'])],
-
             'nip' => ['required_if:role,karyawan', 'nullable', 'string', 'max:50', Rule::unique('karyawan', 'nip')->ignore($pengguna->karyawan_id)],
             'jabatan_id' => ['required_if:role,karyawan', 'nullable', 'exists:jabatan,id'],
             'honorarium_tipe' => ['required_if:gunakan_honorarium_khusus,1', 'nullable', Rule::in(['bulanan', 'per_hadir'])],
@@ -133,6 +132,7 @@ class PenggunaController extends Controller
             'status' => ['required_if:role,karyawan', 'nullable', Rule::in(['aktif', 'nonaktif'])],
         ]);
 
+        $oldRole = $pengguna->role;
         $newRole = $validated['role'];
 
         try {
@@ -210,18 +210,39 @@ class PenggunaController extends Controller
         $nama = $pengguna->name;
 
         if ($pengguna->karyawan) {
-            if ($pengguna->karyawan->presensi()->exists() || $pengguna->karyawan->izin()->exists() || $pengguna->karyawan->honorarium()->exists()) {
-                return back()->with('error', 'Pengguna ini memiliki riwayat presensi/izin/honorarium sehingga tidak dapat dihapus. Nonaktifkan akun/karyawannya saja.');
+            $karyawan = $pengguna->karyawan;
+
+            // Karyawan AKTIF yang masih punya riwayat tidak boleh dihapus
+            if (
+                $karyawan->status === 'aktif' &&
+                (
+                    $karyawan->presensi()->exists() ||
+                    $karyawan->izin()->exists() ||
+                    $karyawan->honorarium()->exists()
+                )
+            ) {
+                return back()->with(
+                    'error',
+                    'Karyawan aktif yang memiliki riwayat presensi/izin/honorarium tidak dapat dihapus. Nonaktifkan terlebih dahulu.'
+                );
             }
 
-            $pengguna->karyawan->delete();
+            // Karyawan NONAKTIF boleh dihapus beserta riwayatnya
+            if ($karyawan->status === 'nonaktif') {
+                $karyawan->presensi()->delete();
+                $karyawan->izin()->delete();
+                $karyawan->honorarium()->delete();
+            }
+
+            $karyawan->delete();
         }
 
         $pengguna->delete();
 
         LogAktivitas::catat('hapus_pengguna', "Menghapus pengguna {$nama}.");
 
-        return redirect()->route('admin.pengguna.index')
+        return redirect()
+            ->route('admin.pengguna.index')
             ->with('success', 'Pengguna berhasil dihapus.');
     }
 }
