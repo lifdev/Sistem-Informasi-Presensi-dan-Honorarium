@@ -70,14 +70,6 @@ class DashboardController extends Controller
         $statusLabels = ['Hadir', 'Izin', 'Sakit', 'Belum Absen'];
         $statusData   = [$hadirStatus, $izinStatus, $sakitStatus, $belumAbsen];
 
-        // ==== Data Presensi Saya (admin tetap wajib absen) ====
-        $karyawanSaya = Auth::user()->karyawan;
-        $presensiSaya = $karyawanSaya
-            ? Presensi::where('karyawan_id', $karyawanSaya->id)
-            ->whereDate('tanggal', $today)
-            ->first()
-            : null;
-
         return view('admin.dashboard', compact(
             'totalKaryawan',
             'hadirHariIni',
@@ -87,7 +79,6 @@ class DashboardController extends Controller
             'jumlahHadirTren',
             'statusLabels',
             'statusData',
-            'presensiSaya',
             'periode'
         ));
     }

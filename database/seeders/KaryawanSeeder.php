@@ -19,90 +19,42 @@ class KaryawanSeeder extends Seeder
         Karyawan::truncate();
         DB::statement("SET FOREIGN_KEY_CHECKS=1;");
 
-        // Ambil jabatan yang sudah ada
-        $adminJabatan = Jabatan::where("nama", "Web Developer")->first();
-        $taufikJabatan = Jabatan::where("nama", "Kepala Administrasi")->first();
-        $pimpinanJabatan = Jabatan::where("nama", "Ketua Yayasan")->first();
-
-        if (!$adminJabatan || !$taufikJabatan || !$pimpinanJabatan) {
-            throw new \Exception(
-                "Pastikan JabatanSeeder sudah dijalankan dan nama jabatan sesuai."
-            );
-        }
-
         /*
         |--------------------------------------------------------------------------
-        | ADMIN - ALIF
+        | ADMIN
         |--------------------------------------------------------------------------
+        | Admin hanya membutuhkan akun login.
         */
 
-        $admin = Karyawan::create([
-            "nip" => "ADM001",
-            "nama" => "Alif",
-            "jabatan_id" => $adminJabatan->id,
-            "jenis_kelamin" => "L",
-            "no_hp" => "081234567892",
-            "alamat" => "Kantor Yayasan",
-            "tanggal_masuk" => "2026-01-01",
-            "status" => "aktif",
-        ]);
-
         User::create([
-            "name" => $admin->nama,
+            "name" => "Alif",
             "email" => "alif@gmail.com",
             "password" => Hash::make("password"),
             "role" => "admin",
-            "karyawan_id" => $admin->id,
-        ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN - TAUFIK HIDAYAT
-        |--------------------------------------------------------------------------
-        */
-
-        $taufik = Karyawan::create([
-            "nip" => "ADM002",
-            "nama" => "Taufik Hidayat",
-            "jabatan_id" => $taufikJabatan->id,
-            "jenis_kelamin" => "L",
-            "no_hp" => null,
-            "alamat" => null,
-            "tanggal_masuk" => "2026-01-01",
-            "status" => "aktif",
+            "karyawan_id" => null,
         ]);
 
         User::create([
-            "name" => $taufik->nama,
+            "name" => "Taufik Hidayat",
             "email" => "taufik@gmail.com",
             "password" => Hash::make("password"),
             "role" => "admin",
-            "karyawan_id" => $taufik->id,
+            "karyawan_id" => null,
         ]);
 
         /*
         |--------------------------------------------------------------------------
         | PIMPINAN
         |--------------------------------------------------------------------------
+        | Pimpinan hanya membutuhkan akun untuk approval izin.
         */
 
-        $pimpinan = Karyawan::create([
-            "nip" => "PIM001",
-            "nama" => "KH. M. Fazary Ash Shofa, S.Ag., M.Ag",
-            "jabatan_id" => $pimpinanJabatan->id,
-            "jenis_kelamin" => "L",
-            "no_hp" => null,
-            "alamat" => null,
-            "tanggal_masuk" => "2026-01-01",
-            "status" => "aktif",
-        ]);
-
         User::create([
-            "name" => $pimpinan->nama,
+            "name" => "KH. M. Fazary Ash Shofa, S.Ag., M.Ag",
             "email" => "fazary@gmail.com",
             "password" => Hash::make("password"),
             "role" => "pimpinan",
-            "karyawan_id" => $pimpinan->id,
+            "karyawan_id" => null,
         ]);
 
         /*

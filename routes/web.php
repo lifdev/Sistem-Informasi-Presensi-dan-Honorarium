@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\KaryawanController;
+use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\IzinController;
 use App\Http\Controllers\HonorariumController;
@@ -59,7 +59,7 @@ Route::middleware(["auth", "role:admin"])
         );
 
         // Karyawan
-        Route::resource("karyawan", KaryawanController::class)->except([
+        Route::resource("pengguna", PenggunaController::class)->except([
             "show",
         ]);
 
@@ -212,6 +212,76 @@ Route::middleware(["auth", "role:pimpinan"])
             "pimpinan",
         ])->name("dashboard");
 
+        // Rekap Presensi
+        Route::prefix("presensi")
+            ->name("presensi.")
+            ->group(function () {
+                Route::get("/rekap", [
+                    PresensiController::class,
+                    "rekap",
+                ])->name("rekap");
+            });
+
+        // Honorarium
+        Route::prefix("honorarium")
+            ->name("honorarium.")
+            ->group(function () {
+
+                Route::get("/", [
+                    HonorariumController::class,
+                    "index",
+                ])->name("index");
+
+                Route::post("/generate", [
+                    HonorariumController::class,
+                    "generate",
+                ])->name("generate");
+
+                Route::post("/finalize", [
+                    HonorariumController::class,
+                    "finalize",
+                ])->name("finalize");
+
+                Route::get("/{honorarium}", [
+                    HonorariumController::class,
+                    "show",
+                ])->name("show");
+
+                Route::put("/{honorarium}/bonus", [
+                    HonorariumController::class,
+                    "updateBonus",
+                ])->name("bonus.update");
+            });
+
+        // Laporan & Ekspor
+        Route::prefix("laporan")
+            ->name("laporan.")
+            ->group(function () {
+                Route::get("/", [LaporanController::class, "index"])->name(
+                    "index",
+                );
+                Route::get("/presensi/export-excel", [
+                    LaporanController::class,
+                    "exportPresensiExcel",
+                ])->name("presensi.excel");
+                Route::get("/presensi/export-pdf", [
+                    LaporanController::class,
+                    "exportPresensiPdf",
+                ])->name("presensi.pdf");
+                Route::get("/honorarium/export-excel", [
+                    LaporanController::class,
+                    "exportHonorariumExcel",
+                ])->name("honorarium.excel");
+                Route::get("/honorarium/export-pdf", [
+                    LaporanController::class,
+                    "exportHonorariumPdf",
+                ])->name("honorarium.pdf");
+                Route::get("/slip/{honorarium}", [
+                    LaporanController::class,
+                    "slipHonorarium",
+                ])->name("slip");
+            });
+
         // Approval Izin
         Route::prefix("izin")
             ->name("izin.")
@@ -220,85 +290,24 @@ Route::middleware(["auth", "role:pimpinan"])
                     IzinController::class,
                     "approval",
                 ])->name("approval");
+
                 Route::patch("/{izin}/approve", [
                     IzinController::class,
                     "approve",
                 ])->name("approve");
+
                 Route::patch("/{izin}/reject", [
                     IzinController::class,
                     "reject",
                 ])->name("reject");
             });
-
-        // Lihat rekap presensi
-        Route::get("/presensi/rekap", [
-            PresensiController::class,
-            "rekap",
-        ])->name("presensi.rekap");
-
-        // Lihat honorarium
-        Route::get("/honorarium", [HonorariumController::class, "index"])
-            ->name("honorarium.index");
-
-        // Generate honorarium
-        Route::post("/honorarium/generate", [
-            HonorariumController::class,
-            "generate",
-        ])->name("honorarium.generate");
-
-        // Finalisasi honorarium
-        Route::post("/honorarium/finalize", [
-            HonorariumController::class,
-            "finalize",
-        ])->name("honorarium.finalize");
-
-        // Detail honorarium
-        Route::get("/honorarium/{honorarium}", [
-            HonorariumController::class,
-            "show",
-        ])->name("honorarium.show");
-
-        // Laporan & Ekspor
-        Route::prefix("laporan")
-            ->name("laporan.")
-            ->group(function () {
-
-                // Presensi
-                Route::get("/presensi/export-excel", [
-                    LaporanController::class,
-                    "exportPresensiExcel",
-                ])->name("presensi.excel");
-
-                Route::get("/presensi/export-pdf", [
-                    LaporanController::class,
-                    "exportPresensiPdf",
-                ])->name("presensi.pdf");
-
-                // Honorarium
-                Route::get("/honorarium/export-excel", [
-                    LaporanController::class,
-                    "exportHonorariumExcel",
-                ])->name("honorarium.excel");
-
-                Route::get("/honorarium/export-pdf", [
-                    LaporanController::class,
-                    "exportHonorariumPdf",
-                ])->name("honorarium.pdf");
-
-                // Slip
-                Route::get("/slip/{honorarium}", [
-                    LaporanController::class,
-                    "slipHonorarium",
-                ])->name("slip");
-            });
     });
 
 // ============================================================
-// FITUR SELF-SERVICE KARYAWAN (bisa diakses karyawan, admin, pimpinan
-// karena admin & pimpinan juga tercatat sebagai karyawan)
+// FITUR SELF-SERVICE KARYAWAN (khusus role karyawan)
 // ============================================================
 
-Route::middleware(["auth", "role:karyawan,admin,pimpinan"])
+Route::middleware(["auth", "role:karyawan"])
     ->prefix("karyawan")
     ->name("karyawan.")
     ->group(function () {

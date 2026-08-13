@@ -49,54 +49,11 @@
         </a>
 
         <p class="px-4 pt-2 pb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
-            Kehadiran Saya
-        </p>
-
-        <a href="{{ route('karyawan.presensi.index') }}"
-            class="flex items-center gap-3 rounded-lg px-4 py-3 transition {{ request()->routeIs('karyawan.presensi.index') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor" stroke-width="2">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M18.9 7a8 8 0 0 1 1.1 5v1a6 6 0 0 0 .8 3" />
-                <path d="M8 11a4 4 0 0 1 8 0v1a10 10 0 0 0 2 6" />
-                <path d="M12 11v2a14 14 0 0 0 2.5 8" />
-                <path d="M8 15a18 18 0 0 0 1.8 6" />
-                <path d="M4.9 19a22 22 0 0 1 -.9 -7v-1a8 8 0 0 1 12 -6.95" />
-            </svg>
-            <span>Absen</span>
-        </a>
-
-        <a href="{{ route('karyawan.presensi.riwayat') }}"
-            class="flex items-center gap-3 rounded-lg px-4 py-3 transition {{ request()->routeIs('karyawan.presensi.riwayat') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor" stroke-width="2">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M12 8l0 4l2 2" />
-                <path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5" />
-            </svg>
-            <span>Riwayat Presensi</span>
-        </a>
-
-        <a href="{{ route('karyawan.izin.index') }}"
-            class="flex items-center gap-3 rounded-lg px-4 py-3 transition {{ request()->routeIs('karyawan.izin.index') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-                <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2" />
-                <path d="M9 9l1 0" />
-                <path d="M9 13l6 0" />
-                <path d="M9 17l6 0" />
-            </svg>
-            <span>Ajukan Izin</span>
-        </a>
-
-        <p class="px-4 pt-2 pb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
             Master Data
         </p>
 
-        <a href="{{ route('admin.karyawan.index') }}"
-            class="flex items-center gap-3 rounded-lg px-4 py-3 transition {{ request()->routeIs('admin.karyawan.*') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
+        <a href="{{ route('admin.pengguna.index') }}"
+            class="flex items-center gap-3 rounded-lg px-4 py-3 transition {{ request()->routeIs('admin.pengguna.*') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -106,9 +63,7 @@
                 <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
             </svg>
 
-            <span>
-                Karyawan
-            </span>
+            <span>Pengguna</span>
         </a>
 
         <a href="{{ route('admin.bidang.index') }}"
@@ -283,74 +238,30 @@
         </a>
 
         <p class="px-4 pt-2 pb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
-            Kehadiran Saya
-        </p>
-
-        <a href="{{ route('karyawan.presensi.index') }}"
-            class="flex items-center gap-3 rounded-lg px-4 py-3 transition {{ request()->routeIs('karyawan.presensi.index') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor" stroke-width="2">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M18.9 7a8 8 0 0 1 1.1 5v1a6 6 0 0 0 .8 3" />
-                <path d="M8 11a4 4 0 0 1 8 0v1a10 10 0 0 0 2 6" />
-                <path d="M12 11v2a14 14 0 0 0 2.5 8" />
-                <path d="M8 15a18 18 0 0 0 1.8 6" />
-                <path d="M4.9 19a22 22 0 0 1 -.9 -7v-1a8 8 0 0 1 12 -6.95" />
-            </svg>
-            <span>Absen</span>
-        </a>
-
-        <a href="{{ route('karyawan.presensi.riwayat') }}"
-            class="flex items-center gap-3 rounded-lg px-4 py-3 transition {{ request()->routeIs('karyawan.presensi.riwayat') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor" stroke-width="2">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M12 8l0 4l2 2" />
-                <path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5" />
-            </svg>
-            <span>Riwayat Presensi</span>
-        </a>
-
-        <a href="{{ route('karyawan.izin.index') }}"
-            class="flex items-center gap-3 rounded-lg px-4 py-3 transition {{ request()->routeIs('karyawan.izin.index') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-                <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2" />
-                <path d="M9 9l1 0" />
-                <path d="M9 13l6 0" />
-                <path d="M9 17l6 0" />
-            </svg>
-            <span>Ajukan Izin</span>
-        </a>
-
-        <p class="px-4 pt-2 pb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
             Kelola Kehadiran
         </p>
 
         <a href="{{ route('pimpinan.presensi.rekap') }}"
             class="flex items-center gap-3 rounded-lg px-4 py-3 transition {{ request()->routeIs('pimpinan.presensi.rekap') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                <path d="M9 12l2 2l4 -4" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0M9 12l2 2l4-4" />
             </svg>
+
             <span>Rekap Presensi</span>
         </a>
 
         <a href="{{ route('pimpinan.izin.approval') }}"
             class="flex items-center gap-3 rounded-lg px-4 py-3 transition {{ request()->routeIs('pimpinan.izin.approval') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-                <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2" />
-                <path d="M9 9l1 0" />
-                <path d="M9 13l6 0" />
-                <path d="M9 17l6 0" />
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M6 3h9l4 4v14H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M9 12h6M9 16h6M9 8h2" />
             </svg>
+
             <span>Approval Izin</span>
         </a>
 
@@ -359,7 +270,7 @@
         </p>
 
         <a href="{{ route('pimpinan.honorarium.index') }}"
-            class="flex items-center gap-3 rounded-lg px-4 py-3 transition {{ request()->routeIs('pimpinan.honorarium.index') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
+            class="flex items-center gap-3 rounded-lg px-4 py-3 transition {{ request()->routeIs('pimpinan.honorarium.*') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -369,6 +280,21 @@
             </svg>
             <span>Honorarium</span>
         </a>
+
+        <a href="{{ route('pimpinan.laporan.index') }}"
+            class="flex items-center gap-3 rounded-lg px-4 py-3 transition {{ request()->routeIs('pimpinan.laporan.*') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M12 21h-7a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v8" />
+                <path d="M3 10h18" />
+                <path d="M10 3v18" />
+                <path d="M19 22v-6" />
+                <path d="M22 19l-3 -3l-3 3" />
+            </svg>
+            <span>Laporan</span>
+        </a>
+
         @elseif(auth()->user()->isKaryawan())
         <a href="{{ route('karyawan.dashboard') }}"
             class="flex items-center gap-3 rounded-lg px-4 py-3 transition {{ request()->routeIs('karyawan.dashboard') ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-800' }}">

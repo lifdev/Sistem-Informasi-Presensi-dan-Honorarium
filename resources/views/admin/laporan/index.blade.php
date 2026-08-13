@@ -4,179 +4,181 @@
 
 @section('content')
 
-    <div class="space-y-6">
+@php
+$routePrefix = auth()->user()->isAdmin() ? 'admin' : 'pimpinan';
+@endphp
 
-        <div>
+<div class="space-y-6">
 
-            <h1 class="text-3xl font-bold text-slate-800 dark:text-white">
-                Laporan
-            </h1>
+    <div>
 
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                Download laporan presensi dan honorarium dalam format Excel maupun PDF.
-            </p>
+        <h1 class="text-3xl font-bold text-slate-800 dark:text-white">
+            Laporan
+        </h1>
 
-        </div>
+        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            Download laporan presensi dan honorarium dalam format Excel maupun PDF.
+        </p>
 
-        <div class="grid gap-6 lg:grid-cols-2">
+    </div>
 
-            {{-- Presensi --}}
-            <div class="rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+    <div class="grid gap-6 lg:grid-cols-2">
 
-                <div class="border-b border-slate-200 p-6 dark:border-slate-800">
+        {{-- Presensi --}}
+        <div class="rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
 
-                    <h2 class="text-lg font-semibold text-slate-800 dark:text-white">
-                        Laporan Presensi
-                    </h2>
+            <div class="border-b border-slate-200 p-6 dark:border-slate-800">
+
+                <h2 class="text-lg font-semibold text-slate-800 dark:text-white">
+                    Laporan Presensi
+                </h2>
+
+            </div>
+
+            <div class="space-y-5 p-6">
+
+                <div class="grid gap-5 sm:grid-cols-2">
+
+                    <div>
+
+                        <label class="mb-2 block text-sm font-medium">
+                            Bulan
+                        </label>
+
+                        <select id="bulan-presensi"
+                            class="w-full rounded-xl border border-slate-300 px-4 py-3 dark:border-slate-700 dark:bg-slate-800">
+
+                            @foreach (range(1, 12) as $b)
+                            <option value="{{ $b }}" {{ $bulan == $b ? 'selected' : '' }}>
+
+                                {{ DateTime::createFromFormat('!m', $b)->format('F') }}
+
+                            </option>
+                            @endforeach
+
+                        </select>
+
+                    </div>
+
+                    <div>
+
+                        <label class="mb-2 block text-sm font-medium">
+                            Tahun
+                        </label>
+
+                        <select id="tahun-presensi"
+                            class="w-full rounded-xl border border-slate-300 px-4 py-3 dark:border-slate-700 dark:bg-slate-800">
+
+                            @foreach (range(date('Y') - 2, date('Y')) as $t)
+                            <option value="{{ $t }}" {{ $tahun == $t ? 'selected' : '' }}>
+
+                                {{ $t }}
+
+                            </option>
+                            @endforeach
+
+                        </select>
+
+                    </div>
 
                 </div>
 
-                <div class="space-y-5 p-6">
+                <div class="grid gap-3">
 
-                    <div class="grid gap-5 sm:grid-cols-2">
+                    <button onclick="exportPresensi('excel')"
+                        class="rounded-xl bg-emerald-600 px-5 py-3 font-medium text-white transition hover:bg-emerald-700">
 
-                        <div>
+                        Download Excel
 
-                            <label class="mb-2 block text-sm font-medium">
-                                Bulan
-                            </label>
+                    </button>
 
-                            <select id="bulan-presensi"
-                                class="w-full rounded-xl border border-slate-300 px-4 py-3 dark:border-slate-700 dark:bg-slate-800">
+                    <button onclick="exportPresensi('pdf')"
+                        class="rounded-xl bg-red-600 px-5 py-3 font-medium text-white transition hover:bg-red-700">
 
-                                @foreach (range(1, 12) as $b)
-                                    <option value="{{ $b }}" {{ $bulan == $b ? 'selected' : '' }}>
+                        Download PDF
 
-                                        {{ DateTime::createFromFormat('!m', $b)->format('F') }}
-
-                                    </option>
-                                @endforeach
-
-                            </select>
-
-                        </div>
-
-                        <div>
-
-                            <label class="mb-2 block text-sm font-medium">
-                                Tahun
-                            </label>
-
-                            <select id="tahun-presensi"
-                                class="w-full rounded-xl border border-slate-300 px-4 py-3 dark:border-slate-700 dark:bg-slate-800">
-
-                                @foreach (range(date('Y') - 2, date('Y')) as $t)
-                                    <option value="{{ $t }}" {{ $tahun == $t ? 'selected' : '' }}>
-
-                                        {{ $t }}
-
-                                    </option>
-                                @endforeach
-
-                            </select>
-
-                        </div>
-
-                    </div>
-
-                    <div class="grid gap-3">
-
-                        <button onclick="exportPresensi('excel')"
-                            class="rounded-xl bg-emerald-600 px-5 py-3 font-medium text-white transition hover:bg-emerald-700">
-
-                            Download Excel
-
-                        </button>
-
-                        <button onclick="exportPresensi('pdf')"
-                            class="rounded-xl bg-red-600 px-5 py-3 font-medium text-white transition hover:bg-red-700">
-
-                            Download PDF
-
-                        </button>
-
-                    </div>
+                    </button>
 
                 </div>
 
             </div>
 
-            {{-- Honorarium --}}
-            <div class="rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
+        </div>
 
-                <div class="border-b border-slate-200 p-6 dark:border-slate-800">
+        {{-- Honorarium --}}
+        <div class="rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-800">
 
-                    <h2 class="text-lg font-semibold text-slate-800 dark:text-white">
-                        Laporan Honorarium
-                    </h2>
+            <div class="border-b border-slate-200 p-6 dark:border-slate-800">
+
+                <h2 class="text-lg font-semibold text-slate-800 dark:text-white">
+                    Laporan Honorarium
+                </h2>
+
+            </div>
+
+            <div class="space-y-5 p-6">
+
+                <div class="grid gap-5 sm:grid-cols-2">
+
+                    <div>
+
+                        <label class="mb-2 block text-sm font-medium">
+                            Bulan
+                        </label>
+
+                        <select id="bulan-honorarium"
+                            class="w-full rounded-xl border border-slate-300 px-4 py-3 dark:border-slate-700 dark:bg-slate-800">
+
+                            @foreach (range(1, 12) as $b)
+                            <option value="{{ $b }}" {{ $bulan == $b ? 'selected' : '' }}>
+
+                                {{ DateTime::createFromFormat('!m', $b)->format('F') }}
+
+                            </option>
+                            @endforeach
+
+                        </select>
+
+                    </div>
+
+                    <div>
+
+                        <label class="mb-2 block text-sm font-medium">
+                            Tahun
+                        </label>
+
+                        <select id="tahun-honorarium"
+                            class="w-full rounded-xl border border-slate-300 px-4 py-3 dark:border-slate-700 dark:bg-slate-800">
+
+                            @foreach (range(date('Y') - 2, date('Y')) as $t)
+                            <option value="{{ $t }}" {{ $tahun == $t ? 'selected' : '' }}>
+
+                                {{ $t }}
+
+                            </option>
+                            @endforeach
+
+                        </select>
+
+                    </div>
 
                 </div>
 
-                <div class="space-y-5 p-6">
+                <div class="grid gap-3">
 
-                    <div class="grid gap-5 sm:grid-cols-2">
+                    <button onclick="exportHonorarium('excel')"
+                        class="rounded-xl bg-emerald-600 px-5 py-3 font-medium text-white transition hover:bg-emerald-700">
 
-                        <div>
+                        Download Excel
 
-                            <label class="mb-2 block text-sm font-medium">
-                                Bulan
-                            </label>
+                    </button>
 
-                            <select id="bulan-honorarium"
-                                class="w-full rounded-xl border border-slate-300 px-4 py-3 dark:border-slate-700 dark:bg-slate-800">
+                    <button onclick="exportHonorarium('pdf')"
+                        class="rounded-xl bg-red-600 px-5 py-3 font-medium text-white transition hover:bg-red-700">
 
-                                @foreach (range(1, 12) as $b)
-                                    <option value="{{ $b }}" {{ $bulan == $b ? 'selected' : '' }}>
+                        Download PDF
 
-                                        {{ DateTime::createFromFormat('!m', $b)->format('F') }}
-
-                                    </option>
-                                @endforeach
-
-                            </select>
-
-                        </div>
-
-                        <div>
-
-                            <label class="mb-2 block text-sm font-medium">
-                                Tahun
-                            </label>
-
-                            <select id="tahun-honorarium"
-                                class="w-full rounded-xl border border-slate-300 px-4 py-3 dark:border-slate-700 dark:bg-slate-800">
-
-                                @foreach (range(date('Y') - 2, date('Y')) as $t)
-                                    <option value="{{ $t }}" {{ $tahun == $t ? 'selected' : '' }}>
-
-                                        {{ $t }}
-
-                                    </option>
-                                @endforeach
-
-                            </select>
-
-                        </div>
-
-                    </div>
-
-                    <div class="grid gap-3">
-
-                        <button onclick="exportHonorarium('excel')"
-                            class="rounded-xl bg-emerald-600 px-5 py-3 font-medium text-white transition hover:bg-emerald-700">
-
-                            Download Excel
-
-                        </button>
-
-                        <button onclick="exportHonorarium('pdf')"
-                            class="rounded-xl bg-red-600 px-5 py-3 font-medium text-white transition hover:bg-red-700">
-
-                            Download PDF
-
-                        </button>
-
-                    </div>
+                    </button>
 
                 </div>
 
@@ -186,34 +188,36 @@
 
     </div>
 
-    @push('scripts')
-        <script>
-            function exportPresensi(type) {
+</div>
 
-                const bulan = document.getElementById('bulan-presensi').value;
-                const tahun = document.getElementById('tahun-presensi').value;
+@push('scripts')
+<script>
+    function exportPresensi(type) {
 
-                const url = type === 'excel' ?
-                    "{{ route('admin.laporan.presensi.excel') }}" :
-                    "{{ route('admin.laporan.presensi.pdf') }}";
+        const bulan = document.getElementById('bulan-presensi').value;
+        const tahun = document.getElementById('tahun-presensi').value;
 
-                window.location.href = url + `?bulan=${bulan}&tahun=${tahun}`;
+        const url = type === 'excel' ?
+            "{{ route($routePrefix.'.laporan.presensi.excel') }}" :
+            "{{ route($routePrefix.'.laporan.presensi.pdf') }}";
 
-            }
+        window.location.href = url + `?bulan=${bulan}&tahun=${tahun}`;
 
-            function exportHonorarium(type) {
+    }
 
-                const bulan = document.getElementById('bulan-honorarium').value;
-                const tahun = document.getElementById('tahun-honorarium').value;
+    function exportHonorarium(type) {
 
-                const url = type === 'excel' ?
-                    "{{ route('admin.laporan.honorarium.excel') }}" :
-                    "{{ route('admin.laporan.honorarium.pdf') }}";
+        const bulan = document.getElementById('bulan-honorarium').value;
+        const tahun = document.getElementById('tahun-honorarium').value;
 
-                window.location.href = url + `?bulan=${bulan}&tahun=${tahun}`;
+        const url = type === 'excel' ?
+            "{{ route($routePrefix.'.laporan.honorarium.excel') }}" :
+            "{{ route($routePrefix.'.laporan.honorarium.pdf') }}";
 
-            }
-        </script>
-    @endpush
+        window.location.href = url + `?bulan=${bulan}&tahun=${tahun}`;
+
+    }
+</script>
+@endpush
 
 @endsection

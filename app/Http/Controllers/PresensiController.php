@@ -81,15 +81,14 @@ class PresensiController extends Controller
 
         // Validasi jam masuk: hanya tolak kalau absen SEBELUM jam mulai.
         // Kalau lewat jam selesai (telat), absen tetap diterima tapi ditandai "Terlambat".
-        // Karyawan dengan honorarium tipe "per_hadir" (relawan guru / ustad
+        // Karyawan dengan honorarium tipe "per_hadir" 
         // part-time) punya jadwal yang fleksibel dan tidak dibayar per jam,
         // jadi pengecekan jam kerja global ini tidak berlaku buat mereka —
         // absen selalu diterima tanpa label "Terlambat".
         $jamSetting = PengaturanJam::aktif();
         $keteranganWaktu = null;
 
-        $tipeHonorarium = $karyawan->jabatan?->pengaturanHonorarium?->tipe ?? 'bulanan';
-        $berlakuJamKerja = $tipeHonorarium !== 'per_hadir';
+        $berlakuJamKerja = $karyawan->honorarium_tipe !== 'per_hadir';
 
         if ($jamSetting && $berlakuJamKerja) {
             $now     = Carbon::now()->format('H:i:s');
@@ -104,6 +103,10 @@ class PresensiController extends Controller
             }
 
             $keteranganWaktu = $now > $selesai ? 'Terlambat' : 'Tepat Waktu';
+        } elseif (!$berlakuJamKerja) {
+            // Karyawan per_hadir tidak terikat jam kerja, tapi tetap diberi
+            // keterangan netral supaya kolom keterangan tidak kosong.
+            $keteranganWaktu = 'Hadir';
         }
 
         // Simpan foto selfie (sudah ada watermark jam & koordinat dari sisi client)

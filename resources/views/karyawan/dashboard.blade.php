@@ -7,7 +7,7 @@
 <div class="mx-auto max-w-7xl space-y-8">
 
     {{-- Card --}}
-    <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="grid gap-6 sm:grid-cols-2 {{ $karyawan->honorarium_tipe === 'per_hadir' ? 'xl:grid-cols-3' : 'xl:grid-cols-4' }}">
 
         {{-- Hadir Bulan Ini --}}
         <x-card class="p-6">
@@ -81,6 +81,7 @@
         </x-card>
 
         {{-- Alpa Bulan Ini --}}
+        @if ($karyawan->honorarium_tipe !== 'per_hadir')
         <x-card class="p-6">
             <div class="flex items-center justify-between">
                 <div>
@@ -105,6 +106,7 @@
                 </div>
             </div>
         </x-card>
+        @endif
     </div>
 
     {{-- Komposisi Kehadiran --}}
@@ -365,7 +367,19 @@
 </script>
 
 @php
-$statusDataKaryawan = [
+$isPerHadir = $karyawan->honorarium_tipe === 'per_hadir';
+
+$statusLabelsKaryawan = $isPerHadir
+? ['Hadir', 'Izin', 'Sakit']
+: ['Hadir', 'Izin', 'Sakit', 'Alpha'];
+
+$statusDataKaryawan = $isPerHadir
+? [
+$rekapBulanIni['hadir'] ?? 0,
+$rekapBulanIni['izin'] ?? 0,
+$rekapBulanIni['sakit'] ?? 0,
+]
+: [
 $rekapBulanIni['hadir'] ?? 0,
 $rekapBulanIni['izin'] ?? 0,
 $rekapBulanIni['sakit'] ?? 0,
@@ -376,7 +390,7 @@ $rekapBulanIni['alpha'] ?? 0,
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         // ==== Data dari $rekapBulanIni yang sudah dikirim controller (tanpa query baru) ====
-        const statusLabels = ['Hadir', 'Izin', 'Sakit', 'Alpha'];
+        const statusLabels = @json($statusLabelsKaryawan);
         const statusData = @json($statusDataKaryawan);
 
         Chart.defaults.font.family = "'Inter', ui-sans-serif, system-ui, sans-serif";
@@ -424,12 +438,9 @@ $rekapBulanIni['alpha'] ?? 0,
                     labels: statusLabels,
                     datasets: [{
                         data: statusData,
-                        backgroundColor: [
-                            '#22c55e', // Hadir - hijau
-                            '#f59e0b', // Izin - amber
-                            '#ef4444', // Sakit - merah
-                            '#94a3b8', // Alpha - abu
-                        ],
+                        backgroundColor: statusLabels.includes('Alpha') ?
+                            ['#22c55e', '#f59e0b', '#ef4444', '#94a3b8'] :
+                            ['#22c55e', '#f59e0b', '#ef4444'],
                         borderWidth: 0,
                         spacing: 3,
                         borderRadius: 4,

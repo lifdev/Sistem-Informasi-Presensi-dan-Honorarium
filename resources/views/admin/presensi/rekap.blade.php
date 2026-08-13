@@ -186,6 +186,10 @@
                             <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-300">
                                 Tepat Waktu
                             </span>
+                            @elseif ($p->keterangan === 'Hadir')
+                            <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700 dark:bg-green-900/30 dark:text-green-300">
+                                Hadir
+                            </span>
                             @else
                             {{ $p->keterangan ?? '-' }}
                             @endif

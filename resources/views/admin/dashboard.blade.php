@@ -148,9 +148,9 @@
             Aksi Cepat
         </h2>
         <div class="grid gap-3">
-            <a href="{{ route('admin.karyawan.create') }}"
+            <a href="{{ route('admin.pengguna.create') }}"
                 class="rounded-xl bg-blue-600 px-5 py-3 text-center font-medium text-white transition hover:bg-blue-700">
-                Tambah Karyawan
+                Tambah Pengguna
             </a>
             <a href="{{ route('admin.presensi.rekap') }}"
                 class="rounded-xl bg-green-600 px-5 py-3 text-center font-medium text-white transition hover:bg-green-700">
@@ -172,76 +172,21 @@
         </div>
     </x-card>
 
-    {{-- Presensi Saya + Informasi Sistem --}}
-    <div class="grid gap-6">
-
-        {{-- Presensi Saya --}}
+    {{-- Informasi Sistem --}}
+    <div class="grid gap-6 xl:grid-cols-2">
         <x-card class="p-6">
-            <div class="mb-4 flex items-center justify-between">
-                <h2 class="text-lg font-semibold">
-                    Presensi Saya
-                </h2>
-                <span class="text-xs text-slate-400">
-                    {{ now()->translatedFormat('d F Y') }}
-                </span>
+            <h2 class="mb-5 text-lg font-semibold">Informasi Sistem</h2>
+            <div class="space-y-4">
+                <div class="flex justify-between"><span class="text-slate-500">Tanggal</span><span>{{ now()->translatedFormat('l, d F Y') }}</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Jam</span><span id="jam">{{ now()->format('H:i:s') }}</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Login Sebagai</span><span>{{ auth()->user()->name }}</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Role</span><span class="rounded-full bg-blue-600 px-3 py-1 text-sm text-white">Admin</span></div>
             </div>
-
-            @if ($presensiSaya)
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-slate-500">Status</p>
-                    <span class="mt-1 inline-block rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
-                        Sudah Absen
-                    </span>
-                </div>
-                <div class="text-right">
-                    <p class="text-sm text-slate-500">Jam Masuk</p>
-                    <p class="mt-1 text-lg font-semibold">
-                        {{ \Carbon\Carbon::parse($presensiSaya->jam_masuk)->format('H:i') }}
-                    </p>
-                </div>
-            </div>
-            @else
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-slate-500">Status</p>
-                    <span class="mt-1 inline-block rounded-full bg-yellow-100 px-3 py-1 text-sm font-medium text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
-                        Belum Absen
-                    </span>
-                </div>
-                <a href="{{ route('karyawan.presensi.index') }}"
-                    class="rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700">
-                    Absen Sekarang
-                </a>
-            </div>
-            @endif
         </x-card>
 
-        {{-- Informasi Sistem --}}
         <x-card class="p-6">
-            <h2 class="mb-5 text-lg font-semibold">
-                Informasi Sistem
-            </h2>
-            <div class="space-y-4">
-                <div class="flex justify-between">
-                    <span class="text-slate-500">Tanggal</span>
-                    <span>{{ now()->translatedFormat('l, d F Y') }}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-500">Jam</span>
-                    <span id="jam">{{ now()->format('H:i:s') }}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-500">Login Sebagai</span>
-                    <span>{{ auth()->user()->name }}</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-500">Role</span>
-                    <span class="rounded-full bg-blue-600 px-3 py-1 text-sm text-white">
-                        Admin
-                    </span>
-                </div>
-            </div>
+            <h2 class="mb-5 text-lg font-semibold">Catatan</h2>
+            <p class="text-sm leading-6 text-slate-500 dark:text-slate-400">Akun Admin digunakan untuk mengelola sistem. Data presensi dan izin hanya terkait dengan akun yang memiliki role Karyawan.</p>
         </x-card>
     </div>
 </div>
