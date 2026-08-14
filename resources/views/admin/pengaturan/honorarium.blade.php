@@ -13,7 +13,7 @@
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 Kelola honorarium tiap jabatan. Pilih <span class="font-medium">Bulanan</span> untuk karyawan tetap
                 (flat per bulan, potongan alpha dihitung otomatis) atau <span class="font-medium">Per Hari Hadir</span>
-                untuk relawan guru / ustad part-time (dibayar sesuai jumlah hari hadir, tanpa potongan alpha).
+                (dibayar sesuai jumlah hari hadir, tanpa potongan alpha).
                 Bonus tidak diatur di sini &mdash; bonus bersifat tidak rutin dan diinput langsung per karyawan
                 di halaman <span class="font-medium">Detail Honorarium</span> tiap bulan.
             </p>

@@ -71,7 +71,17 @@ class HonorariumController extends Controller
             ->with("jabatan.pengaturanHonorarium")
             ->get();
 
+        $akhirPeriodeGenerate = Carbon::create($tahun, $bulan, 1)->endOfMonth();
+
         foreach ($karyawans as $karyawan) {
+            // Skip karyawan yang tanggal masuknya setelah periode yang digenerate
+            if (
+                $karyawan->tanggal_masuk &&
+                Carbon::parse($karyawan->tanggal_masuk)->startOfDay()->gt($akhirPeriodeGenerate)
+            ) {
+                continue;
+            }
+
             $settingJabatan = $karyawan->jabatan?->pengaturanHonorarium;
 
             if (!$settingJabatan) {
