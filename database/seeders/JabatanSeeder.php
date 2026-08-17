@@ -19,7 +19,6 @@ class JabatanSeeder extends Seeder
 
             'Development' => [
                 'Web Developer',
-                'Web Developer Freelance'
             ],
 
         ];

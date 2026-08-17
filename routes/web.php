@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\JabatanController;
 use App\Http\Controllers\KalenderKerjaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LogAktivitasController;
+use App\Http\Controllers\PengajuanPresensiController;
 
 // ============================================================
 // AUTH ROUTES (Guest only)
@@ -71,6 +72,21 @@ Route::middleware(["auth", "role:admin"])
                     PresensiController::class,
                     "rekap",
                 ])->name("rekap");
+
+                Route::get("/pengajuan/approval", [
+                    PengajuanPresensiController::class,
+                    "approval",
+                ])->name("pengajuan.approval");
+
+                Route::patch("/pengajuan/{pengajuan}/approve", [
+                    PengajuanPresensiController::class,
+                    "approve",
+                ])->name("pengajuan.approve");
+
+                Route::patch("/pengajuan/{pengajuan}/reject", [
+                    PengajuanPresensiController::class,
+                    "reject",
+                ])->name("pengajuan.reject");
             });
 
         // Bidang
@@ -220,6 +236,21 @@ Route::middleware(["auth", "role:pimpinan"])
                     PresensiController::class,
                     "rekap",
                 ])->name("rekap");
+
+                Route::get("/pengajuan/approval", [
+                    PengajuanPresensiController::class,
+                    "approval",
+                ])->name("pengajuan.approval");
+
+                Route::patch("/pengajuan/{pengajuan}/approve", [
+                    PengajuanPresensiController::class,
+                    "approve",
+                ])->name("pengajuan.approve");
+
+                Route::patch("/pengajuan/{pengajuan}/reject", [
+                    PengajuanPresensiController::class,
+                    "reject",
+                ])->name("pengajuan.reject");
             });
 
         // Honorarium
@@ -327,6 +358,25 @@ Route::middleware(["auth", "role:karyawan"])
                     PresensiController::class,
                     "riwayat",
                 ])->name("riwayat");
+
+                Route::prefix("pengajuan")
+                    ->name("pengajuan.")
+                    ->group(function () {
+                        Route::get("/", [
+                            PengajuanPresensiController::class,
+                            "index",
+                        ])->name("index");
+
+                        Route::get("/buat", [
+                            PengajuanPresensiController::class,
+                            "create",
+                        ])->name("create");
+
+                        Route::post("/", [
+                            PengajuanPresensiController::class,
+                            "store",
+                        ])->name("store");
+                    });
             });
 
         // Izin
@@ -348,6 +398,12 @@ Route::middleware(["auth", "role:karyawan"])
         Route::get("/honorarium", [HonorariumController::class, "milik"])->name(
             "honorarium.index",
         );
+
+        // Slip honorarium (milik sendiri) - PDF
+        Route::get("/honorarium/{honorarium}/slip", [
+            LaporanController::class,
+            "slipHonorarium",
+        ])->name("honorarium.slip");
     });
 
 // ============================================================

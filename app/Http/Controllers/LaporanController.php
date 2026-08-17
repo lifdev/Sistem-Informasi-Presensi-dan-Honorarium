@@ -10,6 +10,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class LaporanController extends Controller
 {
@@ -85,6 +86,23 @@ class LaporanController extends Controller
     // Cetak slip honorarium
     public function slipHonorarium(Honorarium $honorarium)
     {
+        $user = Auth::user();
+
+        // Karyawan hanya boleh mengunduh slip miliknya sendiri.
+        // Admin & pimpinan boleh mengunduh slip siapa saja (dicek lewat middleware role di route).
+        if ($user->role === 'karyawan') {
+            $karyawanId = $user->karyawan?->id;
+
+            if (!$karyawanId || $honorarium->karyawan_id !== $karyawanId) {
+                abort(403, 'Anda tidak memiliki akses ke slip honorarium ini.');
+            }
+
+            // Karyawan hanya boleh download slip yang sudah difinalisasi admin/pimpinan.
+            if ($honorarium->status !== 'final') {
+                abort(403, 'Slip honorarium belum bisa diunduh karena masih berstatus draft dan belum difinalisasi.');
+            }
+        }
+
         $honorarium->load('karyawan');
         $pdf = Pdf::loadView('admin.laporan.pdf.slip', compact('honorarium'))
             ->setPaper([0, 0, 595, 350]);

@@ -7,6 +7,33 @@
 <div class="flex justify-center">
     <div class="w-full max-w-2xl">
 
+        {{-- Info Pengajuan Presensi Susulan (jika ada yang pending) --}}
+        @if ($pengajuanTerbaru)
+        <div
+            class="mb-4 flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-300">
+            <i class="bi bi-hourglass-split mt-0.5 text-lg"></i>
+            <div>
+                Anda memiliki pengajuan presensi susulan tanggal
+                <strong>{{ $pengajuanTerbaru->tanggal->format('d/m/Y') }}</strong>
+                yang masih menunggu persetujuan.
+                <a href="{{ route('karyawan.presensi.pengajuan.index') }}" class="underline">Lihat status</a>
+            </div>
+        </div>
+        @endif
+
+        {{-- Lupa absen? --}}
+        <div
+            class="mb-4 flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4 text-sm dark:border-slate-700 dark:bg-slate-900">
+            <span class="text-slate-600 dark:text-slate-400">
+                Lupa melakukan absen di hari kerja sebelumnya?
+            </span>
+            <a href="{{ route('karyawan.presensi.pengajuan.create') }}"
+                class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-xs font-medium text-white transition hover:bg-blue-700 dark:hover:bg-blue-500">
+                <i class="bi bi-calendar-plus mr-1"></i>
+                Ajukan Presensi Susulan
+            </a>
+        </div>
+
         {{-- Info Tanggal --}}
         <div
             class="mb-4 overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-slate-700">

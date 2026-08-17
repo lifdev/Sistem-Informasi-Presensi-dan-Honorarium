@@ -13,6 +13,7 @@ use App\Models\KalenderKerja;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Models\LogAktivitas;
+use App\Models\PengajuanPresensi;
 
 class PresensiController extends Controller
 {
@@ -30,7 +31,14 @@ class PresensiController extends Controller
         $lokasi    = PengaturanLokasi::where('aktif', true)->first();
         $jamKerja = \App\Models\PengaturanJam::aktif();
 
-        return view('karyawan.presensi.index', compact('presensi', 'lokasi', 'today', 'jamKerja'));
+        // Pengajuan presensi susulan terbaru yang masih pending/belum lewat
+        // (untuk ditampilkan sebagai info di halaman absen)
+        $pengajuanTerbaru = PengajuanPresensi::where('karyawan_id', $karyawan->id)
+            ->where('status', 'pending')
+            ->latest('tanggal')
+            ->first();
+
+        return view('karyawan.presensi.index', compact('presensi', 'lokasi', 'today', 'jamKerja', 'pengajuanTerbaru'));
     }
 
     // Proses absen masuk

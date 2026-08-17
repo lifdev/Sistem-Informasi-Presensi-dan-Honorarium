@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <title>Slip Honorarium</title>
     <style>
+        @page {
+            margin: 10mm 15mm;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -15,7 +19,7 @@
             font-family: sans-serif;
             font-size: 12px;
             color: #222;
-            padding: 20px;
+            padding: 10px;
         }
 
         .slip {
@@ -27,10 +31,13 @@
         .slip-header {
             background: #1e3a5f;
             color: #fff;
-            padding: 14px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .slip-header td {
+            padding: 10px 20px;
+            vertical-align: middle;
         }
 
         .slip-header h3 {
@@ -44,17 +51,19 @@
         }
 
         .slip-body {
-            padding: 16px 20px;
+            padding: 12px 20px;
         }
 
         .info-row {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 14px;
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 8px;
         }
 
-        .info-col {
-            flex: 1;
+        .info-row td {
+            vertical-align: top;
+            width: 50%;
+            padding-right: 20px;
         }
 
         .info-col table {
@@ -63,6 +72,7 @@
 
         .info-col td {
             padding: 3px 0;
+            width: auto;
         }
 
         .info-col td:first-child {
@@ -73,7 +83,7 @@
         .divider {
             border: none;
             border-top: 1px dashed #ccc;
-            margin: 12px 0;
+            margin: 8px 0;
         }
 
         .honorarium-table {
@@ -102,66 +112,85 @@
         }
 
         .ttd {
-            margin-top: 24px;
-            display: flex;
-            justify-content: space-between;
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        .ttd td {
+            width: 50%;
+            text-align: center;
+            vertical-align: top;
         }
 
         .ttd-box {
             text-align: center;
             width: 180px;
+            margin: 0 auto;
         }
 
         .ttd-box .line {
-            margin-top: 50px;
+            margin-top: 30px;
             border-top: 1px solid #333;
             padding-top: 4px;
+        }
+
+        .honorarium-table,
+        .ttd {
+            page-break-inside: avoid;
         }
     </style>
 </head>
 
 <body>
     <div class="slip">
-        <div class="slip-header">
-            <div>
-                <h3>SLIP HONORARIUM KARYAWAN</h3>
-                <p>Periode: {{ $honorarium->namaBulan() }} {{ $honorarium->tahun }}</p>
-            </div>
-            <div style="text-align:right">
-                <p>Dicetak: {{ now()->format('d/m/Y') }}</p>
-                <p style="font-size:10px;opacity:.7">Status: {{ ucfirst($honorarium->status) }}</p>
-            </div>
-        </div>
+        <table class="slip-header">
+            <tr>
+                <td>
+                    <h3>SLIP HONORARIUM KARYAWAN</h3>
+                    <p>Periode: {{ $honorarium->namaBulan() }} {{ $honorarium->tahun }}</p>
+                </td>
+                <td style="text-align:right">
+                    <p>Dicetak: {{ now()->format('d/m/Y') }}</p>
+                    <p style="font-size:10px;opacity:.7">Status: {{ ucfirst($honorarium->status) }}</p>
+                </td>
+            </tr>
+        </table>
 
         <div class="slip-body">
             {{-- Info Karyawan --}}
-            <div class="info-row">
-                <div class="info-col">
-                    <table>
-                        <tr>
-                            <td>Nama</td>
-                            <td>: <strong>{{ $honorarium->karyawan->nama }}</strong></td>
-                        </tr>
-                        <tr>
-                            <td>NIP</td>
-                            <td>: {{ $honorarium->karyawan->nip }}</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="info-col">
-                    <table>
-                        <tr>
-                            <td>Bidang</td>
-                            <td>: {{ $honorarium->karyawan->jabatan?->bidang?->nama }}</td>
-                        </tr>
-
-                        <tr>
-                            <td>Jabatan</td>
-                            <td>: {{ $honorarium->karyawan->jabatan?->nama }}</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
+            <table class="info-row">
+                <tr>
+                    <td>
+                        <div class="info-col">
+                            <table>
+                                <tr>
+                                    <td>Nama</td>
+                                    <td>: <strong>{{ $honorarium->karyawan->nama }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>NIP</td>
+                                    <td>: {{ $honorarium->karyawan->nip }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="info-col">
+                            <table>
+                                <tr>
+                                    <td>Bidang</td>
+                                    <td>: {{ $honorarium->karyawan->jabatan?->bidang?->nama }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Jabatan</td>
+                                    <td>: {{ $honorarium->karyawan->jabatan?->nama }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
 
             <hr class="divider">
 
@@ -227,16 +256,22 @@
             </table>
 
             {{-- TTD --}}
-            <div class="ttd">
-                <div class="ttd-box">
-                    <div>Diterima oleh,</div>
-                    <div class="line">{{ $honorarium->karyawan->nama }}</div>
-                </div>
-                <div class="ttd-box">
-                    <div>Dibuat oleh,</div>
-                    <div class="line">Admin / HRD</div>
-                </div>
-            </div>
+            <table class="ttd">
+                <tr>
+                    <td>
+                        <div class="ttd-box">
+                            <div>Diterima oleh,</div>
+                            <div class="line">{{ $honorarium->karyawan->nama }}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="ttd-box">
+                            <div>Dibuat oleh,</div>
+                            <div class="line">Admin / HRD</div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 </body>

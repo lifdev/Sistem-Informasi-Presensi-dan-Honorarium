@@ -118,6 +118,25 @@
 
             </div>
 
+            <!-- Download Slip -->
+            <div class="mt-6 border-t border-gray-200 pt-4 dark:border-slate-700">
+                @if ($h->status === 'final')
+                <a href="{{ route('karyawan.honorarium.slip', $h->id) }}" target="_blank"
+                    class="flex w-full items-center justify-center gap-2 rounded-lg bg-slate-800 px-4 py-2.5 text-sm font-semibold text-white
+                           transition hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                    Download Slip Honorarium
+                </a>
+                @else
+                <button type="button" disabled
+                    class="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-lg bg-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-400
+                           dark:bg-slate-800 dark:text-slate-500">
+                    <i class="bi bi-lock-fill"></i>
+                    Menunggu Finalisasi
+                </button>
+                @endif
+            </div>
+
         </div>
     </div>
 
